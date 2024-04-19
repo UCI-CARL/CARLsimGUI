@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TimePanel</class>
+ <widget class="QWidget" name="TimePanel">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>526</width>
+    <height>91</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1</width>
+    <height>91</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>91</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetDefaultConstraint</enum>
+   </property>
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>2</number>
+   </property>
+   <property name="rightMargin">
+    <number>2</number>
+   </property>
+   <property name="bottomMargin">
+    <number>2</number>
+   </property>
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>90</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <widget class="QSpinBox" name="stepMsEdit">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>71</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Precision (ms/step)</string>
+      </property>
+      <property name="statusTip">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="suffix">
+       <string> ms</string>
+      </property>
+      <property name="prefix">
+       <string/>
+      </property>
+      <property name="maximum">
+       <number>10000</number>
+      </property>
+      <property name="value">
+       <number>50</number>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="speedEdit">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>71</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Speedfactor (Modelime / Realtime)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="prefix">
+       <string>x</string>
+      </property>
+      <property name="minimum">
+       <double>0.0010000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>1000.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.001000000000000</double>
+      </property>
+      <property name="value">
+       <double>1.0000000000000000</double>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_2" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
+     </property>
+     <widget class="QLabel" name="realSpeed">
+      <property name="geometry">
+       <rect>
+        <x>355</x>
+        <y>60</y>
+        <width>71</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>No. of Neural Processing Steps</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="text">
+       <string>x 0.0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="ssnTimeLabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>1</y>
+        <width>20</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="../carlsimwrapper.qrc">:/icon/neuralnetwork</pixmap>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="snnTimeDiff">
+      <property name="geometry">
+       <rect>
+        <x>217</x>
+        <y>1</y>
+        <width>141</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Internal Time of the Spiking Neural Network &lt;a href=&quot;http://google.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Google&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="text">
+       <string>00.0  00:00:00.000</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="modelSpeed">
+      <property name="geometry">
+       <rect>
+        <x>355</x>
+        <y>31</y>
+        <width>71</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>No. of Neural Processing Steps</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="text">
+       <string>x 0.0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="snnSpeed">
+      <property name="geometry">
+       <rect>
+        <x>355</x>
+        <y>1</y>
+        <width>71</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>No. of Neural Processing Steps</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="text">
+       <string>x 0.0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="realTimeLabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>61</y>
+        <width>21</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="../carlsimwrapper.qrc">:/icon/system</pixmap>
+      </property>
+     </widget>
+     <widget class="QLabel" name="stepCounter">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>1</y>
+        <width>120</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>120</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>120</width>
+        <height>22</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>No. of Neural Processing Steps</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLabel { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="text">
+       <string>35,503</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="modelTimeLabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>31</y>
+        <width>21</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="../carlsimwrapper.qrc">:/icon/model</pixmap>
+      </property>
+     </widget>
+     <widget class="QDateTimeEdit" name="modelTimeEdit">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>31</y>
+        <width>178</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>178</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>External Time of the underlying Model</string>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QDateTimeEdit { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="date">
+       <date>
+        <year>2013</year>
+        <month>6</month>
+        <day>1</day>
+       </date>
+      </property>
+      <property name="time">
+       <time>
+        <hour>22</hour>
+        <minute>30</minute>
+        <second>15</second>
+       </time>
+      </property>
+      <property name="currentSection">
+       <enum>QDateTimeEdit::YearSection</enum>
+      </property>
+      <property name="displayFormat">
+       <string>yyyy-MM-dd hh:mm:ss.zzz</string>
+      </property>
+     </widget>
+     <widget class="QDateTimeEdit" name="realTimeEdit">
+      <property name="geometry">
+       <rect>
+        <x>42</x>
+        <y>61</y>
+        <width>178</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>178</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>Systemtime (Local and Processor)</string>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QDateTimeEdit { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="date">
+       <date>
+        <year>2013</year>
+        <month>6</month>
+        <day>1</day>
+       </date>
+      </property>
+      <property name="time">
+       <time>
+        <hour>22</hour>
+        <minute>30</minute>
+        <second>15</second>
+       </time>
+      </property>
+      <property name="currentSection">
+       <enum>QDateTimeEdit::YearSection</enum>
+      </property>
+      <property name="displayFormat">
+       <string>yyyy-MM-dd hh:mm:ss.zzz</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="modelTimeDiff">
+      <property name="geometry">
+       <rect>
+        <x>217</x>
+        <y>31</y>
+        <width>141</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Internal Time of the Spiking Neural Network &lt;a href=&quot;http://google.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Google&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="text">
+       <string>00.0  00:00:00.000</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="realTimeDiff">
+      <property name="geometry">
+       <rect>
+        <x>217</x>
+        <y>60</y>
+        <width>141</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Internal Time of the Spiking Neural Network &lt;a href=&quot;http://google.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Google&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit { margin-left: 5px; background-color: black; color: red; border-color: #555555; border-width: 2px; border-style: inset; border-radius: 4; font-weight: bold;}</string>
+      </property>
+      <property name="text">
+       <string>00.0  00:00:00.000</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>12</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;</string>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>12</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="stepLabel">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>0</y>
+        <width>21</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="statusTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="../carlsimwrapper.qrc">:/icon/step</pixmap>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../carlsimwrapper.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>widget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>13</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>46</x>
+     <y>55</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <signal>stepMsChanged(uint)</signal>
+  <signal>speedFactorChanged(double)</signal>
+  <slot>setSimulionTime(QString)</slot>
+  <slot>setModelTime(QDateTime)</slot>
+  <slot>setRealTime(QDateTime)</slot>
+  <slot>setStep(ulonglong)</slot>
+ </slots>
+</ui>

@@ -1,0 +1,39 @@
+# Configuration file for SpikeStream application
+# Each configuration item must have a unique name.
+# SpikeStream needs to be restarted for any changes to take effect
+
+# PARAMETERS FOR SpikeStreamNetwork DATABASE 
+spikeStreamNetworkHost = localhost
+spikeStreamNetworkUser = SpikeStream
+spikeStreamNetworkPassword = password
+
+# PARAMETERS FOR SpikeStreamArchive DATABASE
+spikeStreamArchiveHost = localhost
+spikeStreamArchiveUser = SpikeStream
+spikeStreamArchivePassword = password
+
+# PARAMETERS FOR SpikeStreamAnalysis DATABASE
+spikeStreamAnalysisHost = localhost
+spikeStreamAnalysisUser = SpikeStream
+spikeStreamAnalysisPassword = password
+
+# FILE PARAMETERS
+default_file_location = /home/terry/spikestream
+
+# VIEWING PARAMETERS
+vertex_size = 7.5
+draw_axes = true
+maximize_gui = true
+sphere_radius = 0.1
+sphere_quality = 10
+connection_quality = 8
+minimum_connection_radius = 0.01
+weight_radius_factor = 0.25
+connection_visibility_threshold_fast =  500000
+connection_visibility_threshold_full =  10000
+connection_thinning_threshold_fast = 10000
+connection_thinning_threshold_full = 1000
+
+# DATABASE OPTIMIZATION PARAMETERS
+number_insert_connection_buffers = 100
+number_insert_neuron_buffers = 100

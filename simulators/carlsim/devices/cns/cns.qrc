@@ -1,0 +1,13 @@
+<RCC>
+
+  <qresource prefix="/cns/icon">
+    <file alias="step">../../../../images/step2.png</file>
+
+  </qresource>
+
+  <qresource prefix="/finspikes/translation">
+    <file alias="en_US">cns_en_US.qm</file>
+    <file alias="de_DE">cns_de_DE.qm</file>
+  </qresource>
+  
+</RCC>

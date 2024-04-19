@@ -1,0 +1,48 @@
+#ifndef CARLSIMAERSPIKEGENERATOR_H
+#define CARLSIMAERSPIKEGENERATOR_H
+
+
+
+#include <vector>
+//#include <tuple>
+//#include <map>
+
+#include <QHash>
+
+namespace spikestream {
+
+#include "carlsim.h"
+
+	class NeuronGroup;
+	class CarlsimWrapper;
+}
+
+
+	class CarlsimSpikeGenerator: public SpikeGenerator   {
+
+
+	public:
+
+		CarlsimSpikeGenerator(spikestream::NeuronGroup* group);
+		~CarlsimSpikeGenerator();
+
+
+		void setWrapper(spikestream::CarlsimWrapper* w);
+
+		virtual int nextSpikeTime(CARLsim* s, int grpId, int i, 
+			int currentTime, int lastScheduledSpikeTime, int endOfTimeSlice);
+
+	private: 
+		spikestream::NeuronGroup* group;
+		spikestream::CarlsimWrapper* wrapper;
+
+		vector<unsigned> aer; 
+	};
+
+
+
+
+
+
+
+#endif // CARLSIMAERSPIKEGENERATOR_H
