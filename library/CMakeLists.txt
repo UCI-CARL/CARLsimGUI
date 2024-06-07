@@ -163,6 +163,10 @@ target_link_libraries(carlsimguilib
         Qt::Gui
         Qt::Sql
         Qt::Xml
+
+# patch https://stackoverflow.com/questions/15459191/libgl-so-libglu-so-and-libglut-so-are-not-found-in-the-standard-path
+#
+	gmp
 )
 
 

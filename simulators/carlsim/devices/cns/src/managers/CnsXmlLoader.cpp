@@ -84,7 +84,7 @@ bool CnsXmlLoader::characters(const QString& chars){
 /*! Called when the parser encounters the end of an element. */
 bool CnsXmlLoader::endElement( const QString&, const QString&, const QString& elemName){
 
-	QString &top = context.pop();
+	const QString &top = context.pop();  // const for Linux Pi 5
 	Q_ASSERT(top == elemName);
 	
 	if(elemName == "InboundChannel") {

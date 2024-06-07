@@ -17,7 +17,11 @@ using namespace spikestream;
 using namespace std;
 
 #include <qgl.h>
-#include <gl/glu.h>
+// TODO Linux
+//#include <gl/glu.h>
+//
+#include <GL/glu.h>
+
 #include <QtOpenGL/qgl.h>
 #include <QtOpenGL/QtOpenGL>
 
@@ -924,7 +928,13 @@ void NetworkViewer::drawNeuronGroups() {
 		for (QList<unsigned int>::iterator neurGrpIter = neuronGrpIDs.begin(); neurGrpIter != neuronGrpIDs.end(); ++neurGrpIter) {
 
 			NeuronGroup* grp = network->getNeuronGroup(*neurGrpIter); 
-			Box &box = grp->getBoundingBox();
+			// TODO Linux 
+			//
+			//Box &box = grp->getBoundingBox();
+			// /home/ln/carlsimpp-t01/src/CARLsimGUI/applicationlibrary/src/NetworkViewer.cpp:931:55: error: cannot bind non-const lvalue reference of type ‘spikestream::Box&’ to an rvalue of type ‘spikestream::Box’
+			const Box &box = grp->getBoundingBox();
+			
+			
 			float d = Globals::getNetworkDisplay()->getSphereRadius() * 2;
 			float x1 = box.getX1() - d, y1 = box.getY1() - d, z1 = box.getZ1() - d;
 			float x2 = box.getX2() + d, y2 = box.getY2() + d, z2 = box.getZ2() + d; 

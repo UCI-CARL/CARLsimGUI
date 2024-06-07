@@ -6,4 +6,6 @@
 #    else
 #      define SPIKESTREAM_LIB_EXPORT Q_DECL_IMPORT
 #    endif
+#else
+#	define SPIKESTREAM_LIB_EXPORT
 #endif

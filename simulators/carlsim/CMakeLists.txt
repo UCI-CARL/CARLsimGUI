@@ -8,15 +8,26 @@ add_library(carlsimwrapper SHARED)
 # CMake options for configuring CARLsim features.
 add_compile_definitions(carlsimwrapper NC_EXTENSIONS_CARLSIM)  
 add_compile_definitions(carlsimwrapper LN_I_CALC_TYPES)
-add_compile_definitions(carlsimwrapper CARLSIM_AXONPLAST)   
-add_compile_definitions(carlsimwrapper DEBUG_AXONPLAST)
-add_compile_definitions(carlsimwrapper LN_AXON_PLAST)
 
+# HINT: read config from CarlsimLib.h
+#In file included from /home/ln/carlsimpp-t01/src/CARLsimGUI/simulators/carlsim/include/CarlsimLib.h:19,
+# TODO Linux/Windows 
+# check with CARLsim6 config  option(CARLSIM_LN_AXON_PLAST
+# Windows 
+#add_compile_definitions(carlsimwrapper CARLSIM_AXONPLAST)   
+#add_compile_definitions(carlsimwrapper DEBUG_AXONPLAST)
+#add_compile_definitions(carlsimwrapper LN_AXON_PLAST)
+# Linux Pi5
+#if(CARLSIM_NO_CUDA)
+#  message("CARLSIM_NO_CUDA is on (carlsimwrapper)")
+#  add_compile_definitions(carlsimwrapper CARLSIM_NO_CUDA)
+#  add_compile_definitions(carlsimwrapper __NO_CUDA__)
+#endif()
 
 find_package(carlsim REQUIRED)  
 #find_package(carlsim REQUIRED HINTS ${CMAKE_INSTALL_PREFIX}/lib/carlsim )  
 
-find_package(boost 1.76 REQUIRED) 
+#find_package(boost 1.76 REQUIRED) 
 
 set(HDRS
       include/AbstractSTDPFunction.h
@@ -155,11 +166,11 @@ target_link_libraries(carlsimwrapper PUBLIC
         Qt::Sql
         #${CARLSIM_LIBRARY}
 
-		# delegate CMake configuration to embedded lib CARLsim 
-        carlsim$<$<CONFIG:Debug>:d>.lib
-        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
-        carlsim-spike-generators$<$<CONFIG:Debug>:d>.lib
-        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
+#		# delegate CMake configuration to embedded lib CARLsim 
+#        carlsim$<$<CONFIG:Debug>:d>.lib
+#        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
+#        carlsim-spike-generators$<$<CONFIG:Debug>:d>.lib
+#        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
 
 #		 # enforce released version 
 #        carlsim.lib
@@ -167,7 +178,20 @@ target_link_libraries(carlsimwrapper PUBLIC
 #        carlsim-spike-generators.lib
 #        carlsim-stopwatch.lib
 
-        "qwt$<$<CONFIG:Debug>:d>.lib"
+		# delegate CMake configuration to embedded lib CARLsim 
+        carlsim.so
+        carlsim-stopwatch.so
+        carlsim-spike-generators.so
+        carlsim-stopwatch.so
+
+
+#        "qwt$<$<CONFIG:Debug>:d>.lib"
+
+# TODO Linux
+#        C:\\Qwt-6.2.0\\lib\\qwtd.lib
+# found in (base) ln@pi5:/usr/lib
+	libqwt-qt5.so
+
 )
 
 

@@ -197,7 +197,9 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->carlsim->setNeuronParameters(grpId, a, b, v, d_1);    
 	
 	//Set Conductances at Group Level if defined
-	auto& parameterMap = grpInfo.getParameterMap();
+	//auto& parameterMap = grpInfo.getParameterMap();
+	const auto& parameterMap = grpInfo.getParameterMap();  // Linux Pi5
+	
 	if (parameterMap.contains("Conductances")) {
 		auto conductances = (bool)parameterMap["Conductances"];
 		if (conductances) {
@@ -245,7 +247,15 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->carlsim->setNeuronParameters(grpId, a_1, b_1, v, d);
 
 	// Set Conductances at Group Level if defined
-	auto & parameterMap = grpInfo.getParameterMap();
+	//auto & parameterMap = grpInfo.getParameterMap();
+	// ISSUE
+	//	/home/ln/carlsimpp-t01/src/CARLsimGUI/simulators/carlsim/src/model/CarlsimLoader.cpp:249:54: error: cannot bind non-const lvalue reference of type ‘QHash<QString, double>&’ to an rvalue of type ‘QHash<QString, double>’
+	//	249 |         auto & parameterMap = grpInfo.getParameterMap();
+    //      |                               ~~~~~~~~~~~~~~~~~~~~~~~^~m
+    // FIX
+	const auto & parameterMap = grpInfo.getParameterMap();
+	
+	
 	if (parameterMap.contains("Conductances")) {
 		auto conductances = (bool)parameterMap["Conductances"];
 		if (conductances) {

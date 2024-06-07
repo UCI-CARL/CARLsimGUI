@@ -74,7 +74,8 @@ namespace spikestream {
 			private slots:
 				void loadNoiseInjectors();
 
-			private:
+			//private:
+			public:  // Linux 
 
 				void sustainAllOrNone(); 
 

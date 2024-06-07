@@ -34,7 +34,7 @@ CARLsimState spikestream::CarlsimLib::getCARLsimState() {
 	return ((CARLsim*)carlsim)->getCARLsimState();
 }
 
-
+#ifndef __NO_CUDA__	
 int spikestream::CarlsimLib::cudaDeviceCount() {
 	//return ((CARLsim*)carlsim)->cudaDeviceCount();
 	return CARLsim::cudaDeviceCount();
@@ -44,7 +44,7 @@ void spikestream::CarlsimLib::cudaDeviceDescription(unsigned ithGPU, const char 
 	//((CARLsim*)carlsim)->cudaDeviceDescription(ithGPU, desc);
 	CARLsim::cudaDeviceDescription(ithGPU, desc);
 }
-
+#endif
 
 // CONFIG STATE
 

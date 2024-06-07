@@ -169,7 +169,10 @@ add_compile_definitions(carlsimguiapplication NC_EXTENSIONS)
 target_include_directories(carlsimguiapplication PRIVATE
     ../library/include
     include
-    C:\\Qwt-6.2.0\\include 
+#TODO Linux
+#    C:\\Qwt-6.2.0\\include 
+#
+    /usr/include/qwt 	
 )
 
 # Since Qt 5.15, the CMake targets are also available as Qt::Core, Qt::Gui, and so on. 
@@ -178,11 +181,24 @@ target_include_directories(carlsimguiapplication PRIVATE
 #
 target_link_libraries(carlsimguiapplication PRIVATE
         carlsimguilib
-        C:\\Qwt-6.2.0\\lib\\qwtd.lib
+# TODO Linux
+#        C:\\Qwt-6.2.0\\lib\\qwtd.lib
+# found in (base) ln@pi5:/usr/lib
+	libqwt-qt5.so
+
         Qt::Core
         Qt::OpenGL
-        opengl32.lib
-        glu32.lib
+# TODO Linux
+#        opengl32.lib
+#        glu32.lib
+#
+# https://stackoverflow.com/questions/15459191/libgl-so-libglu-so-and-libglut-so-are-not-found-in-the-standard-path
+	GL
+	GLU
+	glut
+
+	gmp
+	
         Qt::Gui
         Qt::PrintSupport
         Qt::Sql

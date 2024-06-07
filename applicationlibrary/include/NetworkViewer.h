@@ -13,7 +13,11 @@
 
 //class GLUquadricObj; // patch
 //#include "C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Include\gl\GLU.h"
-#include "gl\GLU.h"
+//#include "gl\GLU.h"
+
+//https://github.com/IntelRealSense/librealsense/issues/5232
+//HINT: NOT requred: sudo apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
+#include "GL/glu.h"
 
 //#include <QOpenGLWidget>
 

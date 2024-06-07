@@ -31,8 +31,8 @@ install(TARGETS carlsimgui
 			COMPONENT carlsimgui
 )      
 
-install(FILES ../carlsimgui.config.template DESTINATION / )
+install(FILES ../carlsimgui.config.template DESTINATION ${CMAKE_INSTALL_PREFIX} )
 
-install(DIRECTORY ../images DESTINATION $<$<CONFIG:Debug>:debug/>/ )
+install(DIRECTORY ../images DESTINATION ${CMAKE_INSTALL_PREFIX}$<$<CONFIG:Debug>:debug/> )
 
-install(DIRECTORY ../plugins DESTINATION $<$<CONFIG:Debug>:debug/>/ )   
+install(DIRECTORY ../plugins DESTINATION ${CMAKE_INSTALL_PREFIX}$<$<CONFIG:Debug>:debug/> )   

@@ -42,7 +42,8 @@ namespace spikestream{
 
 			void printConfig();
 			void setParameter(const QString& configFileLine);
-			void ConfigLoader::setParameter(const QString& configFileLine, QString& prevParam); 
+//			void ConfigLoader::setParameter(const QString& configFileLine, QString& prevParam); 
+			void setParameter(const QString& configFileLine, QString& prevParam); 
 
 			/*! Relative Path of the config file passed as first command line param */
 			static QString configFilePath;

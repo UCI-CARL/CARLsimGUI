@@ -171,7 +171,7 @@ void CARLsimCNSWbBuilderThread::checkParameters() {
 
 
 	// references to neuron groups
-	QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once
+	const QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once, const for Linux Pi 5
 
 
 	tofGroup = groupsMap["ctx.tof"];

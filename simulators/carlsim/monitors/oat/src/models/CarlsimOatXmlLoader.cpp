@@ -68,7 +68,7 @@ bool CarlsimOatXmlLoader::endElement( const QString&, const QString&, const QStr
 
   qDebug() << "endElement:" << elemName; 
 
-	QString &top = context.pop();
+	const QString &top = context.pop(); // Linux Pi5
 	Q_ASSERT(top == elemName);
 
 	if (elemName == "Monitors") {

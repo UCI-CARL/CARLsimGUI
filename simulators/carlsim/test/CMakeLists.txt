@@ -10,9 +10,8 @@ find_package(carlsim REQUIRED)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOMOC ON)  
 
-    
 enable_testing(true)
 
 add_executable(testcarlsim 		
@@ -48,11 +47,26 @@ add_test(NAME mytest COMMAND testCarlsimLibrary)
         Qt::Sql
         Qt::Test
         carlsimwrapper
-        carlsim$<$<CONFIG:Debug>:d>.lib
-        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
-        carlsim-spike-generators$<$<CONFIG:Debug>:d>.lib
-        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
-        qwt$<$<CONFIG:Debug>:d>.lib
+
+#        carlsim$<$<CONFIG:Debug>:d>.lib
+#        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
+#        carlsim-spike-generators$<$<CONFIG:Debug>:d>.lib
+#        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
+
+	# delegate CMake configuration to embedded lib CARLsim 
+        carlsim.so
+        carlsim-stopwatch.so
+        carlsim-spike-generators.so
+        carlsim-stopwatch.so
+
+#        qwt$<$<CONFIG:Debug>:d>.lib
+
+# TODO Linux
+#        C:\\Qwt-6.2.0\\lib\\qwtd.lib
+# found in (base) ln@pi5:/usr/lib
+	libqwt-qt5.so
+
+
     )
 
 install(TARGETS testcarlsim

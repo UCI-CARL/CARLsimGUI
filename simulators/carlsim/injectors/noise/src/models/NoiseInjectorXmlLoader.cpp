@@ -70,7 +70,7 @@ bool NoiseInjectorXmlLoader::endElement( const QString&, const QString&, const Q
 
   qDebug() << "endElement:" << elemName; 
 
-	QString &top = context.pop();
+	const QString &top = context.pop(); // Linxu Pi5
 	Q_ASSERT(top == elemName);
 
 	if (elemName == "Injectors") {

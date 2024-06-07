@@ -163,7 +163,11 @@ void CarlsimParametersDialog::checkCarlsimOutput(int result, const QString& erro
 /*! Loads up a list of the currently available CUDA devices */
 void CarlsimParametersDialog::getCudaDevices(QComboBox* combo){
 	carlsim41::carlsim_status_t result = CARLSIM_OK;  
-	int numCudaDevices = carlsim->cudaDeviceCount();   
+#ifndef __NO_CUDA__		
+	int numCudaDevices = carlsim->cudaDeviceCount(); 
+#else 
+	int numCudaDevices = 0; 
+#endif 
 	if(result != CARLSIM_OK){
 		combo->addItem(NO_CUDA_DEVICES_TEXT);
 		return;
@@ -174,12 +178,14 @@ void CarlsimParametersDialog::getCudaDevices(QComboBox* combo){
 		return;
 	}
 
+#ifndef __NO_CUDA__
 	for(unsigned i=0; i<numCudaDevices; ++i){
 		const char* devDesc;
 		carlsim->cudaDeviceDescription(i, &devDesc);  		
 		combo->addItem(QString("GPU[%1]: %2").arg(i).arg(QString::fromLocal8Bit(devDesc)));  
 
 	}
+#endif
 }
 
 

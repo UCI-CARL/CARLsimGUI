@@ -148,7 +148,15 @@ void Topographic1BuilderThread::addProjectiveConnections(Neuron* fromNeuron, Neu
 //1>src\model\Topographic1BuilderThread.cpp(145): warning C4002: too many actual parameters for macro 'min'
 //1>src\model\Topographic1BuilderThread.cpp(145): error C2589: '(' : illegal token on right side of '::'
 //1>src\model\Topographic1BuilderThread.cpp(145): error C2059: syntax error : '::'
+//	float radius = 0.5f * Util::min3(projBox.getWidth(), projBox.getLength(), projBox.getHeight());
+
+// Fix Linux 
+#ifndef _MSC_VER
+	float radius = 0.5f * Util::min(projBox.getWidth(), projBox.getLength(), projBox.getHeight());
+#elif _MSC_VER >= 1500  // VS 2008
 	float radius = 0.5f * Util::min3(projBox.getWidth(), projBox.getLength(), projBox.getHeight());
+#endif
+
 
 	Point3D projBoxCentre = projBox.centre();
 

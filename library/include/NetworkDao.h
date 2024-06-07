@@ -50,7 +50,8 @@ namespace spikestream{
 			QList<unsigned int> getFromConnections(unsigned int fromNeuronID);
 			QList<unsigned int> getToConnections(unsigned int toNeuronID);
 			QList<NetworkInfo> getNetworksInfo();
-			bool NetworkDao::getNetworkInfo(const QString& name, NetworkInfo& info);  //! retrieve the entwork ID and NetworkInfo by a given name
+			//bool NetworkDao::getNetworkInfo(const QString& name, NetworkInfo& info);  //! retrieve the entwork ID and NetworkInfo by a given name
+			bool getNetworkInfo(const QString& name, NetworkInfo& info);  //! retrieve the entwork ID and NetworkInfo by a given name
 			unsigned getNeuronCount(unsigned int networkID);
 			unsigned getNeuronCount(const QList<NeuronGroup*>& neurGrpList);
 			unsigned getNeuronCount(const NeuronGroupInfo& neurGrpInfo);//UNTESTED

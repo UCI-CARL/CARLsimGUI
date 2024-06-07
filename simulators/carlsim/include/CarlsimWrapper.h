@@ -303,8 +303,13 @@ public:
 			CarlsimLib* carlsim;	// in CARLsim the configuration is represented by a state 
 			friend class CarlsimLoader;
 
-private: 
-		
+//private: 
+// /home/ln/carlsimpp-t01/src/CARLsimGUI/simulators/carlsim/src/model/CarlsimGenerator.cpp:28:38: error: ‘QHash<unsigned int, spikestream::NeuronGroup*> spikestream::CarlsimWrapper::persistentNeurGrpMap’ is private within this context
+//   28 |         NeuronGroup* from = wrapper->persistentNeurGrpMap[group->getFromNeuronGroupID()];
+//       |                                      ^~~~~~~~~~~~~~~~~~~~
+// /home/ln/carlsimpp-t01/src/CARLsimGUI/simulators/carlsim/include/CarlsimWrapper.h:354:55: note: declared private here
+// patch -> fix : make it a friend class
+public: 		
 			/*! Interval between each time step in milliseconds. */
 			unsigned updateInterval_ms;
 

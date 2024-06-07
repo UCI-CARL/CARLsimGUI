@@ -146,7 +146,7 @@ void OatSpikeMonitor::printStats(QTextDocument *report, QTextTableFormat tableFo
 		cursor.beginEditBlock();
 		//cursor.insertText("Top Ten Firing Rates");
 		cursor.insertHtml("<h3>Top Ten Firing Rates</h3><p>");
-		auto &rates = monitor->getAllFiringRatesSorted(); //std::vector<float>
+		const auto &rates = monitor->getAllFiringRatesSorted(); //std::vector<float>   // Linux Pi5 
 		int rows = min<int>(10, rates.size()); 
 		table = cursor.insertTable( 10+1, 2, tableFormat);
 		table->cellAt(0, 0).firstCursorPosition().insertText("#"); 

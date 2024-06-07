@@ -11,7 +11,8 @@
 namespace spikestream{
 
 	/*! Information about a three-dimensional point. */
-    class SPIKESTREAM_LIB_EXPORT Point3D {
+   // class SPIKESTREAM_LIB_EXPORT Point3D {
+    class Point3D {
 		public:
 			Point3D();
 			Point3D(float xPos, float yPos, float zPos);

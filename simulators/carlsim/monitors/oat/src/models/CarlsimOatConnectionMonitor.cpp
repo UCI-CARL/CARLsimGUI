@@ -157,16 +157,16 @@ void OatConnectionMonitor::printWeights(QTextDocument *report, QTextTableFormat 
 	//assert(npre > 0);
 	auto npost = wmat[0].size();
 	auto table = cursor.insertTable(npre + 1, npost + 1, tableFormat);  
-	auto &cell = table->cellAt(0, 0);
+	auto cell = table->cellAt(0, 0); // Linux Pi5
 	cell.setFormat(cellFormat);
 	cell.firstCursorPosition().insertText("Pre \\ Post");
 	for (int pre = 0; pre < npre; pre++) {
-		auto &row = table->cellAt(pre + 1, 0);
+		auto row = table->cellAt(pre + 1, 0); // Linux Pi5
 		row.setFormat(cellFormat);
 		row.firstCursorPosition().insertText(QString::number(pre));
 		for (int post = 0; post < npost; post++) {
 			if (pre == 0) {
-				auto &col = table->cellAt(0, post + 1);
+				auto col = table->cellAt(0, post + 1);   // Linux Pi5
 				col.setFormat(cellFormat);
 				col.firstCursorPosition().insertText(QString::number(post));
 			}
@@ -192,16 +192,16 @@ void OatConnectionMonitor::printPrevWeights(QTextDocument *report, QTextTableFor
 	//assert(npre > 0);
 	auto npost = wmat[0].size();
 	auto table = cursor.insertTable(npre + 1, npost + 1, tableFormat);  
-	auto &cell = table->cellAt(0, 0);
+	auto cell = table->cellAt(0, 0);   // Linux Pi5
 	cell.setFormat(cellFormat);
 	cell.firstCursorPosition().insertText("Pre \\ Post");
 	for (int pre = 0; pre < npre; pre++) {
-		auto &row = table->cellAt(pre + 1, 0);
+		auto row = table->cellAt(pre + 1, 0); // Linux Pi5
 		row.setFormat(cellFormat);
 		row.firstCursorPosition().insertText(QString::number(pre));
 		for (int post = 0; post < npost; post++) {
 			if (pre == 0) {
-				auto &col = table->cellAt(0, post + 1);
+				auto col = table->cellAt(0, post + 1); // Linux Pi5
 				col.setFormat(cellFormat);
 				col.firstCursorPosition().insertText(QString::number(post));
 			}
@@ -229,18 +229,20 @@ void OatConnectionMonitor::printWeightChanges(QTextDocument *report, QTextTableF
 	//assert(npre > 0);
 	auto npost = wmat[0].size();
 	auto table = cursor.insertTable(npre + 1, npost + 1, tableFormat);  // gNId, spikestream NID 
-	auto &cell = table->cellAt(0, 0);
+	auto cell = table->cellAt(0, 0);  // Linux Pi5
 	cell.setFormat(cellFormat);
 	cell.firstCursorPosition().insertText("Pre \\ Post");
 	for (int pre = 0; pre < npre; pre++) {
-		auto &row = table->cellAt(pre + 1, 0);
+		auto row = table->cellAt(pre + 1, 0); // Linux Pi5
 		row.setFormat(cellFormat);
 		row.firstCursorPosition().insertText(QString::number(pre));
+		// TODO table->cellAtPut(pre + 1, 0, row)
 		for (int post = 0; post < npost; post++) {
 			if (pre == 0) {
-				auto &col = table->cellAt(0, post + 1);
+				auto col = table->cellAt(0, post + 1);  // Linux Pi5
 				col.setFormat(cellFormat);
 				col.firstCursorPosition().insertText(QString::number(post));
+				// TODO table->cellAtPut(0, post + 1, column)
 			}
 			auto w = wmat[pre][post];
 			if (!isnan(w))

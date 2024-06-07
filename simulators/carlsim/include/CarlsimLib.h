@@ -48,8 +48,10 @@ namespace spikestream {
 
 			// ALL STATES
 			CARLsimState getCARLsimState();
+#ifndef __NO_CUDA__			
 			static int cudaDeviceCount(); //! Fix for integration 
 			static void cudaDeviceDescription(unsigned ithGPU, const char **desc); //! Fix for integration
+#endif
 
 			// CONFIG STATE
 			int connect(int grpId1, int grpId2, CarlsimGeneratorContainer* conn, bool synWtType);

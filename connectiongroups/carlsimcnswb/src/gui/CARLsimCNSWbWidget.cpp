@@ -128,8 +128,8 @@ bool CARLsimCNSWbWidget::checkInputs(){
 //Override
 ConnectionGroupInfo CARLsimCNSWbWidget::getConnectionGroupInfo(){
 
-	// references to neuron groups
-	QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once
+//	// references to neuron groups
+//	QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once
 
 	unsigned int synapseTypeID = getSynapseTypeID(synapseTypeCombo->currentText());
 

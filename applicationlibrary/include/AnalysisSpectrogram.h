@@ -51,9 +51,10 @@ namespace spikestream {
 	1>  moc_AnalysisSpectrogram.obj : error LNK2001: unresolved external symbol "public: static struct QMetaObject const QwtPlot::staticMetaObject" (?staticMetaObject@QwtPlot@@2UQMetaObject@@B)
 	1> ..\lib\\spikestreamapplication0.dll : fatal error LNK1120: 1 unresolved externals
 */
-#ifndef _MSC_VER
-		Q_OBJECT
-#endif
+// Fix for Linux comment out 
+//#ifndef _MSC_VER
+//		Q_OBJECT
+//#endif
 
 			// QT AUTOMOC 
 			//https://cmake.org/cmake/help/latest/prop_sf/SKIP_AUTOMOC.html#prop_sf:SKIP_AUTOMOC

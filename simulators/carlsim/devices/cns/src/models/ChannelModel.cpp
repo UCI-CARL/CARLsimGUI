@@ -53,13 +53,16 @@ QVariant ChannelModel::data(const QModelIndex & index, int role) const{
 			return neuronGroupNameList.at(index.row());
 		else
 		if(index.column() == BUFFER_QUEUED_COL)
-			return channelBufferQueuedList.at(index.row());
+			//return channelBufferQueuedList.at(index.row());  
+			// error: conversion from ‘const long unsigned int’ to ‘QVariant’ is ambiguous
+			return (unsigned long long) channelBufferQueuedList.at(index.row());			
 		else
 		if(index.column() == BUFFER_NEXT_COL)
 			return channelBufferNextList.at(index.row());
 		else
 		if(index.column() == READER_PROCESSED_COL)
-			return channelReaderProcessedList.at(index.row());
+			//return channelReaderProcessedList.at(index.row());
+			return (unsigned long long) channelReaderProcessedList.at(index.row());
 		else
 		if(index.column() == READER_LAST_COL)
 			return channelReaderLastList.at(index.row());

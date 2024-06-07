@@ -7,5 +7,7 @@
 #    else
 #      define CARLSIMWRAPPER_LIB_EXPORT Q_DECL_IMPORT
 #    endif
+#else
+#define CARLSIMWRAPPER_LIB_EXPORT 
 #endif
 

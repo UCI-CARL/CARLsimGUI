@@ -7,5 +7,7 @@
 #    else
 #      define CARLSIMOAT_LIB_EXPORT Q_DECL_IMPORT
 #    endif
+#else
+#     define CARLSIMOAT_LIB_EXPORT
 #endif
 

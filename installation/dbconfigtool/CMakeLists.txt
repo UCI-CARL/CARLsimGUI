@@ -53,4 +53,4 @@ install(TARGETS dbconfigtool
             COMPONENT dbconfigtool
 )      
 
-install(DIRECTORY ../../database DESTINATION / )
+install(DIRECTORY ../../database DESTINATION ${CMAKE_INSTALL_PREFIX} )

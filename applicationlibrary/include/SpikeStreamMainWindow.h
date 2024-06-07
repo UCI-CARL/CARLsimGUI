@@ -17,6 +17,7 @@ using namespace spikestream;
 #include <QMenu>
 #include <QToolBar>
 #include <QStatusBar>
+#include <QLineEdit>
 
 namespace spikestream {
 

@@ -109,17 +109,19 @@ void OatNeuronMonitor::printVUI(QTextDocument *report, QTextTableFormat tableFor
 	table->cellAt(0, 0).firstCursorPosition().insertText("Neuron");
 	for (int i = 0; i < n; i++) {  // neurons
 		table->cellAt(i*3+1, 0).firstCursorPosition().insertText(QString::number(i));  
-		auto &cell = table->cellAt(i * 3 + 1, 1); 
+		auto cell = table->cellAt(i * 3 + 1, 1); // Linux Pi5
 		cell.setFormat(cellFormat); 
 		cell.firstCursorPosition().insertText("I");
+		// ISSUE cellAtPut neccessary
 		table->cellAt(i * 3 + 2, 1).firstCursorPosition().insertText("V");
 		table->cellAt(i * 3 + 3, 1).firstCursorPosition().insertText("U");
 		for (int j = 0; j < t; j++)  {
 			if (i == 0)
 				table->cellAt(0, j + 2).firstCursorPosition().insertText(QString("%1 ms").arg(last - t + j)); 
-			auto &cell = table->cellAt(i * 3 + 1, j + 2);
+			auto cell = table->cellAt(i * 3 + 1, j + 2); // Linux Pi5
 			cell.setFormat(cellFormat);
 			cell.firstCursorPosition().insertText(QString::number(I[i][j], 'f', 1));
+			// ISSUE cellAtPut ?
 			table->cellAt(i * 3 + 2, j + 2).firstCursorPosition().insertText(QString::number(V[i][j], 'f', 1));
 			table->cellAt(i * 3 + 3, j + 2).firstCursorPosition().insertText(QString::number(U[i][j], 'f', 1));
 		}

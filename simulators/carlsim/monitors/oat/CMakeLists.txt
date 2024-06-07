@@ -11,7 +11,8 @@ add_compile_definitions(carlsimoat NC_EXTENSIONS_CARLSIM)
 
 find_package(carlsim REQUIRED)  
 
-find_package(boost 1.76 REQUIRED COMPONENTS thread) 
+#find_package(boost 1.76 REQUIRED COMPONENTS thread) 
+find_package(Boost 1.74 REQUIRED COMPONENTS thread)  # Linux, Pi5
 
 # dir /b /s src/*.h
 set(HDRS
@@ -102,9 +103,14 @@ target_link_libraries(carlsimoat PUBLIC
         carlsimwrapper
         ${Boost_LIBRARIES}
 		
-		carlsim$<$<CONFIG:Debug>:d>.lib
-        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
-        carlsim-spike-generators$<$<CONFIG:Debug>:d>.lib
+#	carlsim$<$<CONFIG:Debug>:d>.lib
+#        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
+#        carlsim-spike-generators$<$<CONFIG:Debug>:d>.lib
+
+	carlsim.so
+        carlsim-stopwatch.so
+        carlsim-spike-generators.so
+
 )
 
 install(TARGETS carlsimoat

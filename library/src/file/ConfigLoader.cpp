@@ -77,7 +77,8 @@ ConfigLoader::ConfigLoader(const QString& configFilePath) {
 
 	QTextStream in(&configFile);
 	QString line;
-	QString &prev = QString(""); 
+	//QString &prev = QString(""); 
+	QString prev = QString(""); 
 	while (!in.atEnd()) {
 		line = in.readLine();
 		//cout << line.toStdString() << endl;

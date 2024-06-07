@@ -11,7 +11,7 @@
 //Qt includes
 #include <QHash>
 #include <QTextEdit>
-#include <QPushbutton>
+#include <QPushButton>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>

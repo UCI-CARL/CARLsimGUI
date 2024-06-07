@@ -7,11 +7,13 @@ set(CMAKE_AUTOMOC ON)
 add_library(noiseinjector SHARED)
 set_property(TARGET noiseinjector PROPERTY PROJECT_LABEL carlsimnoiseinjector)
 
-add_compile_definitions(noiseinjector NC_EXTENSIONS_CARLSIM) 
+# TODO: read config from CarlsimLib.h
+#add_compile_definitions(noiseinjector NC_EXTENSIONS_CARLSIM) 
 
 find_package(carlsim REQUIRED)  
 
-find_package(boost 1.76 REQUIRED COMPONENTS thread) 
+find_package(Boost 1.74 EXACT REQUIRED COMPONENTS thread) # 1.74 Pi OS 5
+
 
 set(HDRS
   src/gui/NoiseInjectorTableView.h
@@ -85,8 +87,12 @@ target_link_libraries(noiseinjector PUBLIC
         carlsimwrapper
 
         #${CARLSIM_LIBRARY}
-		carlsim$<$<CONFIG:Debug>:d>.lib
-        carlsim-spike-generators$<$<CONFIG:Debug>:d>
+#		carlsim$<$<CONFIG:Debug>:d>.lib
+#        carlsim-spike-generators$<$<CONFIG:Debug>:d>
+
+	# Patch Linux Pi5
+        carlsim.so
+        carlsim-spike-generators.so
 
         ${Boost_LIBRARIES}
 )

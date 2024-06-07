@@ -42,7 +42,11 @@ QString formatTimeDiff(unsigned long long timeDiffMs)
 	//! http://msdn.microsoft.com/en-us/library/56e442dc(v=vs.100).aspx
 	const size_t BufSize = 50;  
 	static char buf[BufSize];
+#ifdef _MSC_VER // MSVC toolchain 	
 	sprintf_s<BufSize>(buf, "%02d.%01d  %02d:%02d:%02d.%03d", weeks, dayOfWeek, h, m, s, ms);
+#else  # Linux Pi5
+	snprintf(buf, BufSize, "%02d.%01d  %02d:%02d:%02d.%03d", weeks, dayOfWeek, h, m, s, ms);
+#endif 
 
 	return QString::fromLatin1(buf);
 }

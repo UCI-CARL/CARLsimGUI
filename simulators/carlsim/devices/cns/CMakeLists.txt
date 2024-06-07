@@ -6,11 +6,12 @@ set(CMAKE_AUTOMOC ON)
 add_library(cns SHARED)
 set_property(TARGET cns PROPERTY PROJECT_LABEL carlsimcns)
 
+#ISSUE Carlsim conf.h  -> see Wrapper 
 add_compile_definitions(cns NC_EXTENSIONS_CARLSIM) 
 
 find_package(carlsim REQUIRED)  
 
-find_package(boost 1.76 REQUIRED COMPONENTS thread) 
+find_package(Boost 1.74 REQUIRED COMPONENTS thread) 
 
 set(HDRS
 src/dialogs/AddChannelDialog.h
@@ -90,7 +91,10 @@ target_link_libraries(cns PUBLIC
         Qt::OpenGL
         Qt::Sql
         #${CARLSIM_LIBRARY}
-        carlsim$<$<CONFIG:Debug>:d>.lib
+        #carlsim$<$<CONFIG:Debug>:d>.lib
+	# Linux Pi 5 
+        carlsim.so
+
         ${Boost_LIBRARIES}
         CARLsimIO$<$<CONFIG:Debug>:d>
 )

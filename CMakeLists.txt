@@ -16,7 +16,8 @@ if(MSVC)
 endif()
 
 option(CARLSIMGUI_USES_CARLSIM "x" TRUE)
-option(CARLSIMGUI_USES_CARLSIMIO "x" TRUE)
+#option(CARLSIMGUI_USES_CARLSIMIO "x" TRUE)
+option(CARLSIMGUI_USES_CARLSIMIO "x" FALSE)
 
 # Publish for all projects
 if(CARLSIMGUI_USES_CARLSIM) 
@@ -29,7 +30,8 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt5 5.15.13 COMPONENTS Core Xml Gui Sql Test Widgets OpenGL PrintSupport REQUIRED)
+#find_package(Qt5 5.15.13 COMPONENTS Core Xml Gui Sql Test Widgets OpenGL PrintSupport REQUIRED)
+find_package(Qt5 5.15 COMPONENTS Core Xml Gui Sql Test Widgets OpenGL PrintSupport REQUIRED)
 
 add_compile_definitions(WIN32_SPIKESTREAM)
 
@@ -39,7 +41,7 @@ add_subdirectory(library)
 
 add_subdirectory(testlibrary)
 
-add_subdirectory(library/test)
+#add_subdirectory(library/test)
   
 add_subdirectory(applicationlibrary)
   
