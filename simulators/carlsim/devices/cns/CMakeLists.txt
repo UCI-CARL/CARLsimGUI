@@ -93,7 +93,8 @@ target_link_libraries(cns PUBLIC
         #${CARLSIM_LIBRARY}
         #carlsim$<$<CONFIG:Debug>:d>.lib
 	# Linux Pi 5 
-        carlsim.so
+        #carlsim.so
+	carlsim
 
         ${Boost_LIBRARIES}
         CARLsimIO$<$<CONFIG:Debug>:d>

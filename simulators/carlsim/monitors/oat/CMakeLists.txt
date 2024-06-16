@@ -107,9 +107,13 @@ target_link_libraries(carlsimoat PUBLIC
 #        carlsim-stopwatch$<$<CONFIG:Debug>:d>.lib
 #        carlsim-spike-generators$<$<CONFIG:Debug>:d>.lib
 
-	carlsim.so
-        carlsim-stopwatch.so
-        carlsim-spike-generators.so
+#	carlsim.so
+#        carlsim-stopwatch.so
+#        carlsim-spike-generators.so
+
+	carlsim
+        carlsim-stopwatch
+        carlsim-spike-generators
 
 )
 

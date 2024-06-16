@@ -91,8 +91,10 @@ target_link_libraries(noiseinjector PUBLIC
 #        carlsim-spike-generators$<$<CONFIG:Debug>:d>
 
 	# Patch Linux Pi5
-        carlsim.so
-        carlsim-spike-generators.so
+#        carlsim.so
+#        carlsim-spike-generators.so
+        carlsim
+        carlsim-spike-generators
 
         ${Boost_LIBRARIES}
 )
