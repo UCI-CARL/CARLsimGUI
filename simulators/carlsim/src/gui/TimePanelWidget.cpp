@@ -44,7 +44,7 @@ QString formatTimeDiff(unsigned long long timeDiffMs)
 	static char buf[BufSize];
 #ifdef _MSC_VER // MSVC toolchain 	
 	sprintf_s<BufSize>(buf, "%02d.%01d  %02d:%02d:%02d.%03d", weeks, dayOfWeek, h, m, s, ms);
-#else  # Linux Pi5
+#else  // Linux Pi5
 	snprintf(buf, BufSize, "%02d.%01d  %02d:%02d:%02d.%03d", weeks, dayOfWeek, h, m, s, ms);
 #endif 
 

@@ -15,8 +15,9 @@ typedef unsigned backend_t;
 /*! The call resulted in no errors */
 #define CARLSIM_OK 0
 
-/*! The CUDA driver reported an error */
-#define CARLSIM_ERROR 1
+// Warning redefinition
+///*! The CUDA driver reported an error */
+//#define CARLSIM_ERROR 1
 
 
 
@@ -117,4 +118,4 @@ carlsim_cuda_device_description(unsigned device, const char** descr);
 }
 
 
-#endif CARLSIMTYPES
+#endif //CARLSIMTYPES
