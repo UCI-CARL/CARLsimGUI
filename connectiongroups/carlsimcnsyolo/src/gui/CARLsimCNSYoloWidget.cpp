@@ -146,7 +146,7 @@ bool CARLsimCNSYoloWidget::checkInputs(){
 ConnectionGroupInfo CARLsimCNSYoloWidget::getConnectionGroupInfo(){
 
 	// references to neuron groups
-	QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once
+	const QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once
 
 	unsigned int synapseTypeID = getSynapseTypeID(synapseTypeCombo->currentText());
 
