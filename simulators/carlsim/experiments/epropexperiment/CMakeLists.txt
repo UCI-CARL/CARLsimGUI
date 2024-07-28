@@ -79,7 +79,7 @@ target_link_libraries(epropexperiment PUBLIC
 
 install(TARGETS epropexperiment
         EXPORT epropexperiment
-        RUNTIME 
+        LIBRARY 
             DESTINATION plugins/simulation/carlsimexperiments
             COMPONENT epropexperiment
 )      

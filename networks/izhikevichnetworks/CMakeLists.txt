@@ -50,7 +50,7 @@ target_link_libraries(izhikevichetworks PUBLIC
 
 install(TARGETS izhikevichetworks
         EXPORT izhikevichetworks
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/networks
             COMPONENT izhikevichetworks
 )      

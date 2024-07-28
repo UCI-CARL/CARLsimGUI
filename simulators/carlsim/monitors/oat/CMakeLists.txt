@@ -119,7 +119,7 @@ target_link_libraries(carlsimoat PUBLIC
 
 install(TARGETS carlsimoat
         EXPORT carlsimoat
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/simulation/carlsimmonitors
             COMPONENT carlsimoat
 )      

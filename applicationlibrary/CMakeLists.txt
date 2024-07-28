@@ -212,16 +212,16 @@ set_property(TARGET carlsimguiapplication PROPERTY PUBLIC_HEADER
 install(TARGETS carlsimguiapplication
         EXPORT carlsimguiapplication
         RUNTIME 
-            DESTINATION bin 
+            DESTINATION $<$<CONFIG:Debug>:debug/>bin 
             COMPONENT carlsimguiapplication
         LIBRARY
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT carlsimguiapplication
         ARCHIVE
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT carlsimguiapplication
         PUBLIC_HEADER
-            DESTINATION include
+            DESTINATION $<$<CONFIG:Debug>:debug/>include
             COMPONENT carlsimguiapplication
 )      
     

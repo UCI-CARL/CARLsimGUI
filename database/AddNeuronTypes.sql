@@ -49,7 +49,7 @@ CREATE TABLE IzhikevichExcitatoryNeuronParameters (
 	seed DOUBLE DEFAULT 45 COMMENT 'Seed for the random number generator. Will be rounded to the nearest integer. If the seed is <=0 the random number generator will be seeded using the time.',
 	
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK2(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -69,7 +69,7 @@ CREATE TABLE IzhikevichInhibitoryNeuronParameters (
 	seed DOUBLE DEFAULT 45 COMMENT 'Seed for the random number generator. Will be rounded to the nearest integer. If the seed is <=0 the random number generator will be seeded using the time.',
 	
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK3(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -82,7 +82,7 @@ CREATE TABLE WeightlessNeuronParameters (
 	Generalization DOUBLE DEFAULT 1.0 COMMENT 'Degree of match using hamming distance with incoming pattern',
 
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK4(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -106,7 +106,7 @@ CREATE TABLE DopaminergicNeuronParameters (
   da_tau DOUBLE DEFAULT 0.0 COMMENT 'decay rate of the DA concentration', 
 
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK5(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -119,7 +119,7 @@ CREATE TABLE CustomExcitatoryNeuronParameters (
   /*reserved, no generic sofar, its custom..*/
 
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK6(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -133,7 +133,7 @@ CREATE TABLE CustomInhibitoryNeuronParameters (
   /*reserved, no generic sofar, its custom..*/
 
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK7(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -150,7 +150,7 @@ CREATE TABLE PoissonExcitatoryNeuronParameters (
   Rates TEXT COMMENT ' blank separated list of rates, length > neuron group trunc, < => repeated filled up',
 
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK8(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -167,6 +167,6 @@ CREATE TABLE PoissonInhibitoryNeuronParameters (
   Rates TEXT COMMENT ' blank separated list of rates, length > neuron group trunc, < => repeated filled up',
 
 	PRIMARY KEY (NeuronGroupID),
-	FOREIGN KEY NeuronGroupID_FK(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
+	FOREIGN KEY NeuronGroupID_FK9(NeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;

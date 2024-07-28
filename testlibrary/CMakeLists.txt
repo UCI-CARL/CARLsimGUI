@@ -34,13 +34,13 @@ install(TARGETS carlsimguitest
             DESTINATION $<$<CONFIG:Debug>:debug/>bin 
             COMPONENT carlsimguitest
         LIBRARY
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT carlsimguitest
         ARCHIVE
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT carlsimguitest
         PUBLIC_HEADER
-            DESTINATION include
+            DESTINATION $<$<CONFIG:Debug>:debug/>include
             COMPONENT carlsimguitest
 )      
 

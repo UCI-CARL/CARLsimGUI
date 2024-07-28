@@ -24,7 +24,7 @@ CREATE TABLE IzhikevichSynapseParameters (
 	weight_factor DOUBLE DEFAULT 10.0 COMMENT 'Factor by which weights are multiplied for the simulation. When set to 10 it typically takes two synchronous spikes to fire an Izhikevich neuron.',
 
 	PRIMARY KEY (ConnectionGroupID),
-	FOREIGN KEY ConnectionGroupID_FK(ConnectionGroupID) REFERENCES ConnectionGroups(ConnectionGroupID) ON DELETE CASCADE
+	FOREIGN KEY ConnectionGroupID_FK2(ConnectionGroupID) REFERENCES ConnectionGroups(ConnectionGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -36,7 +36,7 @@ CREATE TABLE WeightlessSynapseParameters (
 	ConnectionGroupID SMALLINT UNSIGNED NOT NULL,
 
 	PRIMARY KEY (ConnectionGroupID),
-	FOREIGN KEY ConnectionGroupID_FK(ConnectionGroupID) REFERENCES ConnectionGroups(ConnectionGroupID) ON DELETE CASCADE
+	FOREIGN KEY ConnectionGroupID_FK3(ConnectionGroupID) REFERENCES ConnectionGroups(ConnectionGroupID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 

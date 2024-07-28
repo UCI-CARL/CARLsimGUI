@@ -50,7 +50,7 @@ target_link_libraries(random1 PUBLIC
 
 install(TARGETS random1
         EXPORT random1
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/connections
             COMPONENT random1
 )      

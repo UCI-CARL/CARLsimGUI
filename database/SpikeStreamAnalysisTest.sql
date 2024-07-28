@@ -69,7 +69,7 @@ CREATE TABLE ClusterLiveliness (
 
 	PRIMARY KEY (ClusterID),
 	INDEX AnalysisIDIndex(AnalysisID),
-	FOREIGN KEY AnalysisID_FK(AnalysisID) REFERENCES Analyses(AnalysisID) ON DELETE CASCADE
+	FOREIGN KEY AnalysisID_FK2(AnalysisID) REFERENCES Analyses(AnalysisID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;
 
@@ -83,7 +83,7 @@ CREATE TABLE NeuronLiveliness (
 
 	PRIMARY KEY (NeuronID, AnalysisID, TimeStep),
 	INDEX AnalysisIDIndex(AnalysisID),
-	FOREIGN KEY AnalysisID_FK(AnalysisID) REFERENCES Analyses(AnalysisID) ON DELETE CASCADE,
+	FOREIGN KEY AnalysisID_FK3(AnalysisID) REFERENCES Analyses(AnalysisID) ON DELETE CASCADE,
 	FOREIGN KEY NeuronID_FK(NeuronID) REFERENCES SpikeStreamNetworkTest.Neurons(NeuronID) ON DELETE CASCADE
 )
 ENGINE=InnoDB;

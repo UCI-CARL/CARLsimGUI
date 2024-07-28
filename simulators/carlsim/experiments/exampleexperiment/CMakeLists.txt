@@ -55,7 +55,7 @@ target_link_libraries(exampleexperiement PUBLIC
 
 install(TARGETS exampleexperiement
         EXPORT exampleexperiement
-        RUNTIME 
+        LIBRARY 
             DESTINATION plugins/simulation/carlsimexperiments
             COMPONENT exampleexperiement
 )      

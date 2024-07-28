@@ -55,7 +55,7 @@ target_link_libraries(vteexperiment PUBLIC
 
 install(TARGETS vteexperiment
         EXPORT vteexperiment
-        RUNTIME 
+        LIBRARY 
             DESTINATION plugins/simulation/carlsimexperiments
             COMPONENT vteexperiment
 )      

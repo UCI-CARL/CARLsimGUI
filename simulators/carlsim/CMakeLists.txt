@@ -197,7 +197,7 @@ target_link_libraries(carlsimwrapper PUBLIC
 
 install(TARGETS carlsimwrapper
         EXPORT carlsimwrapper
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/simulation
             COMPONENT carlsimwrapper
 )      

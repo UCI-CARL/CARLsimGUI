@@ -182,16 +182,16 @@ set_property(TARGET carlsimguilib PROPERTY PUBLIC_HEADER
 install(TARGETS carlsimguilib
         EXPORT carlsimguilib
         RUNTIME 
-            DESTINATION bin 
+            DESTINATION $<$<CONFIG:Debug>:debug/>bin 
             COMPONENT carlsimguilib
         LIBRARY
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT carlsimguilib
         ARCHIVE
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT carlsimguilib
         PUBLIC_HEADER
-            DESTINATION include
+            DESTINATION $<$<CONFIG:Debug>:debug/>include
             COMPONENT carlsimguilib
 )      
     

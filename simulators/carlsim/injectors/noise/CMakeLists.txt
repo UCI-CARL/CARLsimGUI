@@ -102,7 +102,7 @@ target_link_libraries(noiseinjector PUBLIC
 
 install(TARGETS noiseinjector
         EXPORT noiseinjector
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/simulation/carlsiminjectors
             COMPONENT noiseinjector
 )      

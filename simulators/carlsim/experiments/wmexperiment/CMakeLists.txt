@@ -69,7 +69,7 @@ target_link_libraries(wmexperiment PUBLIC
 
 install(TARGETS wmexperiment
         EXPORT wmexperiment
-        RUNTIME 
+        LIBRARY 
             DESTINATION plugins/simulation/carlsimexperiments
             COMPONENT wmexperiment
 )      

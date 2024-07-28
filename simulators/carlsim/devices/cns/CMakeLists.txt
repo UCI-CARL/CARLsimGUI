@@ -97,12 +97,13 @@ target_link_libraries(cns PUBLIC
 	carlsim
 
         ${Boost_LIBRARIES}
-        CARLsimIO$<$<CONFIG:Debug>:d>
+        #CARLsimIO$<$<CONFIG:Debug>:d>
+        CARLsimIO
 )
 
 install(TARGETS cns
         EXPORT cns
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/simulation/carlsimdevices
             COMPONENT cns
 )      

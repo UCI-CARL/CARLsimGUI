@@ -33,8 +33,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #find_package(Qt5 5.15.13 COMPONENTS Core Xml Gui Sql Test Widgets OpenGL PrintSupport REQUIRED)
 find_package(Qt5 5.15 COMPONENTS Core Xml Gui Sql Test Widgets OpenGL PrintSupport REQUIRED)
 
-add_compile_definitions(WIN32_SPIKESTREAM)
-
+if(UNIX)
+  add_compile_definitions(LINUX_SPIKESTREAM)
+else()
+  add_compile_definitions(WIN32_SPIKESTREAM)
+endif()
 
 # core system 
 add_subdirectory(library)

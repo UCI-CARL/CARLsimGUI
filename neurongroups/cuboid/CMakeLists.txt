@@ -51,7 +51,7 @@ target_link_libraries(cuboid PUBLIC
 
 install(TARGETS cuboid
         EXPORT cuboid
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/neurons
             COMPONENT cuboid
 )      

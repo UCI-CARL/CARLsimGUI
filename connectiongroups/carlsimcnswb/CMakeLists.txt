@@ -51,7 +51,7 @@ target_link_libraries(carlsimcnswb PUBLIC
 
 install(TARGETS carlsimcnswb
         EXPORT carlsimcnswb
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/connections
             COMPONENT carlsimcnswb
 )      

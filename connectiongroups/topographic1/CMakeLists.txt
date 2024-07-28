@@ -51,7 +51,7 @@ target_link_libraries(topographic1 PUBLIC
 
 install(TARGETS topographic1
         EXPORT topographic1
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/connections 
             COMPONENT topographic1
 )      

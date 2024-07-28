@@ -58,13 +58,13 @@ void PluginManager::loadPlugins(){
 	//Filter plugin appropriately depending on the operating system
 	QStringList filters;
 	#ifdef LINUX32_SPIKESTREAM
-		filters << "*.so";
+		filters << ".so";
 	#endif
 	#ifdef WIN32_SPIKESTREAM
 		filters << pluginFilter + ".dll"; // enable filtering of specific plugins
 	#endif
 	#ifdef MAC32_SPIKESTREAM
-		filters << "*.dylib";
+		filters << ".dylib";
 	#endif
 	pluginDirectory.setNameFilters(filters);
 
@@ -116,10 +116,11 @@ void PluginManager::loadPlugins(){
 		}
 	}
 
+	// TODO LN2024 filter not .so .. to prevent attempt to load from directories current, parent, siblings
 	//Throw exception if we have failed to load some or all of the plugins.
-	if(!failureMsg.isEmpty()){
-		throw SpikeStreamException("Failed to obtain required functions from librarie(s): " + failureMsg);
-	}
+//	if(!failureMsg.isEmpty()){
+//		throw SpikeStreamException("Failed to obtain required functions from librarie(s): " + failureMsg);
+//	}
 }
 
 

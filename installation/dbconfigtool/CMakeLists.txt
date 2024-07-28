@@ -40,16 +40,16 @@ set_property(TARGET carlsimguilib PROPERTY PUBLIC_HEADER
 install(TARGETS dbconfigtool
         EXPORT dbconfigtool
         RUNTIME 
-            DESTINATION bin 
+            DESTINATION $<$<CONFIG:Debug>:debug/>bin 
             COMPONENT dbconfigtool
         LIBRARY
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT dbconfigtool
         ARCHIVE
-            DESTINATION lib
+            DESTINATION $<$<CONFIG:Debug>:debug/>lib
             COMPONENT dbconfigtool
         PUBLIC_HEADER
-            DESTINATION include
+            DESTINATION $<$<CONFIG:Debug>:debug/>include
             COMPONENT dbconfigtool
 )      
 

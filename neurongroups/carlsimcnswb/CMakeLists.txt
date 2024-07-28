@@ -57,7 +57,7 @@ target_link_libraries(carlsimcnswb0 PUBLIC
 
 install(TARGETS carlsimcnswb0
         EXPORT carlsimcnswb0
-        RUNTIME 
+        LIBRARY 
             DESTINATION $<$<CONFIG:Debug>:debug/>plugins/neurons
             COMPONENT carlsimcnswb0
 )      

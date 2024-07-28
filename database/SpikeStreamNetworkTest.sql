@@ -99,7 +99,7 @@ CREATE TABLE ConnectionGroups (
 	PRIMARY KEY (ConnectionGroupID),
 	INDEX NetworkIDIndex(NetworkID),
 
-    FOREIGN KEY NetworkID_FK(NetworkID) REFERENCES Networks(NetworkID) ON DELETE CASCADE,
+    FOREIGN KEY NetworkID_FK2(NetworkID) REFERENCES Networks(NetworkID) ON DELETE CASCADE,
     FOREIGN KEY FromNeuronGroupID_FK(FromNeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE,
     FOREIGN KEY ToNeuronGroupID_FK(ToNeuronGroupID) REFERENCES NeuronGroups(NeuronGroupID) ON DELETE CASCADE,
     FOREIGN KEY SynapseTypeID_FK(SynapseTypeID) REFERENCES SynapseTypes(SynapseTypeID) ON DELETE NO ACTION
