@@ -59,10 +59,10 @@ add_subdirectory(connectiongroups/topographic1)
 if(CARLSIMGUI_USES_CARLSIMIO)
   add_subdirectory(neurongroups/carlsimcnswb) 
   add_subdirectory(connectiongroups/carlsimcnswb)
+  add_subdirectory(connectiongroups/carlsimcnsyolo)
 endif()   
 add_subdirectory(networks/izhikevichnetworks)
 
-  
 if(CARLSIMGUI_USES_CARLSIM)  
    add_subdirectory(simulators/carlsim) 
    add_subdirectory(simulators/carlsim/test)
