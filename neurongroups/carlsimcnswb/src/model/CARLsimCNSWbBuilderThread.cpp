@@ -40,7 +40,8 @@ void CARLsimCNSWbBuilderThread::prepareAddNeuronGroups(
 				const NeuronParam_t &ps,
 				const NeuronParam_t &ls, 
 				const NeuronParam_t &tof,
-				const NeuronParam_t &vel
+				const NeuronParam_t &vel,
+				const NeuronParam_t& mot
 
 	){
 	//Run some checks
@@ -320,6 +321,43 @@ void CARLsimCNSWbBuilderThread::createNeuronGroups(){
 		vector<tuple<double, double>> vel = { {4.0, 8.0}, {4.0, 0.0} };
 
 		for (auto iter = vel.begin(); iter < vel.end(); iter++) {
+			auto x = xStart + get<0>(*iter);
+			auto y = yStart + get<1>(*iter);
+			for (auto z = zStart; z < zStart + 2; z++) {
+				group->addNeuron(x, y, z);
+				totalNumberOfNeurons++;
+			}
+		}
+
+		newNeuronGroupList.append(group);
+	}
+
+	zStart = _zStart;
+	zStart += 1;
+	// mot Neurons  
+	{
+		QString name = QString("%1.%2").arg(prefix).arg("mot"); // 
+		QString description = QString("%1 %2 (%3)").arg("Pre").arg("Motor Cortex").arg("mot");
+		paramMap.clear();
+		paramMap["Conductances"] = 0.; // false
+		//paramMap["NM"] = mot.nm; // nm index to be translated by CARLsim wrapper, 
+		NeuronGroup* group = new NeuronGroup(NeuronGroupInfo(0, name, description, paramMap, excitatoryNeuron));
+
+		// set neuron param for the group itself
+		paramMap.clear();
+		vel.setExcitatoryParameters(paramMap);
+		group->setParameters(paramMap);
+
+		// only one security is supported
+		paramMap["x"] = xStart;
+		paramMap["y"] = yStart;
+		paramMap["z"] = zStart - 5;
+
+
+		// orintation transfored to movements with sensor x/y    x-axis --> left to right 
+		vector<tuple<double, double>> mot = { {1.0, 8.0+2.0}, {1.0, -2.0} };
+
+		for (auto iter = mot.begin(); iter < mot.end(); iter++) {
 			auto x = xStart + get<0>(*iter);
 			auto y = yStart + get<1>(*iter);
 			for (auto z = zStart; z < zStart + 2; z++) {

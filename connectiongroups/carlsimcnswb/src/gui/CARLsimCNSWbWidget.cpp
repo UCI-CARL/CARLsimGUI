@@ -67,6 +67,11 @@ CARLsimCNSWbWidget::CARLsimCNSWbWidget(QWidget* parent) : AbstractConnectionWidg
 	defaults["ps2vel_w_factor"] = "100.0";
 	defaults["ps2vel_delays"] = "1";
 
+	// decouple, state requires phasic bursting to be activated reliable
+	defaults["mot2vel_weights"] = "0.8";
+	defaults["mot2vel_w_factor"] = "100.0";
+	defaults["mot2vel_delays"] = "1";
+
 	updateTemplate(0);
 
 }
@@ -118,6 +123,9 @@ bool CARLsimCNSWbWidget::checkInputs(){
 	builder->ps2vel.w_factor = ps2vel.weightFactorSpin->value();
 	builder->ps2vel.delays = ps2vel.delaysSpin->value();
 
+	builder->mot2vel.weights = mot2vel.weightsSpin->value();
+	builder->mot2vel.w_factor = mot2vel.weightFactorSpin->value();
+	builder->mot2vel.delays = mot2vel.delaysSpin->value();
 
 
 	//Inputs are ok
@@ -191,7 +199,8 @@ void CARLsimCNSWbWidget::buildGUI(QVBoxLayout* mainVBox){
 
 	ps2vel.addGroup("PS -> VEL", gridLayout2, configLoader);
 
-	
+	mot2vel.addGroup("MOT-> VEL", gridLayout2, configLoader);
+
 	groupBox2->setLayout(gridLayout2);
 	mainVBox->addWidget(groupBox2);
 
@@ -323,6 +332,10 @@ void CARLsimCNSWbWidget::updateTemplate(int i) {
 	ps2vel.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("ps2vel_weights", defaults["ps2vel_weights"])));
 	ps2vel.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("ps2vel_w_factor", defaults["ps2vel_w_factor"])));
 	ps2vel.delaysSpin->setValue(Util::getInt(configLoader->getParameter("ps2vel_delays", defaults["ps2vel_delays"])));
+
+	mot2vel.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("mot2vel_weights", defaults["mot2vel_weights"])));
+	mot2vel.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("mot2vel_w_factor", defaults["mot2vel_w_factor"])));
+	mot2vel.delaysSpin->setValue(Util::getInt(configLoader->getParameter("mot2vel_delays", defaults["mot2vel_delays"])));
 
 
 

@@ -29,7 +29,7 @@ namespace spikestream {
 				//ConnectionParam_t(float weights, float w_factor, float delays) :
 				//	weights(weights), w_factor(w_factor), delays(delays) {};
 				ConnectionParam_t() : active(false), weights(.0f), w_factor(.0f), delays(.0f) {};
-			} tof2vel, ps2vel;
+			} tof2vel, ps2vel, mot2vel;
 
 		protected:
 			void buildConnectionGroup();
@@ -45,10 +45,14 @@ namespace spikestream {
 
 			NeuronGroup* velGroup;
 
+			NeuronGroup* motGroup;
+
 			QVector<unsigned int> tof_ids;
 			QVector<unsigned int> ps_ids;
 
 			QVector<unsigned int> vel_ids;
+
+			QVector<unsigned int> mot_ids;
 
 			/*! Connection groups to be added, stored as a list */
 			QList<ConnectionGroup*> conGrpList;

@@ -157,6 +157,28 @@ void CARLsimCNSWbBuilderThread::buildConnectionGroup(){
 	}
 
 
+	// Connect tof -> vel 
+	{
+		connectionGroupInfo.setDescription("mot -> vel");   //  pre,pos name 
+		connectionGroupInfo.setFromNeuronGroupID(motGroup->getID());
+		connectionGroupInfo.setToNeuronGroupID(velGroup->getID());
+		newConnectionGroup = new ConnectionGroup(connectionGroupInfo);
+		QHash<QString, double> conParamMap = defaultParameterMaps;
+		conParamMap["weight_factor"] = mot2vel.w_factor;
+		newConnectionGroup->setParameters(conParamMap);
+
+		// Forward at max speed
+		for(int i=0; i<4; i++)
+			newConnectionGroup->addConnection(mot_ids[i], vel_ids[i], mot2vel.delays, mot2vel.weights);
+
+		//newConnectionGroup->addConnection(mot_ids[0], vel_ids[0], mot2vel.delays, mot2vel.weights);
+		//newConnectionGroup->addConnection(mot_ids[1], vel_ids[1], mot2vel.delays, mot2vel.weights);
+		//newConnectionGroup->addConnection(mot_ids[2], vel_ids[2], mot2vel.delays, mot2vel.weights);
+		//newConnectionGroup->addConnection(mot_ids[3], vel_ids[3], mot2vel.delays, mot2vel.weights);
+
+		conGrpList.append(newConnectionGroup);
+	}
+
 }
 
 
@@ -179,10 +201,14 @@ void CARLsimCNSWbBuilderThread::checkParameters() {
 
 	velGroup = groupsMap["ctx.vel"];
 
+	motGroup = groupsMap["ctx.mot"];
+
 	assert(tofGroup);
 	assert(psGroup);
 
 	assert(velGroup);
+
+	assert(motGroup);
 
 	// ps, ls  --> Data 
 	//vector<int> perm_dst = { 4, 6, 7, 5, 3, 1, 0, 2 };
@@ -192,6 +218,9 @@ void CARLsimCNSWbBuilderThread::checkParameters() {
 
 	// vel
 	vector<int> perm_vel = { 0, 2, 1, 3 };
+
+	// mot
+	vector<int> perm_mot = { 0, 2, 1, 3 };
 
 	// get ids from dlPFC
 	auto getIds = [&](NeuronGroup* neurGrp, QVector<unsigned int>& ids) {
@@ -214,6 +243,9 @@ void CARLsimCNSWbBuilderThread::checkParameters() {
 			else
 			if(neurGrp == velGroup)
 				i = perm_vel[i]; // map index to z 
+			else
+			if (neurGrp == motGroup)
+				i = perm_mot[i]; // map index to z 
 
 			ids[i] = iter.key(); 
  
@@ -244,5 +276,7 @@ void CARLsimCNSWbBuilderThread::checkParameters() {
 	getIdsPos(psGroup, ps_ids);
 
 	getIds(velGroup, vel_ids);
+
+	getIds(motGroup, mot_ids);
 
 }

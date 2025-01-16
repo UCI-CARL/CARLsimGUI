@@ -29,7 +29,7 @@ namespace spikestream {
 				void setInhibitoryParameters(QHash<QString, double>& parameterMap);
 				NeuronParam_t(float a, float b, float c, float d) : a(a), b(b), c(c), d(d) {};
 				NeuronParam_t() : a(.0f), b(.0f), c(.0f), d(.0f) {};
-			} ps, ls, tof, whls, vel, led, rgb, frnt, body, accl, gyro; 
+			} ps, ls, tof, whls, vel, led, rgb, frnt, body, accl, gyro, mot; 
 			//rn, bfb, lc, sn, vta, na;
 
 			//void prepareAddNeuronGroups(const QString& name, const QString& description, QHash<QString, double>& paramMap);
@@ -45,8 +45,9 @@ namespace spikestream {
 				const NeuronParam_t &ps,
 				const NeuronParam_t &ls,
 				const NeuronParam_t &tof,
-				const NeuronParam_t &vel
-			);
+				const NeuronParam_t &vel,
+				const NeuronParam_t &mot
+				);
 
 			void run();
 

@@ -63,7 +63,7 @@ namespace spikestream {
 				QDoubleSpinBox* cSpin;
 				QDoubleSpinBox* dSpin;
 				void addGroup(QString name, QGridLayout* gridLayout, ConfigLoader* configLoader); // Group Content
-			} ps, ls, tof, whls, vel, led, rgb, frnt, body, accl, gyro;
+			} ps, ls, tof, whls, vel, led, rgb, frnt, body, accl, gyro, mot;
 		
 				//rn, bfb, lc, sn, vta, na;    
 

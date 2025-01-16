@@ -52,7 +52,7 @@ namespace spikestream {
 				QDoubleSpinBox* weightFactorSpin; // CUBA/COBA adaption
 				QSpinBox* delaysSpin;
 				void addGroup(QString name, QGridLayout* gridLayout, ConfigLoader* configLoader, bool inhib = false ); // Group Content
-			} tof2vel, ps2vel;
+			} tof2vel, ps2vel, mot2vel;
 
 
 			//=====================  VARIABLES  =====================

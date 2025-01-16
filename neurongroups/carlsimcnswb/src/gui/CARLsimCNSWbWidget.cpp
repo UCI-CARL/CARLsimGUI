@@ -126,6 +126,7 @@ CARLsimCNSWbWidget::CARLsimCNSWbWidget(QWidget* parent) : QWidget(parent) {
 	//rgb
 	//frnt
 	//body
+	mot.addGroup("Pre Motor Cortex (mot)", gridLayout, configLoader);
 
 	groupBox->setLayout(gridLayout);
 	mainVBox->addWidget(groupBox);
@@ -297,6 +298,13 @@ CARLsimCNSWbWidget::CARLsimCNSWbWidget(QWidget* parent) : QWidget(parent) {
 	defaults["vel_d"] = "8.0";
 	//defaults["vel_nm"] = "1";  // SE
 
+	// mot:  Motor Cortex
+	defaults["mot_a"] = "0.02";
+	defaults["mot_b"] = "0.2";
+	defaults["mot_c"] = "-65.0";
+	defaults["mot_d"] = "8.0";
+	//defaults["mot_nm"] = "1";  // SE
+
 	updateTemplate(0);
 
 }
@@ -365,7 +373,9 @@ void CARLsimCNSWbWidget::addButtonClicked(){
 			CARLsimCNSWbBuilderThread::NeuronParam_t(
 				tof.aSpin->value(), tof.bSpin->value(), tof.cSpin->value(), tof.dSpin->value()),
 			CARLsimCNSWbBuilderThread::NeuronParam_t(
-				vel.aSpin->value(), vel.bSpin->value(), vel.cSpin->value(), vel.dSpin->value())
+				vel.aSpin->value(), vel.bSpin->value(), vel.cSpin->value(), vel.dSpin->value()),
+			CARLsimCNSWbBuilderThread::NeuronParam_t(
+				mot.aSpin->value(), mot.bSpin->value(), mot.cSpin->value(), mot.dSpin->value())
 
 		);
 		progressDialog = new QProgressDialog("Building WM neuron groups", "Cancel", 0, 100, this, Qt::CustomizeWindowHint);
@@ -450,6 +460,12 @@ void CARLsimCNSWbWidget::updateTemplate(int i) {
 	vel.bSpin->setValue(Util::getFloat(configLoader->getParameter("vel_b", defaults["vel_b"])));
 	vel.cSpin->setValue(Util::getFloat(configLoader->getParameter("vel_c", defaults["vel_c"])));
 	vel.dSpin->setValue(Util::getFloat(configLoader->getParameter("vel_d", defaults["vel_d"])));
+
+	//mot.nmCombo->setCurrentIndex(Util::getInt(configLoader->getParameter("mot_nm", defaults["mot_nm"])));
+	mot.aSpin->setValue(Util::getFloat(configLoader->getParameter("mot_a", defaults["mot_a"])));
+	mot.bSpin->setValue(Util::getFloat(configLoader->getParameter("mot_b", defaults["mot_b"])));
+	mot.cSpin->setValue(Util::getFloat(configLoader->getParameter("mot_c", defaults["mot_c"])));
+	mot.dSpin->setValue(Util::getFloat(configLoader->getParameter("mot_d", defaults["mot_d"])));
 
 };
 
