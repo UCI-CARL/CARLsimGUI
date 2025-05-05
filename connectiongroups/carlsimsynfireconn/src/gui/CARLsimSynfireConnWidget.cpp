@@ -1,9 +1,9 @@
 //SpikeStream includes
-#include "CARLsimCNSWbWidget.h"
+#include "CARLsimSynfireConnWidget.h"
 #include "Globals.h"
 #include "ConnectionGroup.h"
 #include "ConnectionGroupInfo.h"
-#include "CARLsimCNSWbBuilderThread.h"
+#include "CARLsimSynfireConnBuilderThread.h"
 #include "SpikeStreamException.h"
 #include "Util.h"
 using namespace spikestream;
@@ -20,20 +20,20 @@ using namespace spikestream;
 
 //Functions for dynamic library loading
 extern "C" {
-	/*! Creates a CARLsimCNSWbWidget class when library is dynamically loaded. */
+	/*! Creates a CARLsimSynfireConnWidget class when library is dynamically loaded. */
 	_MSC_DLL_API QWidget* getClass(){
-		return new CARLsimCNSWbWidget();
+		return new CARLsimSynfireConnWidget();
 	}
 
 	/*! Returns a descriptive name for this widget */
 	_MSC_DLL_API QString getName(){
-		return QString("CARLsimCNSWb connection group builder");
+		return QString("CARLsimSynfireConn connection group builder");
 	}
 }
 
 
 /*! Constructor */
-CARLsimCNSWbWidget::CARLsimCNSWbWidget(QWidget* parent) : AbstractConnectionWidget(parent) {
+CARLsimSynfireConnWidget::CARLsimSynfireConnWidget(QWidget* parent) : AbstractConnectionWidget(parent) {
 	//Construct GUI
 	QVBoxLayout* mainVBox = new QVBoxLayout();
 	buildGUI(mainVBox);
@@ -48,29 +48,29 @@ CARLsimCNSWbWidget::CARLsimCNSWbWidget(QWidget* parent) : AbstractConnectionWidg
 	mainVBox->addLayout(addButtonBox);
 
 	//Create connection builder
-	connectionBuilder = new CARLsimCNSWbBuilderThread();
+	connectionBuilder = new CARLsimSynfireConnBuilderThread();
 	connect (connectionBuilder, SIGNAL(finished()), this, SLOT(builderThreadFinished()));
 	connect(connectionBuilder, SIGNAL( progress(int, int, QString) ), this, SLOT( updateProgress(int, int, QString) ), Qt::QueuedConnection);
 
 
 	//Set Defaults for Config File applying the same names	
 
-	defaults["prefix"] = "ctx";  // Webots
+	defaults["prefix"] = "syn";  // Webots
 
 	// decouple, state requires phasic bursting to be activated reliable
-	defaults["tof2vel_weights"] = "0.8";
-	defaults["tof2vel_w_factor"] = "100.0";
-	defaults["tof2vel_delays"] = "1";
+	defaults["exc2exc_weights"] = "0.01";
+	defaults["exc2exc_w_factor"] = "100.0";
+	defaults["exc2exc_delays"] = "10";
 
 	// decouple, state requires phasic bursting to be activated reliable
-	defaults["ps2vel_weights"] = "0.6";
-	defaults["ps2vel_w_factor"] = "100.0";
-	defaults["ps2vel_delays"] = "1";
+	defaults["exc2inh_weights"] = "0.035";  // effective inhibition, ineffective with 0.01
+	defaults["exc2inh_w_factor"] = "100.0";
+	defaults["exc2inh_delays"] = "10";
 
 	// decouple, state requires phasic bursting to be activated reliable
-	defaults["mot2vel_weights"] = "0.6";
-	defaults["mot2vel_w_factor"] = "100.0";
-	defaults["mot2vel_delays"] = "1";
+	defaults["inh2exc_weights"] = "-0.02";
+	defaults["inh2exc_w_factor"] = "100.0";
+	defaults["inh2exc_delays"] = "2";  // + 1ms of the FS = 10ms
 
 	updateTemplate(0);
 
@@ -78,7 +78,7 @@ CARLsimCNSWbWidget::CARLsimCNSWbWidget(QWidget* parent) : AbstractConnectionWidg
 
 
 /*! Destructor */
-CARLsimCNSWbWidget::~CARLsimCNSWbWidget(){
+CARLsimSynfireConnWidget::~CARLsimSynfireConnWidget(){
 }
 
 
@@ -87,7 +87,7 @@ CARLsimCNSWbWidget::~CARLsimCNSWbWidget(){
 /*----------------------------------------------------------*/
 
 //Overridden
-bool CARLsimCNSWbWidget::checkInputs(){
+bool CARLsimSynfireConnWidget::checkInputs(){
 	//Fix description
 	if(descriptionEdit->text().isEmpty())
 		descriptionEdit->setText("Undescribed");
@@ -108,25 +108,24 @@ bool CARLsimCNSWbWidget::checkInputs(){
 		checkInput(seedEdit, "Random seed has not been set.");
 	}
 	catch(SpikeStreamException& ex){
-		QMessageBox::warning(this, "CARLsimCNS Webots Connection Group Builder", ex.getMessage(), QMessageBox::Ok);
+		QMessageBox::warning(this, "CARLsim Synfire Connection Group Builder", ex.getMessage(), QMessageBox::Ok);
 		return false;
 	}
 
 	// dirty
-	CARLsimCNSWbBuilderThread* builder = (CARLsimCNSWbBuilderThread*)connectionBuilder;
+	CARLsimSynfireConnBuilderThread* builder = (CARLsimSynfireConnBuilderThread*)connectionBuilder;
 
-	builder->tof2vel.weights = tof2vel.weightsSpin->value();
-	builder->tof2vel.w_factor = tof2vel.weightFactorSpin->value();
-	builder->tof2vel.delays = tof2vel.delaysSpin->value();
+	builder->exc2exc.weights = exc2exc.weightsSpin->value();
+	builder->exc2exc.w_factor = exc2exc.weightFactorSpin->value();
+	builder->exc2exc.delays = exc2exc.delaysSpin->value();
 
-	builder->ps2vel.weights = ps2vel.weightsSpin->value();
-	builder->ps2vel.w_factor = ps2vel.weightFactorSpin->value();
-	builder->ps2vel.delays = ps2vel.delaysSpin->value();
+	builder->exc2inh.weights = exc2inh.weightsSpin->value();
+	builder->exc2inh.w_factor = exc2inh.weightFactorSpin->value();
+	builder->exc2inh.delays = exc2inh.delaysSpin->value();
 
-	builder->mot2vel.weights = mot2vel.weightsSpin->value();
-	builder->mot2vel.w_factor = mot2vel.weightFactorSpin->value();
-	builder->mot2vel.delays = mot2vel.delaysSpin->value();
-
+	builder->inh2exc.weights = inh2exc.weightsSpin->value();
+	builder->inh2exc.w_factor = inh2exc.weightFactorSpin->value();
+	builder->inh2exc.delays = inh2exc.delaysSpin->value();
 
 	//Inputs are ok
 	return true;
@@ -134,7 +133,7 @@ bool CARLsimCNSWbWidget::checkInputs(){
 
 
 //Override
-ConnectionGroupInfo CARLsimCNSWbWidget::getConnectionGroupInfo(){
+ConnectionGroupInfo CARLsimSynfireConnWidget::getConnectionGroupInfo(){
 
 	// references to neuron groups
 	QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once
@@ -164,15 +163,15 @@ ConnectionGroupInfo CARLsimCNSWbWidget::getConnectionGroupInfo(){
 /*----------------------------------------------------------*/
 
 /*! Builds the graphical components */
-void CARLsimCNSWbWidget::buildGUI(QVBoxLayout* mainVBox){
-	QGroupBox* mainGroupBox = new QGroupBox("CARLsimCNSWb Connection Group Builder", this);
+void CARLsimSynfireConnWidget::buildGUI(QVBoxLayout* mainVBox){
+	QGroupBox* mainGroupBox = new QGroupBox("CARLsimSynfireConn Connection Group Builder", this);
 
 	// Template
 	templateCombo = new QComboBox();
 
 	//placed in a subdirectory as it does not depend on the central spikestream config
 	QFileInfo configFile(ConfigLoader::getConfigFilePath());
-	auto configDir = configFile.absoluteDir().absolutePath() + +"/cnswb";
+	auto configDir = configFile.absoluteDir().absolutePath() + +"/synfire";  // CAUTION: shared file, as must match by name e.g. prefix or column size
 	qDebug() << configDir << endl;
 
 	for (QDirIterator confFileIter(configDir, { "*.config" }, QDir::Files); confFileIter.hasNext(); )
@@ -195,11 +194,12 @@ void CARLsimCNSWbWidget::buildGUI(QVBoxLayout* mainVBox){
 	gridLayout2->setMargin(10);
 	auto column = 1;
 	
-	tof2vel.addGroup("ToF-> VEL", gridLayout2, configLoader);
+	exc2exc.addGroup("Exc[i-1] -> Exc[i]", gridLayout2, configLoader);
 
-	ps2vel.addGroup("PS -> VEL", gridLayout2, configLoader);
+	exc2inh.addGroup("Exc[i-1] -> Inh[i]", gridLayout2, configLoader);
 
-	mot2vel.addGroup("MOT-> VEL", gridLayout2, configLoader);
+	inh2exc.addGroup("Inh[i] -> Exc[i]", gridLayout2, configLoader, true);  
+
 
 	groupBox2->setLayout(gridLayout2);
 	mainVBox->addWidget(groupBox2);
@@ -321,28 +321,25 @@ void CARLsimCNSWbWidget::buildGUI(QVBoxLayout* mainVBox){
 
 
 
-void CARLsimCNSWbWidget::updateTemplate(int i) {
+void CARLsimSynfireConnWidget::updateTemplate(int i) {
 
 	configLoader = configLoaders[i];
 
-	tof2vel.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("tof2vel_weights", defaults["tof2vel_weights"])));
-	tof2vel.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("tof2vel_w_factor", defaults["tof2vel_w_factor"])));
-	tof2vel.delaysSpin->setValue(Util::getInt(configLoader->getParameter("tof2vel_delays", defaults["tof2vel_delays"])));
+	exc2exc.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("exc2exc_weights", defaults["exc2exc_weights"])));
+	exc2exc.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("exc2exc_w_factor", defaults["exc2exc_w_factor"])));
+	exc2exc.delaysSpin->setValue(Util::getInt(configLoader->getParameter("exc2exc_delays", defaults["exc2exc_delays"])));
 
-	ps2vel.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("ps2vel_weights", defaults["ps2vel_weights"])));
-	ps2vel.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("ps2vel_w_factor", defaults["ps2vel_w_factor"])));
-	ps2vel.delaysSpin->setValue(Util::getInt(configLoader->getParameter("ps2vel_delays", defaults["ps2vel_delays"])));
+	exc2inh.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("exc2inh_weights", defaults["exc2inh_weights"])));
+	exc2inh.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("exc2inh_w_factor", defaults["exc2inh_w_factor"])));
+	exc2inh.delaysSpin->setValue(Util::getInt(configLoader->getParameter("exc2inh_delays", defaults["exc2inh_delays"])));
 
-	mot2vel.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("mot2vel_weights", defaults["mot2vel_weights"])));
-	mot2vel.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("mot2vel_w_factor", defaults["mot2vel_w_factor"])));
-	mot2vel.delaysSpin->setValue(Util::getInt(configLoader->getParameter("mot2vel_delays", defaults["mot2vel_delays"])));
-
-
-
+	inh2exc.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("inh2exc_weights", defaults["inh2exc_weights"])));
+	inh2exc.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("inh2exc_w_factor", defaults["inh2exc_w_factor"])));
+	inh2exc.delaysSpin->setValue(Util::getInt(configLoader->getParameter("inh2exc_delays", defaults["inh2exc_delays"])));
 };
 
 //Define the principal cells of CA1
-void CARLsimCNSWbWidget::ConnectionParam_t::addGroup(QString name, QGridLayout* gridLayout, ConfigLoader* configLoader, bool inhib) {
+void CARLsimSynfireConnWidget::ConnectionParam_t::addGroup(QString name, QGridLayout* gridLayout, ConfigLoader* configLoader, bool inhib) {
 
 	int row;
 

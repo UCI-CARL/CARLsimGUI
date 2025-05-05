@@ -75,6 +75,9 @@ void CARLsimCNSWbBuilderThread::run() {
 /*-----                PROTECTED METHODS               -----*/
 /*----------------------------------------------------------*/
 
+
+#define FEAT_FULL_CONNECT
+
 /*! Returns a neuron group whose neurons are constructed according to the
 	parameters in the neuron group info. */
 void CARLsimCNSWbBuilderThread::buildConnectionGroup(){
@@ -95,6 +98,13 @@ void CARLsimCNSWbBuilderThread::buildConnectionGroup(){
 		conParamMap["weight_factor"] = tof2vel.w_factor;
 		newConnectionGroup->setParameters(conParamMap);
 
+#ifdef FEAT_FULL_CONNECT
+		for(int pre=0; pre<2; pre++)
+			for (int post = 0; post < 4; post++) {
+				newConnectionGroup->addConnection(tof_ids[pre], vel_ids[post], tof2vel.delays, tof2vel.weights / 10.0);
+			}
+		conParamMap["Learning"] = 1;  //  STDP parameter 
+#else
 		// Forward at max speed
 		newConnectionGroup->addConnection(tof_ids[1], vel_ids[3], tof2vel.delays, tof2vel.weights);
 		newConnectionGroup->addConnection(tof_ids[1], vel_ids[1], tof2vel.delays, tof2vel.weights);
@@ -103,7 +113,7 @@ void CARLsimCNSWbBuilderThread::buildConnectionGroup(){
 		newConnectionGroup->addConnection(tof_ids[0], vel_ids[1], tof2vel.delays, tof2vel.weights);
 		newConnectionGroup->addConnection(tof_ids[0], vel_ids[2], tof2vel.delays, tof2vel.weights);
 		newConnectionGroup->addConnection(tof_ids[0], vel_ids[3], tof2vel.delays, tof2vel.weights);
-
+#endif
 		conGrpList.append(newConnectionGroup);
 	}
 
@@ -117,6 +127,13 @@ void CARLsimCNSWbBuilderThread::buildConnectionGroup(){
 		conParamMap["weight_factor"] = ps2vel.w_factor;
 		newConnectionGroup->setParameters(conParamMap);
 
+#ifdef FEAT_FULL_CONNECT
+		for (int pre = 0; pre < 8; pre++)
+			for (int post = 0; post < 4; post++) {
+				newConnectionGroup->addConnection(ps_ids[pre], vel_ids[post], ps2vel.delays, ps2vel.weights / 10.0);
+			}
+		conParamMap["Learning"] = 1;  //  STDP parameter 
+#else
 
 		// ps0 right front 15°  => back  update: neutral
 		newConnectionGroup->addConnection(ps_ids[0], vel_ids[0], ps2vel.delays, ps2vel.weights);
@@ -151,7 +168,7 @@ void CARLsimCNSWbBuilderThread::buildConnectionGroup(){
 		newConnectionGroup->addConnection(ps_ids[3], vel_ids[1], ps2vel.delays, ps2vel.weights);
 		// left back
 		newConnectionGroup->addConnection(ps_ids[4], vel_ids[3], ps2vel.delays, ps2vel.weights);
-
+#endif
 
 		conGrpList.append(newConnectionGroup);
 	}
@@ -167,22 +184,27 @@ void CARLsimCNSWbBuilderThread::buildConnectionGroup(){
 		conParamMap["weight_factor"] = mot2vel.w_factor;
 		newConnectionGroup->setParameters(conParamMap);
 
-		// Forward at max speed
-		for(int i=0; i<4; i++)
-			newConnectionGroup->addConnection(mot_ids[i], vel_ids[i], mot2vel.delays, mot2vel.weights);
+		//// 1:1 variant with 4 neurons like VEL
+		//for(int i=0; i<4; i++)
+		//	newConnectionGroup->addConnection(mot_ids[i], vel_ids[i], mot2vel.delays, mot2vel.weights);
 
-		//newConnectionGroup->addConnection(mot_ids[0], vel_ids[0], mot2vel.delays, mot2vel.weights);
-		//newConnectionGroup->addConnection(mot_ids[1], vel_ids[1], mot2vel.delays, mot2vel.weights);
-		//newConnectionGroup->addConnection(mot_ids[2], vel_ids[2], mot2vel.delays, mot2vel.weights);
-		//newConnectionGroup->addConnection(mot_ids[3], vel_ids[3], mot2vel.delays, mot2vel.weights);
+		//// 6 neuron variant with 8 connections
+		//// left
+		newConnectionGroup->addConnection(mot_ids[4], vel_ids[1], mot2vel.delays, mot2vel.weights);  // forward
+		newConnectionGroup->addConnection(mot_ids[2], vel_ids[1], mot2vel.delays, mot2vel.weights);
+		newConnectionGroup->addConnection(mot_ids[2], vel_ids[0], mot2vel.delays, mot2vel.weights);
+		newConnectionGroup->addConnection(mot_ids[0], vel_ids[0], mot2vel.delays, mot2vel.weights);  // backward
+		//right
+		newConnectionGroup->addConnection(mot_ids[5], vel_ids[3], mot2vel.delays, mot2vel.weights);  // forward
+		newConnectionGroup->addConnection(mot_ids[3], vel_ids[3], mot2vel.delays, mot2vel.weights);
+		newConnectionGroup->addConnection(mot_ids[3], vel_ids[2], mot2vel.delays, mot2vel.weights);
+		newConnectionGroup->addConnection(mot_ids[1], vel_ids[2], mot2vel.delays, mot2vel.weights);  // backwward
+
 
 		conGrpList.append(newConnectionGroup);
 	}
 
 }
-
-
-
 
 /*----------------------------------------------------------*/
 /*-----                 PRIVATE METHODS                -----*/
@@ -220,15 +242,16 @@ void CARLsimCNSWbBuilderThread::checkParameters() {
 	vector<int> perm_vel = { 0, 2, 1, 3 };
 
 	// mot
-	vector<int> perm_mot = { 0, 2, 1, 3 };
+	//vector<int> perm_mot = { 0, 2, 4, 1, 3, 5};
+	vector<int> perm_mot = { 0, 1, 2, 3, 4, 5 };
 
 	// get ids from dlPFC
 	auto getIds = [&](NeuronGroup* neurGrp, QVector<unsigned int>& ids) {
 		ids.resize(neurGrp->size());
 		unsigned int start_id = neurGrp->getStartNeuronID();
-		auto xStart = neurGrp->getBoundingBox().getX1(); 
-		auto yStart = neurGrp->getBoundingBox().getY1();
-		auto zStart = neurGrp->getBoundingBox().getZ1();
+		//auto xStart = neurGrp->getBoundingBox().getX1(); 
+		//auto yStart = neurGrp->getBoundingBox().getY1();
+		//auto zStart = neurGrp->getBoundingBox().getZ1();
 		for (NeuronMap::iterator iter = neurGrp->begin(); iter != neurGrp->end(); iter++) {   // && !stopThread
 			unsigned int id = iter.key();
 			Neuron* neur = iter.value(); 

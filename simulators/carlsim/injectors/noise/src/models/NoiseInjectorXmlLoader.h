@@ -54,6 +54,7 @@ namespace spikestream {
 				double percentage;
 				double current;
 				bool active;
+				int period; // 2025 SpikeGen
 			
 				struct  {
 					QString name; 

@@ -51,8 +51,8 @@ namespace spikestream {
 				int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
 				// current of fire, depends on the neuron group (type)
-				bool appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, bool sustain, CarlsimWrapper* wrapper); 
-				bool updateInjector(int neuronGroupId, double percentage, double current); 
+				bool appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, int period, bool sustain, CarlsimWrapper* wrapper);  
+				bool updateInjector(int neuronGroupId, double percentage, double current, int perriod); 
 
 				bool removeInjector(int index); 
 
@@ -79,7 +79,7 @@ namespace spikestream {
 				void sustainAllOrNone(); 
 
 				void updateCurrentVector(int i);
-				void updateSpikeVector(int i);
+				void updateSpikeVector(int i, CarlsimWrapper*);
 
 				//====================  VARIABLES  ====================
 
@@ -98,6 +98,8 @@ namespace spikestream {
 				/*! List holding current to be injected for the neurons*/
 				QList<double> currentList;
 
+				/*! List holding current to be injected for the neurons*/
+				QList<int> periodList;
 
 				/*! List of injectors that do sustain the current */
 				QList<bool> sustainList; 

@@ -82,26 +82,30 @@ bool NoiseInjectorXmlLoader::endElement( const QString&, const QString&, const Q
 		auto groupId = neuronGroup->getID();
 		switch(type) {
 			case CURRENT:	
-				model->appendInjector(groupId, NoiseInjectorModel::CURRENT, percentage, current, active, NULL);	
+				model->appendInjector(groupId, NoiseInjectorModel::CURRENT, percentage, current, 0, active, NULL);
 				break;
 			case FIRE:
-				model->appendInjector(groupId, NoiseInjectorModel::FIRE, percentage, .0f, active, wrapper);
+				model->appendInjector(groupId, NoiseInjectorModel::FIRE, percentage, .0f, period, active, wrapper);
 				break;
 		}
 	} else
 	if(elemName == "Property") {
 		bool ok;
-		if (prop.name == "Current") {
+		if (prop.name == "Current") {  // CURRENT 
 			Q_ASSERT(prop.type == "double"); 
 			current = prop.value.toDouble(&ok);
 			if (!ok) throw SpikeStreamXMLException(QString("Conversion to int failed: %1 at %2").arg(prop.value).arg(contextXPath()));
 		} else if (prop.name == "Active") {  
 			Q_ASSERT(prop.type == "bool");
 			active = prop.value.toLower() == "true";  
-		} else if (prop.name == "Percentage") {
+		} else if (prop.name == "Percentage") {   // CURRENT + FIRE 
 			Q_ASSERT(prop.type == "double");
 			percentage = prop.value.toDouble(&ok);
 			if (!ok) throw SpikeStreamXMLException(QString("Conversion to double failed: %1 at %2").arg(prop.value).arg(contextXPath()));
+		} else if (prop.name == "Period") {   // FIRE  ms
+			Q_ASSERT(prop.type == "int");
+			period = prop.value.toInt(&ok);
+			if (!ok) throw SpikeStreamXMLException(QString("Conversion to int failed: %1 at %2").arg(prop.value).arg(contextXPath()));
 		} else
 			throw SpikeStreamXMLException(QString("Invalid Property: %1 at %2").arg(prop.name).arg(contextXPath()));
  	}

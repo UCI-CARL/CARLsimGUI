@@ -31,7 +31,6 @@ NetworkDisplay::NetworkDisplay(){
 	//defaultNeuronColor.set(0.35f, 0.3f, 0.2f);
 	//defaultNeuronColorFullRender.set(0.35f, 0.3f, 0.2f);
 
-
 	singleNeuronColor.set(1.0f, 0.75f, 0.0f);
 	toNeuronColor.set(1.0f, 0.0f, 1.0f);
 
@@ -59,8 +58,10 @@ NetworkDisplay::NetworkDisplay(){
 	sphereRadius = 0.1f;
 	sphereQuality = 10;
 	drawAxes = true;
-	neuronTransparency = 1.0;
-	connectionTransparency = 1.0;
+	//neuronTransparency = 1.0;
+	neuronTransparency = 0.8;
+	//connectionTransparency = 1.0;
+	connectionTransparency = 0.5;
 }
 
 void NetworkDisplay::initConnects() {

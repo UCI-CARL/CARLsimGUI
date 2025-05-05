@@ -104,11 +104,11 @@ NetworkViewer::~NetworkViewer(){
 void NetworkViewer::initializeGL(){
 
 
-	//White background
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//White background //paper 
+	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Black background
-	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// see also NetworkDisplay::NetworkDisplay()
 
@@ -791,9 +791,9 @@ void NetworkViewer::drawConnections(){
 					}
 
 					//Decide whether to draw connection based on its weight
-					if( weight < 0 && (connectionMode & SHOW_POSITIVE_CONNECTIONS) )
+					if( weight < 0.0f && (connectionMode & SHOW_POSITIVE_CONNECTIONS) )
 						drawConnection = false;
-					if( weight >= 0 && (connectionMode & SHOW_NEGATIVE_CONNECTIONS))
+					if( weight >= 0.0f && (connectionMode & SHOW_NEGATIVE_CONNECTIONS))
 						drawConnection = false;
 
 					//Add connection to list of visible connections
@@ -822,9 +822,9 @@ void NetworkViewer::drawConnections(){
 					//	glColor3f(0.0f, 0.0f, 0.0f);
 
 					//Set the colour  
-					if (weight > 0)
+					if (weight > .0f)  
 						glColor4f(positiveConnectionColor.red, positiveConnectionColor.green, positiveConnectionColor.blue, connectionAlpha);
-					else if (weight < 0)
+					else if (weight < .0f)
 						glColor4f(negativeConnectionColor.red, negativeConnectionColor.green, negativeConnectionColor.blue, connectionAlpha);
 					else
 						glColor4f(0.0f, 0.0f, 0.0f, connectionAlpha);
@@ -1091,9 +1091,9 @@ void NetworkViewer::drawNeurons(){
 					else if(connectedNeuronMap.contains((*neurIter)->getID())){//A connected neuron
 						//weight = connectedNeuronMap[(*neurIter)->getID()];
 						weight = connectedNeuronMap[(*neurIter)->getID()].first;
-						if(weight > 0)//Positive connection
+						if(weight > 0.0)//Positive connection
 							glColor4f(1.0f, 0.0f, 0.0f, neuronAlpha);
-						else if(weight < 0)
+						else if(weight < 0.0)
 							glColor4f(0.0f, 0.0f, 1.0f, neuronAlpha);
 						else
 							glColor4f(0.0f, 0.0f, 0.0f, neuronAlpha);

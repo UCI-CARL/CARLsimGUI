@@ -360,7 +360,8 @@ void CARLsimCNSWbBuilderThread::createNeuronGroups(){
 		for (auto iter = mot.begin(); iter < mot.end(); iter++) {
 			auto x = xStart + get<0>(*iter);
 			auto y = yStart + get<1>(*iter);
-			for (auto z = zStart; z < zStart + 2; z++) {
+			//for (auto z = zStart; z < zStart + 2; z++) {
+			for (auto z = zStart; z < zStart + 3; z++) {
 				group->addNeuron(x, y, z);
 				totalNumberOfNeurons++;
 			}

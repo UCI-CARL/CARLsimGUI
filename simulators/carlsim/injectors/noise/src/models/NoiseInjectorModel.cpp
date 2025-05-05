@@ -142,6 +142,9 @@ void NoiseInjectorModel::injectSpikeVector(NeuronGroup* group, float percentage)
 	nRandomNeurons = min(n, max(1,nRandomNeurons));		// ensure range
 	for(int id=0; id<n; id++) 
 		spikes[id]=false;	
+
+// TODO check period  -> current time ms ???
+
 	unsigned counter=0;					// loop protection 
 	while(nRandomNeurons>0) {			// nRandomNeurons are decremented
 		auto randomId = Util::getRandom(0, n);		//Get random position in list of neuron ids
@@ -171,7 +174,7 @@ void NoiseInjectorModel::updateCurrentVector(int i) {
 	}
 }
 
-void NoiseInjectorModel::updateSpikeVector(int i) {
+void NoiseInjectorModel::updateSpikeVector(int i, CarlsimWrapper* carlsimWrapper) {
 	auto group = neurGrpList[i];	// cache the neuron group 
 	auto n = group->size();			// cache its size
 	auto & spikes = spikeVectorList[i];   // std::vector<bool>
@@ -180,6 +183,13 @@ void NoiseInjectorModel::updateSpikeVector(int i) {
 	nRandomNeurons = min(n, max(1,nRandomNeurons));		// ensure range
 	for(int id=0; id<n; id++) 
 		spikes[id]=false;	
+
+	// 2025 
+	auto ms = carlsimWrapper->getSnnTimeMs();
+	int period = periodList[i];
+	if(ms % period != 0)
+		return; 
+
 	unsigned counter=0;					// loop protection 
 	while(nRandomNeurons>0) {			// nRandomNeurons are decremented
 		auto randomId = Util::getRandom(0, n);		//Get random position in list of neuron ids
@@ -220,7 +230,7 @@ void NoiseInjectorModel::injectFor(CarlsimWrapper* carlsimWrapper) {
 					currentVectorList[i].toStdVector());	 // convert to std vector
 			} else
 			if(typeList[i]==FIRE) {
-				updateSpikeVector(i); 
+				updateSpikeVector(i, carlsimWrapper);
 				//the callback configured in config state reads the spikeVector and resets it to false
 			}
 		}
@@ -230,7 +240,7 @@ void NoiseInjectorModel::injectFor(CarlsimWrapper* carlsimWrapper) {
 
 
 
-bool NoiseInjectorModel::appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, bool sustain, CarlsimWrapper* wrapper) {
+bool NoiseInjectorModel::appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, int period, bool sustain, CarlsimWrapper* wrapper) {
 	
 	NeuronGroup* group = Globals::getNetwork()->getNeuronGroup(neuronGroupId);
 	bool isCurrentInjection = currentInjection(group); 
@@ -240,6 +250,9 @@ bool NoiseInjectorModel::appendInjector(int neuronGroupId, injection_t injection
 
 	percentageList.append(percentage);
 	currentList.append(isCurrentInjection?current:.0f); 
+
+	periodList.append(period);
+
 	sustainList.append(sustain); 
 
 	QVector<float> currentVector(isCurrentInjection?group->size():0); 
@@ -270,7 +283,7 @@ bool NoiseInjectorModel::currentInjection(NeuronGroup* group) {
 
 
 
-bool NoiseInjectorModel::updateInjector(int neuronGroupId, double percentage, double current) {
+bool NoiseInjectorModel::updateInjector(int neuronGroupId, double percentage, double current, int period) {
 	
 	NeuronGroup* group = Globals::getNetwork()->getNeuronGroup(neuronGroupId);
 
@@ -278,7 +291,9 @@ bool NoiseInjectorModel::updateInjector(int neuronGroupId, double percentage, do
 	
 
 	percentageList[idx] = percentage;
-	currentList[idx] = current; 
+	currentList[idx] = current;
+
+	//periodList[idx] = period; 
 
 	QModelIndex topLeft, bottomRight; 
 	topLeft.child(idx, 0);
@@ -297,6 +312,7 @@ bool NoiseInjectorModel::removeInjector(int index) {
 
 	percentageList.removeAt(index); 
 	currentList.removeAt(index); 
+	periodList.removeAt(index);
 	sustainList.removeAt(index); 
 	currentVectorList.removeAt(index); 
 	

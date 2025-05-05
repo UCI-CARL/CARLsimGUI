@@ -27,6 +27,7 @@ void CarlsimSpikeGenerator::setWrapper(spikestream::CarlsimWrapper* wrapper_) {
 }
 
 
+
 int CarlsimSpikeGenerator::nextSpikeTime(CARLsim* s, int grpId, int nid, 
 		int currentTime, int lastScheduledSpikeTime, int endOfTimeSlice) {
 
@@ -35,7 +36,7 @@ int CarlsimSpikeGenerator::nextSpikeTime(CARLsim* s, int grpId, int nid,
     
 	int r = -1; //0xFFFFFFFF   break 
 
-	if(currentTime>0) {
+	if (currentTime > 0) {
 		if(spikeVector[nid]) {
 			r = currentTime; 
 			spikeVector[nid] = false; // consumed
