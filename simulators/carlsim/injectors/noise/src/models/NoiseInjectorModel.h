@@ -70,6 +70,7 @@ namespace spikestream {
 				friend class NoiseInjectorTableView;
 				friend class NoiseInjectorWidget; 
 				friend class CarlsimSpikeGenerator;
+				friend class CarlsimNormalSpikeGenerator;
 
 			private slots:
 				void loadNoiseInjectors();

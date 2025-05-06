@@ -18,6 +18,7 @@ set(HDRS
   src/gui/NoiseInjectorWidget.h
   src/managers/NoiseInjectorManager.h
   src/models/CarlsimSpikeGenerator.h
+  src/models/CarlsimNormalSpikeGenerator.h
   src/models/CarlsimSpikeGeneratorContainer.h
   src/models/NoiseInjectorModel.h
   src/models/NoiseInjectorXmlLoader.h
@@ -29,6 +30,7 @@ set(SRCS
   src/gui/NoiseInjectorWidget.cpp
   src/managers/NoiseInjectorManager.cpp
   src/models/CarlsimSpikeGenerator.cpp
+  src/models/CarlsimNormalSpikeGenerator.cpp
   src/models/CarlsimSpikeGeneratorContainer.cpp
   src/models/NoiseInjectorModel.cpp
   src/models/NoiseInjectorXmlLoader.cpp
@@ -45,6 +47,7 @@ source_group(Managers FILES
 
 source_group(Model FILES
   src/models/CarlsimSpikeGenerator.cpp
+  src/models/CarlsimNormalSpikeGenerator.cpp
   src/models/CarlsimSpikeGeneratorContainer.cpp
   src/models/NoiseInjectorModel.cpp
   src/models/NoiseInjectorXmlLoader.cpp

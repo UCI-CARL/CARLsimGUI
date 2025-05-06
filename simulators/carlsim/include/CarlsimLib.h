@@ -26,6 +26,7 @@ class SpikeMonitor;
 class ConnectionMonitor;
 class NeuronMonitor;
 class SpikeGenerator;
+class NormalSpikeGenerator;
 class GroupMonitor;
 
 namespace spikestream {

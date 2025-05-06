@@ -9,6 +9,7 @@
 
 class SpikeGenerator;
 class CarlsimSpikeGenerator;
+class CarlsimNormalSpikeGenerator;
 
 namespace spikestream {
 	namespace carlsim_injectors {
@@ -28,7 +29,8 @@ namespace spikestream {
 
 
 	private: 
-		CarlsimSpikeGenerator* generator; // a subclass of CARLsim::ConnectionGenerator (implementing the interface)
+		//CarlsimSpikeGenerator* generator; // a subclass of CARLsim::ConnectionGenerator (implementing the interface)
+		CarlsimNormalSpikeGenerator* generator; // a subclass of CARLsim::ConnectionGenerator (implementing the interface)
 		CarlsimWrapper* wrapper;
 		carlsim_injectors::NoiseInjectorModel* model; 
 		int index; 
