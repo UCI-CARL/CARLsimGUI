@@ -6,6 +6,8 @@
 
 #include "normal_spikegen.h"
 
+#include "CarlsimAbstractSpikeGenerator.h"
+
 #include <vector>
 
 #include <QHash>
@@ -18,24 +20,23 @@ namespace spikestream {
 }
 
 
-class CarlsimNormalSpikeGenerator: public NormalSpikeGenerator   {
-
+class CarlsimNormalSpikeGenerator: public CarlsimAbstractSpikeGenerator, public NormalSpikeGenerator {
 
 public:
 
 	CarlsimNormalSpikeGenerator(
-		spikestream::carlsim_injectors::NoiseInjectorModel* model, 
-		int index);
+		spikestream::carlsim_injectors::NoiseInjectorModel* model, int index,
+		double mean, double sd, int events);
 
     ~CarlsimNormalSpikeGenerator();
 
 	void setWrapper(spikestream::CarlsimWrapper* w);
 
 
-private: 
-	spikestream::carlsim_injectors::NoiseInjectorModel* model;
-	int index;
-	spikestream::CarlsimWrapper* wrapper;
+//private: 
+//	spikestream::carlsim_injectors::NoiseInjectorModel* model;
+//	int index;
+//	spikestream::CarlsimWrapper* wrapper;
 
 };
 

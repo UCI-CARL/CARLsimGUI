@@ -4,6 +4,8 @@
 
 #include "carlsim.h"
 
+#include "CarlsimAbstractSpikeGenerator.h"
+
 #include <vector>
 
 #include <QHash>
@@ -16,7 +18,7 @@ namespace spikestream {
 }
 
 
-class CarlsimSpikeGenerator: public SpikeGenerator   {
+class CarlsimSpikeGenerator: public CarlsimAbstractSpikeGenerator, public SpikeGenerator   {
 
 
 public:
@@ -30,10 +32,10 @@ public:
 	virtual int nextSpikeTime(CARLsim* s, int grpId, int i, 
 		int currentTime, int lastScheduledSpikeTime, int endOfTimeSlice);
 
-private: 
-	spikestream::carlsim_injectors::NoiseInjectorModel* model;
-	int index;
-	spikestream::CarlsimWrapper* wrapper;
+//private: 
+//	spikestream::carlsim_injectors::NoiseInjectorModel* model;
+//	int index;
+//	spikestream::CarlsimWrapper* wrapper;
 
 };
 

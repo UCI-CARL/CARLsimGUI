@@ -17,6 +17,7 @@ set(HDRS
   src/gui/NoiseInjectorTableView.h
   src/gui/NoiseInjectorWidget.h
   src/managers/NoiseInjectorManager.h
+  src/models/CarlsimAbstractSpikeGenerator.h
   src/models/CarlsimSpikeGenerator.h
   src/models/CarlsimNormalSpikeGenerator.h
   src/models/CarlsimSpikeGeneratorContainer.h

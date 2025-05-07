@@ -82,33 +82,40 @@ bool NoiseInjectorXmlLoader::endElement( const QString&, const QString&, const Q
 		auto groupId = neuronGroup->getID();
 		switch(type) {
 			case CURRENT:	
-				model->appendInjector(groupId, NoiseInjectorModel::CURRENT, percentage, current, 0, active, NULL);
+				model->appendInjector(groupId, NoiseInjectorModel::CURRENT, percentage, current, period, mean, active, NULL);
 				break;
 			case FIRE:
-				model->appendInjector(groupId, NoiseInjectorModel::FIRE, percentage, .0f, period, active, wrapper);
+				model->appendInjector(groupId, NoiseInjectorModel::FIRE, percentage, current, period, mean, active, wrapper);
+				break;
+			case NORMAL:
+				model->appendInjector(groupId, NoiseInjectorModel::NORMAL, percentage, current, period, mean, active, wrapper);
 				break;
 		}
 	} else
 	if(elemName == "Property") {
 		bool ok;
-		if (prop.name == "Current") {  // CURRENT 
+		if (prop.name == "Current") {  // CURRENT   FIRE.Normal -> mean
 			Q_ASSERT(prop.type == "double"); 
 			current = prop.value.toDouble(&ok);
 			if (!ok) throw SpikeStreamXMLException(QString("Conversion to int failed: %1 at %2").arg(prop.value).arg(contextXPath()));
 		} else if (prop.name == "Active") {  
 			Q_ASSERT(prop.type == "bool");
 			active = prop.value.toLower() == "true";  
-		} else if (prop.name == "Percentage") {   // CURRENT + FIRE 
+		} else if (prop.name == "Percentage") {   // CURRENT + FIRE, FIRE.CARLsim.Normal->sd 
 			Q_ASSERT(prop.type == "double");
 			percentage = prop.value.toDouble(&ok);
 			if (!ok) throw SpikeStreamXMLException(QString("Conversion to double failed: %1 at %2").arg(prop.value).arg(contextXPath()));
-		} else if (prop.name == "Period") {   // FIRE  ms
+		} else if (prop.name == "Period") {   // FIRE.SpikeStream: ms   FIRE.CARLsim.Normal: events
 			Q_ASSERT(prop.type == "int");
 			period = prop.value.toInt(&ok);
 			if (!ok) throw SpikeStreamXMLException(QString("Conversion to int failed: %1 at %2").arg(prop.value).arg(contextXPath()));
+		} else if (prop.name == "Mean") {   // FIRE.SpikeStream: ms   FIRE.CARLsim.Normal: events
+			Q_ASSERT(prop.type == "int");
+			mean = prop.value.toInt(&ok);
+			if (!ok) throw SpikeStreamXMLException(QString("Conversion to int failed: %1 at %2").arg(prop.value).arg(contextXPath()));
 		} else
 			throw SpikeStreamXMLException(QString("Invalid Property: %1 at %2").arg(prop.name).arg(contextXPath()));
- 	}
+ 		}
 
   return true;
 }
@@ -182,6 +189,9 @@ bool NoiseInjectorXmlLoader::startElement(const QString&, const QString&, const 
 		else
 		if (type == "Fire") 
 			this->type = FIRE;
+		else
+		if (type == "Normal")
+			this->type = NORMAL;
 	} else
 	if(qName == "Properties") {
 		; // props.clear();

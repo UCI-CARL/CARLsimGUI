@@ -49,12 +49,13 @@ namespace spikestream {
 				NoiseInjectorModel* model;
 				
 				NeuronGroup *neuronGroup;
-				enum { CURRENT, FIRE } type;
+				enum { CURRENT, FIRE, NORMAL } type;
 				//QString type; // Current / Fire 
 				double percentage;
 				double current;
 				bool active;
 				int period; // 2025 SpikeGen
+				int mean;
 			
 				struct  {
 					QString name; 

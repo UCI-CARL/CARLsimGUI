@@ -8,9 +8,11 @@
 #include "carlsim.h"  // CAUTION: from install dir 
 
 
-CarlsimNormalSpikeGenerator::CarlsimNormalSpikeGenerator(spikestream::carlsim_injectors::NoiseInjectorModel* model, int index)
+CarlsimNormalSpikeGenerator::CarlsimNormalSpikeGenerator(spikestream::carlsim_injectors::NoiseInjectorModel* model, int index, 
+	double mean, double sd, int events)
+	: CarlsimAbstractSpikeGenerator(model, index), NormalSpikeGenerator(mean, sd, events) {
 //	: NormalSpikeGenerator(50, 0.8, 200), model(model), index(index) {  // travel
-	: NormalSpikeGenerator(50, 1.6, 200), model(model), index(index) {  // travel 
+//	: NormalSpikeGenerator(50, 1.6, 200), model(model), index(index) {  // travel 
 //	: NormalSpikeGenerator(50, 2.8, 400), model(model), index(index) {  // stops
 //	: NormalSpikeGenerator(50, 3.4, 600), model(model), index(index) {
 //	: NormalSpikeGenerator(10, 2.8, 100), model(model), index(index) {
@@ -33,6 +35,6 @@ void CarlsimNormalSpikeGenerator::setWrapper(spikestream::CarlsimWrapper* wrappe
 
 	NeuronGroup* group = model->neurGrpList[index];
 	int vid = group->getVID();
-	wrapper->carlsim->setSpikeGenerator(vid, this); 
+	wrapper->carlsim->setSpikeGenerator(vid, this);
 }
 

@@ -36,7 +36,8 @@ namespace spikestream {
 				// follows implicid from the group  SpikeGeneratorGroup
 				enum injection_t {
 					CURRENT,  //_POISSON | _RANDOM  selection of neurons are random/following a Poisson process	
-					FIRE	  //_POISSON  
+					FIRE,	  //_POISSON  
+					NORMAL
 				};
 
 				NoiseInjectorModel();
@@ -51,8 +52,8 @@ namespace spikestream {
 				int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
 				// current of fire, depends on the neuron group (type)
-				bool appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, int period, bool sustain, CarlsimWrapper* wrapper);  
-				bool updateInjector(int neuronGroupId, double percentage, double current, int perriod); 
+				bool appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, int period, int mean, bool sustain, CarlsimWrapper* wrapper);  
+				bool updateInjector(int neuronGroupId, double percentage, double current, int perriod, int mean); 
 
 				bool removeInjector(int index); 
 
@@ -71,6 +72,8 @@ namespace spikestream {
 				friend class NoiseInjectorWidget; 
 				friend class CarlsimSpikeGenerator;
 				friend class CarlsimNormalSpikeGenerator;
+				friend class CarlsimSpikeGeneratorContainer;
+
 
 			private slots:
 				void loadNoiseInjectors();
@@ -99,8 +102,11 @@ namespace spikestream {
 				/*! List holding current to be injected for the neurons*/
 				QList<double> currentList;
 
-				/*! List holding current to be injected for the neurons*/
+				/*! List periodal repeat in (ms) << 1000 */
 				QList<int> periodList;
+
+				/*! NORMAL expected value (ms) ,  CURRENT, FIRE: duration in ms  << 1000 */
+				QList<int> meanList;
 
 				/*! List of injectors that do sustain the current */
 				QList<bool> sustainList; 
@@ -134,14 +140,15 @@ namespace spikestream {
 				/*! Map of indexes of selected rows in neuron group info list */
 				QHash<unsigned int, bool> selectionMap;
 
-				static const int NUM_COLS = 7;
+				static const int NUM_COLS = 9; // 8 ???
 				static const int SUSTAIN_COL = 0;
 				static const int ID_COL = 1;
 				static const int NAME_COL = 2;
-				static const int PERCENT_COL = 3;
-				static const int CURRENT_COL = 4;
-				static const int DELETE_COL = 5;
-				//static const int TYPE_COL = 6;   // HIDDEN
+				static const int TYPE_COL = 3;
+				static const int PERCENT_COL = 4;
+				static const int CURRENT_COL = 5;
+				static const int MEAN_COL = 6;
+				static const int DELETE_COL = 7;
 
 				/*! For current, vector is of size 0, for fire size is group initialized once by the group							
 				 */			

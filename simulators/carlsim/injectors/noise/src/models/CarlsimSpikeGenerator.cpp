@@ -9,12 +9,12 @@
 
 
 CarlsimSpikeGenerator::CarlsimSpikeGenerator(spikestream::carlsim_injectors::NoiseInjectorModel* model, int index)
-	: model(model), index(index) {		
+	: CarlsimAbstractSpikeGenerator(model, index) {		
 }
 
 CarlsimSpikeGenerator::~CarlsimSpikeGenerator() {
-	wrapper = NULL; 
-	model = NULL; 
+	wrapper = NULL;
+	model = NULL;
 }
 
 

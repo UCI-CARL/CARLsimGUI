@@ -58,6 +58,7 @@ QVariant NoiseInjectorModel::data(const QModelIndex & index, int role) const{
 		return QVariant();
 
 	//Return appropriate data
+	auto type = typeList[index.row()];
     if (role == Qt::DisplayRole){
 		if(index.column() == ID_COL)
 			return neurGrpList[index.row()]->getInfo().getID();
@@ -66,15 +67,27 @@ QVariant NoiseInjectorModel::data(const QModelIndex & index, int role) const{
 			return neurGrpList[index.row()]->getInfo().getName(); 
 		else
 		if(index.column() == PERCENT_COL)
-			return QString::number(percentageList[index.row()])+" %";		
+			return QString::number(percentageList[index.row()])+(type == CURRENT ? " %" : " ms");	// NORMAL: sd -> ms	
 		else
 		if(index.column() == CURRENT_COL) {
 			QString cell;
 			auto current = currentList[index.row()]; 
 			if(current>0.f) {
-				cell = QString::number(current) + " mA";
+				cell = QString::number(current) + (type == CURRENT ? " mA" : " Spikes");	// NORMAL: spikes
 			}
 			return cell;		
+		} else
+		if (index.column() == TYPE_COL) {
+			QString cell;			
+			switch (type) {
+				case CURRENT: cell = "Current"; break;
+				case FIRE: cell = "Fire"; break;
+				case NORMAL: cell = "Normal"; break;
+			}
+			return cell; 
+		} else 
+		if (index.column() == MEAN_COL) {
+			return QString::number(meanList[index.row()]) + " ms";
 		}
     }
 
@@ -232,6 +245,9 @@ void NoiseInjectorModel::injectFor(CarlsimWrapper* carlsimWrapper) {
 			if(typeList[i]==FIRE) {
 				updateSpikeVector(i, carlsimWrapper);
 				//the callback configured in config state reads the spikeVector and resets it to false
+			} else
+			if (typeList[i] == NORMAL) {
+				updateSpikeVector(i, carlsimWrapper);				
 			}
 		}
 	}		
@@ -240,7 +256,7 @@ void NoiseInjectorModel::injectFor(CarlsimWrapper* carlsimWrapper) {
 
 
 
-bool NoiseInjectorModel::appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, int period, bool sustain, CarlsimWrapper* wrapper) {
+bool NoiseInjectorModel::appendInjector(int neuronGroupId, injection_t injection, double percentage, double current, int period, int mean, bool sustain, CarlsimWrapper* wrapper) {
 	
 	NeuronGroup* group = Globals::getNetwork()->getNeuronGroup(neuronGroupId);
 	bool isCurrentInjection = currentInjection(group); 
@@ -249,9 +265,12 @@ bool NoiseInjectorModel::appendInjector(int neuronGroupId, injection_t injection
 	typeList.append(injection); 
 
 	percentageList.append(percentage);
-	currentList.append(isCurrentInjection?current:.0f); 
+	//currentList.append(isCurrentInjection?current:.0f); 
+	currentList.append(current);
 
 	periodList.append(period);
+
+	meanList.append(mean);
 
 	sustainList.append(sustain); 
 
@@ -262,7 +281,7 @@ bool NoiseInjectorModel::appendInjector(int neuronGroupId, injection_t injection
 	spikeVectorList.append(spikeVector); 
 
 	
-	spikeGeneratorContainerList.append(injection==FIRE?
+	spikeGeneratorContainerList.append(injection==FIRE || injection == NORMAL ?
 		new CarlsimSpikeGeneratorContainer(this, rows, wrapper):NULL); 
 		 
 	rows++; 
@@ -283,7 +302,7 @@ bool NoiseInjectorModel::currentInjection(NeuronGroup* group) {
 
 
 
-bool NoiseInjectorModel::updateInjector(int neuronGroupId, double percentage, double current, int period) {
+bool NoiseInjectorModel::updateInjector(int neuronGroupId, double percentage, double current, int period, int mean) {
 	
 	NeuronGroup* group = Globals::getNetwork()->getNeuronGroup(neuronGroupId);
 
@@ -292,8 +311,8 @@ bool NoiseInjectorModel::updateInjector(int neuronGroupId, double percentage, do
 
 	percentageList[idx] = percentage;
 	currentList[idx] = current;
-
-	//periodList[idx] = period; 
+	periodList[idx] = period; 
+	meanList[idx] = mean;
 
 	QModelIndex topLeft, bottomRight; 
 	topLeft.child(idx, 0);
@@ -313,6 +332,7 @@ bool NoiseInjectorModel::removeInjector(int index) {
 	percentageList.removeAt(index); 
 	currentList.removeAt(index); 
 	periodList.removeAt(index);
+
 	sustainList.removeAt(index); 
 	currentVectorList.removeAt(index); 
 	
@@ -340,14 +360,20 @@ QVariant NoiseInjectorModel::headerData(int section, Qt::Orientation orientation
 		if(section == NAME_COL)
 			return "Group";
 		else
+		if(section == TYPE_COL)
+			return "Type";
+		else
 		if(section == PERCENT_COL)
-			return "Neurons";
+			return "Neurons/SD";
 		else
 		if(section == CURRENT_COL)
-			return "Current";
+			return "Current/Spikes";
 		else
-		if(section == SUSTAIN_COL)
-			return "";
+		if (section == MEAN_COL)
+			return "Mean";
+		else
+			if(section == SUSTAIN_COL)
+		return "";
     }
 
 	return QVariant();

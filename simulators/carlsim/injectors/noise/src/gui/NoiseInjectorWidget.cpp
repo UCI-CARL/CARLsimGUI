@@ -155,9 +155,9 @@ void NoiseInjectorWidget::addInjector() {
 	auto period = 1;
 
 	if(currentInjectorModel->neurGrpList.contains(g)) {
-		currentInjectorModel->updateInjector(g->getID(), percent, current, period); 
+		currentInjectorModel->updateInjector(g->getID(), percent, current, period, 0); 
 	} else {
-		currentInjectorModel->appendInjector(g->getID(), type, percent, current, period, false, carlsimWrapper);  // do not sustain firing immediately after adding
+		currentInjectorModel->appendInjector(g->getID(), type, percent, current, period, 0, false, carlsimWrapper);  // do not sustain firing immediately after adding
 	}
 
 }
