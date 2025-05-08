@@ -26,7 +26,7 @@ public:
 
 	CarlsimNormalSpikeGenerator(
 		spikestream::carlsim_injectors::NoiseInjectorModel* model, int index,
-		double mean, double sd, int events);
+		double mean, double sd, int events, int period);
 
     ~CarlsimNormalSpikeGenerator();
 

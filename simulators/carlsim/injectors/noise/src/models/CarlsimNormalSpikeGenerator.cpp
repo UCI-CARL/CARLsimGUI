@@ -9,8 +9,8 @@
 
 
 CarlsimNormalSpikeGenerator::CarlsimNormalSpikeGenerator(spikestream::carlsim_injectors::NoiseInjectorModel* model, int index, 
-	double mean, double sd, int events)
-	: CarlsimAbstractSpikeGenerator(model, index), NormalSpikeGenerator(mean, sd, events) {
+	double mean, double sd, int events, int period)
+	: CarlsimAbstractSpikeGenerator(model, index), NormalSpikeGenerator(mean, sd, events, period) {
 //	: NormalSpikeGenerator(50, 0.8, 200), model(model), index(index) {  // travel
 //	: NormalSpikeGenerator(50, 1.6, 200), model(model), index(index) {  // travel 
 //	: NormalSpikeGenerator(50, 2.8, 400), model(model), index(index) {  // stops

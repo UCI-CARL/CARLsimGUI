@@ -22,7 +22,8 @@ spikestream::CarlsimSpikeGeneratorContainer::CarlsimSpikeGeneratorContainer(carl
 		double mean = model->meanList.at(index);  // repetitive
 		double sd = model->percentageList.at(index);
 		int events = (int)model->currentList.at(index);
-		generator = new CarlsimNormalSpikeGenerator(model, index, mean, sd, events);
+		int period = model->periodList.at(index);
+		generator = new CarlsimNormalSpikeGenerator(model, index, mean, sd, events, period);
 	}
 	else {
 		// throw

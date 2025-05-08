@@ -200,7 +200,7 @@ void NoiseInjectorModel::updateSpikeVector(int i, CarlsimWrapper* carlsimWrapper
 	// 2025 
 	auto ms = carlsimWrapper->getSnnTimeMs();
 	int period = periodList[i];
-	if(ms % period != 0)
+	if(period > 0 && ms % period != 0)
 		return; 
 
 	unsigned counter=0;					// loop protection 
