@@ -70,7 +70,8 @@ CARLsimSynfireConnWidget::CARLsimSynfireConnWidget(QWidget* parent) : AbstractCo
 	// decouple, state requires phasic bursting to be activated reliable
 	defaults["inh2exc_weights"] = "-0.02";
 	defaults["inh2exc_w_factor"] = "100.0";
-	defaults["inh2exc_delays"] = "2";  // + 1ms of the FS = 10ms
+	//defaults["inh2exc_delays"] = "2";  // + 1ms of the FS = 10ms
+	defaults["inh2exc_delays"] = "8";  // Höppner2022
 
 	updateTemplate(0);
 
@@ -126,6 +127,16 @@ bool CARLsimSynfireConnWidget::checkInputs(){
 	builder->inh2exc.weights = inh2exc.weightsSpin->value();
 	builder->inh2exc.w_factor = inh2exc.weightFactorSpin->value();
 	builder->inh2exc.delays = inh2exc.delaysSpin->value();
+
+	// Höppner2022
+	builder->prefix = "C"; // TODO from param file
+	builder->segments = 4; // TODO from param file
+	builder->exc2exc_syn_per_neuron = 60;  // Höppner2022
+  	builder->exc2inh_syn_per_neuron = 60;  // Höppner2022 
+	builder->inh2exc_syn_per_neuron = 25;  // Höppner2022
+
+	builder->n = 200;
+
 
 	//Inputs are ok
 	return true;

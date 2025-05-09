@@ -31,6 +31,14 @@ namespace spikestream {
 				ConnectionParam_t() : active(false), weights(.0f), w_factor(.0f), delays(.0f) {};
 			} exc2exc, exc2inh, inh2exc;  // exc can be a stim for the first group 
 
+			// from param
+			QString prefix;
+			int segments;
+			int exc2exc_syn_per_neuron;
+			int exc2inh_syn_per_neuron;
+			int inh2exc_syn_per_neuron;
+			int n;
+
 		protected:
 			void buildConnectionGroup();
 			void checkParameters();

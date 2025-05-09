@@ -86,7 +86,7 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	//Main vertical box
 	QVBoxLayout* mainVBox = new QVBoxLayout();
 
-	QGroupBox* mainGroupBox = new QGroupBox("CARLsimCNS NMS Builder", this);
+	QGroupBox* mainGroupBox = new QGroupBox("CARLsim Synfire Neuron Groups", this);
 
 
 	// Template
@@ -111,41 +111,6 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	templateCombo->setMinimumSize(50, 20);
 	mainVBox->addWidget(templateCombo);
 
-	// Neuron Parameter Groups		
-	auto groupBox = new QGroupBox("Neuron parameter", parent);
-	QGridLayout* gridLayout = new QGridLayout();
-	gridLayout->setMargin(10);
-	exc.addGroup("Excitatory Groups (RS)", gridLayout, configLoader);
-	inh.addGroup("Inhibitory Groups (FS)", gridLayout, configLoader);
-	
-
-	groupBox->setLayout(gridLayout);
-	mainVBox->addWidget(groupBox);
-
-
-	securitiesSpin = new QSpinBox();
-	securitiesSpin->setMinimum(1);
-	securitiesSpin->setMaximum(3);
-	securitiesSpin->setValue(1); 
-	QHBoxLayout* securitiesLayout = new QHBoxLayout();
-	securitiesLayout->addWidget(new QLabel("Securities:"));
-	securitiesLayout->addWidget(securitiesSpin);
-	securitiesLayout->addStretch(1);
-	mainVBox->addLayout(securitiesLayout);
-	mainVBox->addSpacing(5);
-	
-	statesSpin = new QSpinBox();
-	statesSpin->setMinimum(2);  // Idle, Filled
-	statesSpin->setMaximum(5);  // Experimental
-	statesSpin->setValue(3);	// Idle, Filled, Resting
-	QHBoxLayout* indicatorsLayout = new QHBoxLayout();
-	indicatorsLayout->addWidget(new QLabel("States:"));
-	indicatorsLayout->addWidget(statesSpin);
-	indicatorsLayout->addWidget(new QLabel("(internal state neurons)"));
-	indicatorsLayout->addStretch(1);
-	mainVBox->addLayout(indicatorsLayout);
-	mainVBox->addSpacing(10);
-
 
 	prefixEdit = new QLineEdit("syn");   // Gexe  Ginh   Group Prefix   syn is the project 
 	QHBoxLayout* prefixLayout = new QHBoxLayout();
@@ -156,26 +121,121 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	mainVBox->addSpacing(10);
 
 
-	policyCombo = new QComboBox();
-	policyCombo->addItem("Standard"); // Rows 
-	QHBoxLayout* policyLayout = new QHBoxLayout();
-	policyLayout->addWidget(new QLabel("Layout Policy"));
-	policyLayout->addWidget(policyCombo);
-	policyLayout->addStretch(1);
-	mainVBox->addLayout(policyLayout);
-	mainVBox->addSpacing(10);
+	// Neuron Parameter Groups		
+	auto groupBox = new QGroupBox("Neuron parameter", parent);
+	QGridLayout* gridLayout = new QGridLayout();
+	gridLayout->setMargin(10);
+	exc.addGroup("Excitatory Groups (RS)", gridLayout, configLoader);
+	inh.addGroup("Inhibitory Groups (FS)", gridLayout, configLoader);
+	groupBox->setLayout(gridLayout);
+	mainVBox->addWidget(groupBox);
 
-	spaceSpin = new QSpinBox();
-	spaceSpin->setMinimum(0);
-	spaceSpin->setMaximum(10);
-	spaceSpin->setValue(1);
-	QHBoxLayout* spaceLayout = new QHBoxLayout();
-	spaceLayout->addWidget(new QLabel("Space between Channels:"));
-	spaceLayout->addWidget(spaceSpin);
-	spaceLayout->addWidget(new QLabel("grid points"));
-	spaceLayout->addStretch(1);
-	mainVBox->addLayout(spaceLayout);
-	mainVBox->addSpacing(10);
+
+	segmentsSpin = new QSpinBox();
+	segmentsSpin->setMinimum(1);
+	segmentsSpin->setMaximum(10);
+	segmentsSpin->setValue(4); 
+	QHBoxLayout* segmentsLayout = new QHBoxLayout();
+	segmentsLayout->addWidget(new QLabel("Segments"));
+	segmentsLayout->addWidget(segmentsSpin);
+	segmentsLayout->addStretch(1);
+	mainVBox->addLayout(segmentsLayout);
+	mainVBox->addSpacing(5);
+	
+	{
+		auto groupBox = new QGroupBox("Segment groups layout", parent);
+		QGridLayout* gridLayout = new QGridLayout();
+		gridLayout->setMargin(10);
+
+		{
+			int row = gridLayout->rowCount();
+			gridLayout->addWidget(new QLabel("Excitatory group"), row, 0);
+			QHBoxLayout* abcdLayout = new QHBoxLayout();
+			abcdLayout->addSpacing(10);
+
+			excWidthSpin = new QSpinBox();
+			excWidthSpin->setMinimum(1);
+			excWidthSpin->setMaximum(1000);
+			excWidthSpin->setValue(50);
+			abcdLayout->addWidget(new QLabel("Width:"));
+			abcdLayout->addWidget(excWidthSpin);
+
+			excHeightSpin = new QSpinBox();
+			excHeightSpin->setMinimum(1);
+			excHeightSpin->setMaximum(1000);
+			excHeightSpin->setValue(50);
+			abcdLayout->addWidget(new QLabel("Height:"));
+			abcdLayout->addWidget(excHeightSpin);
+			abcdLayout->addStretch(1);
+
+			gridLayout->addLayout(abcdLayout, row, 1);
+		}
+
+		{
+			int row = gridLayout->rowCount();
+			gridLayout->addWidget(new QLabel("Inhibitory group"), row, 0);
+			QHBoxLayout* abcdLayout = new QHBoxLayout();
+			abcdLayout->addSpacing(10);
+
+			inhWidthSpin = new QSpinBox();
+			inhWidthSpin->setMinimum(1);
+			inhWidthSpin->setMaximum(1000);
+			inhWidthSpin->setValue(50);
+			abcdLayout->addWidget(new QLabel("Width"));
+			abcdLayout->addWidget(inhWidthSpin);
+
+			inhHeightSpin = new QSpinBox();
+			inhHeightSpin->setMinimum(1);
+			inhHeightSpin->setMaximum(1000);
+			inhHeightSpin->setValue(50);
+			abcdLayout->addWidget(new QLabel("Height:"));
+			abcdLayout->addWidget(inhHeightSpin);
+			abcdLayout->addStretch(1);
+
+			gridLayout->addLayout(abcdLayout, row, 1);
+
+			groupBox->setLayout(gridLayout);
+			mainVBox->addWidget(groupBox);
+		}
+	}
+
+
+
+	//statesSpin = new QSpinBox();
+	//statesSpin->setMinimum(2);  // Idle, Filled
+	//statesSpin->setMaximum(5);  // Experimental
+	//statesSpin->setValue(3);	// Idle, Filled, Resting
+	//QHBoxLayout* indicatorsLayout = new QHBoxLayout();
+	//indicatorsLayout->addWidget(new QLabel("States:"));
+	//indicatorsLayout->addWidget(statesSpin);
+	//indicatorsLayout->addWidget(new QLabel("(internal state neurons)"));
+	//indicatorsLayout->addStretch(1);
+	//mainVBox->addLayout(indicatorsLayout);
+	//mainVBox->addSpacing(10);
+
+
+
+
+	//policyCombo = new QComboBox();
+	//policyCombo->addItem("Standard"); // Rows 
+	//QHBoxLayout* policyLayout = new QHBoxLayout();
+	//policyLayout->addWidget(new QLabel("Layout Policy"));
+	//policyLayout->addWidget(policyCombo);
+	//policyLayout->addStretch(1);
+	//mainVBox->addLayout(policyLayout);
+	//mainVBox->addSpacing(10);
+
+	//spaceSpin = new QSpinBox();
+	//spaceSpin->setMinimum(0);
+	//spaceSpin->setMaximum(10);
+	//spaceSpin->setValue(1);
+	//QHBoxLayout* spaceLayout = new QHBoxLayout();
+	//spaceLayout->addWidget(new QLabel("Space between Channels:"));
+	//spaceLayout->addWidget(spaceSpin);
+	//spaceLayout->addWidget(new QLabel("grid points"));
+	//spaceLayout->addStretch(1);
+	//mainVBox->addLayout(spaceLayout);
+	//mainVBox->addSpacing(10);
 
 
 	//Validators for double and integer parameters
@@ -184,58 +244,58 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	QIntValidator* posValidator = new QIntValidator(-1000000, 1000000, this);
 	QIntValidator* positiveIntValidator = new QIntValidator(0, 1000000, this);
 
-	//Add name and description widgets
-	nameEdit = new QLineEdit("Unnamed");
-	descriptionEdit = new QLineEdit("Undescribed");
-	QHBoxLayout* nameDescLayout = new QHBoxLayout();
-	nameDescLayout->addWidget(new QLabel("Name: "));
-	nameDescLayout->addWidget(nameEdit);
-	nameDescLayout->addWidget(new QLabel("Description: "));
-	nameDescLayout->addWidget(descriptionEdit);
-	mainVBox->addLayout(nameDescLayout);
-	mainVBox->addSpacing(10);
+	////Add name and description widgets
+	//nameEdit = new QLineEdit("Unnamed");
+	//descriptionEdit = new QLineEdit("Undescribed");
+	//QHBoxLayout* nameDescLayout = new QHBoxLayout();
+	//nameDescLayout->addWidget(new QLabel("Name: "));
+	//nameDescLayout->addWidget(nameEdit);
+	//nameDescLayout->addWidget(new QLabel("Description: "));
+	//nameDescLayout->addWidget(descriptionEdit);
+	//mainVBox->addLayout(nameDescLayout);
+	//mainVBox->addSpacing(10);
 
-	//Add position input widgets
-	xPosEdit = new QLineEdit("1");
-	xPosEdit->setMaximumSize(100 , 30);
-	xPosEdit->setValidator(posValidator);
-	yPosEdit = new QLineEdit("1");
-	yPosEdit->setMaximumSize(100 , 30);
-	yPosEdit->setValidator(posValidator);
-	zPosEdit = new QLineEdit("2");
-	zPosEdit->setMaximumSize(100 , 30);
-	zPosEdit->setValidator(posValidator);
-	QHBoxLayout* positionLayout = new QHBoxLayout();
-	positionLayout->addWidget(new QLabel("Position. x: "));
-	positionLayout->addWidget(xPosEdit);
-	positionLayout->addWidget(new QLabel(" y: "));
-	positionLayout->addWidget(yPosEdit);
-	positionLayout->addWidget(new QLabel(" z: "));
-	positionLayout->addWidget(zPosEdit);
-	positionLayout->addStretch(5);
-	mainVBox->addLayout(positionLayout);
-	mainVBox->addSpacing(10);
+	////Add position input widgets
+	//xPosEdit = new QLineEdit("1");
+	//xPosEdit->setMaximumSize(100 , 30);
+	//xPosEdit->setValidator(posValidator);
+	//yPosEdit = new QLineEdit("1");
+	//yPosEdit->setMaximumSize(100 , 30);
+	//yPosEdit->setValidator(posValidator);
+	//zPosEdit = new QLineEdit("2");
+	//zPosEdit->setMaximumSize(100 , 30);
+	//zPosEdit->setValidator(posValidator);
+	//QHBoxLayout* positionLayout = new QHBoxLayout();
+	//positionLayout->addWidget(new QLabel("Position. x: "));
+	//positionLayout->addWidget(xPosEdit);
+	//positionLayout->addWidget(new QLabel(" y: "));
+	//positionLayout->addWidget(yPosEdit);
+	//positionLayout->addWidget(new QLabel(" z: "));
+	//positionLayout->addWidget(zPosEdit);
+	//positionLayout->addStretch(5);
+	//mainVBox->addLayout(positionLayout);
+	//mainVBox->addSpacing(10);
 
-	//Add width, length and height
-	widthEdit = new QLineEdit("10");
-	widthEdit->setMaximumSize(100, 30);
-	widthEdit->setValidator(positiveIntValidator);
-	lengthEdit = new QLineEdit("10");
-	lengthEdit->setMaximumSize(100, 30);
-	lengthEdit->setValidator(positiveIntValidator);
-	heightEdit = new QLineEdit("10");
-	heightEdit->setMaximumSize(100, 30);
-	heightEdit->setValidator(positiveIntValidator);
-	QHBoxLayout* sizeLayout = new QHBoxLayout();
-	sizeLayout->addWidget(new QLabel("Width (X axis): "));
-	sizeLayout->addWidget(widthEdit);
-	sizeLayout->addWidget(new QLabel(" Length (Y axis): "));
-	sizeLayout->addWidget(lengthEdit);
-	sizeLayout->addWidget(new QLabel(" Height (Z axis): "));
-	sizeLayout->addWidget(heightEdit);
-	sizeLayout->addStretch(5);
-	mainVBox->addLayout(sizeLayout);
-	mainVBox->addSpacing(10);
+	////Add width, length and height
+	//widthEdit = new QLineEdit("10");
+	//widthEdit->setMaximumSize(100, 30);
+	//widthEdit->setValidator(positiveIntValidator);
+	//lengthEdit = new QLineEdit("10");
+	//lengthEdit->setMaximumSize(100, 30);
+	//lengthEdit->setValidator(positiveIntValidator);
+	//heightEdit = new QLineEdit("10");
+	//heightEdit->setMaximumSize(100, 30);
+	//heightEdit->setValidator(positiveIntValidator);
+	//QHBoxLayout* sizeLayout = new QHBoxLayout();
+	//sizeLayout->addWidget(new QLabel("Width (X axis): "));
+	//sizeLayout->addWidget(widthEdit);
+	//sizeLayout->addWidget(new QLabel(" Length (Y axis): "));
+	//sizeLayout->addWidget(lengthEdit);
+	//sizeLayout->addWidget(new QLabel(" Height (Z axis): "));
+	//sizeLayout->addWidget(heightEdit);
+	//sizeLayout->addStretch(5);
+	//mainVBox->addLayout(sizeLayout);
+	//mainVBox->addSpacing(10);
 
 
 	//Add button
@@ -248,7 +308,8 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	mainVBox->addLayout(addButtonBox);
 
 	mainGroupBox->setLayout(mainVBox);
-	this->setMinimumSize(500, 600);
+
+	this->setMinimumSize(547, 339);
 
 
 	//Create builder thread class
@@ -259,16 +320,19 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 
 	//Set Defaults for Config File applying the same names	
 
-	defaults["prefix"] = "syn";     // Gexc  Ginh, Gstim  -> G  depends on paper and .. 
+	defaults["prefix"] = "C";     // Gexc  Ginh, Gstim  -> G  depends on paper and .. 
 
-	// stim: Custom Exciatory, SpikeGen
-	// alternate prefixes:  cust  for custom,   spikegen   , ... 
-	// mean, sd, spikes
-	//defaults["stim_a"] = "0.02";
-	//defaults["stim_b"] = "0.2";
-	//defaults["stim_c"] = "-65.0";
-	//defaults["stim_d"] = "8.0";
+	defaults["segments"] = "4";
 
+	defaults["exc_columns"] = "10";
+	defaults["exc_rows"] = "20";
+
+	defaults["inh_columns"] = "10";
+	defaults["inh_rows"] = "5";
+
+
+	// stim: Custom Excitatory
+	// configured by NormalSpikeGen mean, sd, spikes
 
 	// exc:  RS
 	defaults["exc_a"] = "0.02";
@@ -309,27 +373,27 @@ void CARLsimSynfireWidget::addButtonClicked(){
 	}
 
 	
-	//Check inputs are not empty
-	try{
-		checkInput(xPosEdit, "X position has not been set.");
-		checkInput(yPosEdit, "Y position has not been set.");
-		checkInput(zPosEdit, "Z position has not been set.");
-	}
-	catch(SpikeStreamException& ex){
-		QMessageBox::warning(this, "CARLsimCNS Neuron Group Builder", ex.getMessage(), QMessageBox::Ok);
-		return;
-	}
+	////Check inputs are not empty
+	//try{
+	//	checkInput(xPosEdit, "X position has not been set.");
+	//	checkInput(yPosEdit, "Y position has not been set.");
+	//	checkInput(zPosEdit, "Z position has not been set.");
+	//}
+	//catch(SpikeStreamException& ex){
+	//	QMessageBox::warning(this, "CARLsimCNS Neuron Group Builder", ex.getMessage(), QMessageBox::Ok);
+	//	return;
+	//}
 
-	//Extract variables
-	int xPos = Util::getInt(xPosEdit->text());
-	int yPos = Util::getInt(yPosEdit->text());
-	int zPos = Util::getInt(zPosEdit->text());
+	////Extract variables
+	//int xPos = Util::getInt(xPosEdit->text());
+	//int yPos = Util::getInt(yPosEdit->text());
+	//int zPos = Util::getInt(zPosEdit->text());
 
-	//Store parameters in parameter map
-	QHash<QString, double> paramMap;
-	paramMap["x"] = xPos;
-	paramMap["y"] = yPos;
-	paramMap["z"] = zPos;
+	////Store parameters in parameter map
+	//QHash<QString, double> paramMap;
+	//paramMap["x"] = xPos;
+	//paramMap["y"] = yPos;
+	//paramMap["z"] = zPos;
 
 
 
@@ -337,13 +401,13 @@ void CARLsimSynfireWidget::addButtonClicked(){
 	//Start thread to add neuron group
 	try{
 		//builderThread->prepareAddNeuronGroups(nameEdit->text(), descriptionEdit->text(), paramMap);
-		builderThread->prepareAddNeuronGroups(			
-			securitiesSpin->value(), statesSpin->value(), 
+		builderThread->prepareAddNeuronGroups(	
 			prefixEdit->text(),
-			spaceSpin->value(),
-			Util::getInt(xPosEdit->text()),
-			Util::getInt(yPosEdit->text()),
-			Util::getInt(zPosEdit->text()),
+			segmentsSpin->value(),
+			excWidthSpin->value(),
+			excHeightSpin->value(),
+			inhWidthSpin->value(),
+			inhHeightSpin->value(),
 			CARLsimSynfireBuilderThread::NeuronParam_t( 
 				exc.aSpin->value(), exc.bSpin->value(), exc.cSpin->value(), exc.dSpin->value()),
 			CARLsimSynfireBuilderThread::NeuronParam_t(
@@ -407,34 +471,26 @@ void CARLsimSynfireWidget::updateProgress(int stepsCompleted, int totalSteps, QS
 void CARLsimSynfireWidget::updateTemplate(int i) {
 
 	configLoader = wmConfigLoaders[i];
-
-
-	/* might be need to be overloaded, 
 	
-		auto grpId = wrapper->carlsim->createSpikeGeneratorGroup(grpName.toStdString(), n, EXCITATORY_NEURON); 
-		CarlsimSpikeGeneratorContainer* container = new CarlsimSpikeGeneratorContainer(neuronGroup, wrapper);
-		wrapper->carlsim->setSpikeGenerator(grpId, (SpikeGenerator*) container->getGenerator()); // ugly hard cast
-	*/
+	prefixEdit->setText(configLoader->getParameter("prefix", defaults["prefix"]));
 
-	////ps.nmCombo->setCurrentIndex(Util::getInt(configLoader->getParameter("ps_nm", defaults["ps_nm"])));
-	// !!! this is configured over XML, NormalSpikeGen, ...
-	//stim.uSpin->setValue(Util::getFloat(configLoader->getParameter("stim_u", defaults["stim_u"])));
-	//stim.sdSpin->setValue(Util::getFloat(configLoader->getParameter("stim_sd", defaults["stim_sd"])));
-	//stim.nSpin->setValue(Util::getFloat(configLoader->getParameter("stim_n", defaults["stim_n"])));
+	segmentsSpin->setValue(Util::getInt(configLoader->getParameter("segments", defaults["segments"])));
 
+	excWidthSpin->setValue(Util::getInt(configLoader->getParameter("exc_columns", defaults["exc_columns"])));
+	excHeightSpin->setValue(Util::getInt(configLoader->getParameter("exc_rows", defaults["exc_rows"])));
 
-	//ps.nmCombo->setCurrentIndex(Util::getInt(configLoader->getParameter("ps_nm", defaults["ps_nm"])));
+	inhWidthSpin->setValue(Util::getInt(configLoader->getParameter("inh_columns", defaults["inh_columns"])));
+	inhHeightSpin->setValue(Util::getInt(configLoader->getParameter("inh_rows", defaults["inh_rows"])));
+
 	exc.aSpin->setValue(Util::getFloat(configLoader->getParameter("exc_a", defaults["exc_a"])));
 	exc.bSpin->setValue(Util::getFloat(configLoader->getParameter("exc_b", defaults["exc_b"])));
 	exc.cSpin->setValue(Util::getFloat(configLoader->getParameter("exc_c", defaults["exc_c"])));
 	exc.dSpin->setValue(Util::getFloat(configLoader->getParameter("exc_d", defaults["exc_d"])));
 
-	//ls.nmCombo->setCurrentIndex(Util::getInt(configLoader->getParameter("ls_nm", defaults["ls_nm"])));
 	inh.aSpin->setValue(Util::getFloat(configLoader->getParameter("inh_a", defaults["inh_a"])));
 	inh.bSpin->setValue(Util::getFloat(configLoader->getParameter("inh_b", defaults["inh_b"])));
 	inh.cSpin->setValue(Util::getFloat(configLoader->getParameter("inh_c", defaults["inh_c"])));
 	inh.dSpin->setValue(Util::getFloat(configLoader->getParameter("inh_d", defaults["inh_d"])));
-
 
 };
 

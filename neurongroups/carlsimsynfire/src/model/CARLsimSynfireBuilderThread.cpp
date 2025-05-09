@@ -29,14 +29,20 @@ CARLsimSynfireBuilderThread::~CARLsimSynfireBuilderThread(){
 
 /*! Prepares class before it runs as a separate thread to add one or more neuron groups */
 void CARLsimSynfireBuilderThread::prepareAddNeuronGroups(
-				const unsigned securities, 
-				const unsigned states,
+
+				//const QString& name, 
+				//const QString& description,
+
 				const QString& prefix,
 
-				const unsigned space,
-				const int pos_x, 
-				const int pos_y, 
-				const int pos_z,
+				const unsigned segments,
+
+				const int exc_columns,
+				const int exc_rows,
+
+				const int inh_columns,
+				const int inh_rows,
+
 				const NeuronParam_t &exc,
 				const NeuronParam_t &inh
 
@@ -47,16 +53,26 @@ void CARLsimSynfireBuilderThread::prepareAddNeuronGroups(
 	if(Globals::getNetwork()->hasArchives())
 		throw SpikeStreamException("Cannot add neuron group to a locked network.\nDelete archives linked with this network and try again");
 
+	//this->name = name;
+	//this->description = description;
 
-	this->securities = securities;
-	this->states = states;
+	this->prefix = prefix;
 
+	this->segments = segments;
+	//this->states = states;
+	this->exc_columns = exc_columns;
+	this->exc_rows = exc_rows;
 
-	this->space = space;
+	this->inh_columns = inh_columns;
+	this->inh_rows = inh_rows;
 
-	this->xStart = pos_x;
-	this->yStart = pos_y;
-	this->zStart = pos_z;
+	// defauls from gui ?
+
+	this->space = 1;
+
+	this->xStart = 1;
+	this->yStart = 1;
+	this->zStart = 2;
 
 	this->spacing = 1;
 	this->density = 1;
@@ -168,7 +184,7 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 	double securities_space = 2.0; // 2 columns between each security cluster 
 	double maxWidth = 0.0;
 
-	QString prefix = "G";     // get this from the parameters
+	//QString prefix = "G";     // get this from the parameters
 
 
 	// Maybe check if neuron group exists, and than set the check in the widget?
@@ -186,21 +202,21 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 
 	float zSpace_exc_inh = 3.0;
 
-	// Debug former:  unittest18d_epuck_gui.config !!!
-	// 
-	// start with hard wired parameter for 2 segments 
-	// Loop over Segments  -> param  
-	// columns = 5
-	// rows = 20 for exc   total -> GUI readonly
-	// rows = 5 for inh    total -> GUI readonly 
-	// 
-	int segments = 10;
+	//// Debug former:  unittest18d_epuck_gui.config !!!
+	//// 
+	//// start with hard wired parameter for 2 segments 
+	//// Loop over Segments  -> param  
+	//// columns = 5
+	//// rows = 20 for exc   total -> GUI readonly
+	//// rows = 5 for inh    total -> GUI readonly 
+	//// 
+	//int segments = 10;
 
-	int exc_columns = 10;
-	int exc_rows = 10;
+	//int exc_columns = 10;
+	//int exc_rows = 10;
 
-	int inh_columns = 5;
-	int inh_rows = 5;
+	//int inh_columns = 5;
+	//int inh_rows = 5;
 
 	// ISSUE: index by 0 or 1 ???  -> CS: 0  NS/Math: 1  ???  paper diverge => primary paparer is Hepnre / Mayr => 0 
 
@@ -210,7 +226,6 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 		auto _zStart = zStart; // save
 		zStart += zSpace_exc_inh;
 
-		// TODO 
 		QString name = QString("%1%2").arg(prefix).arg("stim"); // i_segment
 		QString description = QString("%1 %2").arg("Synfire").arg("stim");
 		paramMap.clear();
@@ -239,7 +254,7 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 
 		// Keep on the ground due Paper 
 		// align to the back
-		auto x = xStart + inh_rows + 1;  // shift right
+		auto x = xStart + inh_rows + 1;  // shift right    
 		auto z = zStart;
 		for (int row = 1; row <= exc_rows; row++) {
 			auto y = yStart;

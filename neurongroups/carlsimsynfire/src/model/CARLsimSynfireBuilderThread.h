@@ -41,13 +41,24 @@ namespace spikestream {
 			//void prepareAddNeuronGroups(const QString& name, const QString& description, QHash<QString, double>& paramMap);
 			// No reason to use a untyped param list
 			void prepareAddNeuronGroups(			
-				const unsigned securities, 
-				const unsigned states,
+
+
 				const QString& prefix,
-				const unsigned space,
-				const int pos_x, 
-				const int pos_y, 
-				const int pos_z,
+
+				const unsigned segments,
+
+				//const unsigned space,
+				//const int pos_x, 
+				//const int pos_y, 
+				//const int pos_z,
+
+				const int exc_columns, 
+				const int exc_rows, 
+
+				const int inh_columns, 
+				const int inh_rows, 
+
+
 				const NeuronParam_t &exc,
 				const NeuronParam_t &inh
 				);
@@ -59,8 +70,12 @@ namespace spikestream {
 
 		private:
 
+			//QString name;
+			//QString description;
+
 			QString prefix;
-			unsigned securities; // 1..3, default 1
+
+
 			unsigned states; // 2..5, default 3			
 
 			unsigned space;
@@ -114,6 +129,39 @@ namespace spikestream {
 
 			/*! The total number of neurons to be added. */
 			unsigned totalNumberOfNeurons;
+
+
+
+//// Parameters Kremkow 2010
+//
+//			const QString prefix = "G";     // get this from the parameters    this descripption, this is the group prexix 
+//				// Caution: Hoepner only use C. C for Core
+//
+//			// Debug former:  unittest18d_epuck_gui.config !!!
+//	// 
+//	// start with hard wired parameter for 2 segments 
+//	// Loop over Segments  -> param  
+//	// columns = 5
+//	// rows = 20 for exc   total -> GUI readonly
+//	// rows = 5 for inh    total -> GUI readonly 
+//	// 
+//			const int segments = 10;
+//
+//			const int exc_columns = 10;
+//			const int exc_rows = 10;
+//
+//			const int inh_columns = 5;
+//			const int inh_rows = 5;
+//
+
+			unsigned segments;
+
+			int exc_columns;		
+			int exc_rows;
+
+			int inh_columns;		
+			int inh_rows;
+
 
 
 			//=======================  METHODS  ==========================

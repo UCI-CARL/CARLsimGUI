@@ -44,8 +44,6 @@ namespace spikestream {
 			/*! Displays progress with the operation */
 			QProgressDialog* progressDialog;
 
-
-
 			QLineEdit* prefixEdit; // corresponds to the name 
 
 
@@ -67,43 +65,47 @@ namespace spikestream {
 		
 				//rn, bfb, lc, sn, vta, na;    
 
-			QSpinBox* securitiesSpin; // 1..10, default 1
-			QSpinBox* statesSpin; // 2..5, default 3
+			QSpinBox* segmentsSpin; // 1,4, 10
 
-			// Layout
-			QComboBox* policyCombo; // 0..Standard
-			QSpinBox* spaceSpin; // 0..10, default 3;
+//			QSpinBox* statesSpin; // 2..5, default 3
+
+			//// Layout
+			//QComboBox* policyCombo; // 0..Standard
+			//QSpinBox* spaceSpin; // 0..10, default 3;
 
 
-			/*! To enter the name of the neuron group */
-			QLineEdit* nameEdit;
+			///*! To enter the name of the neuron group */
+			//QLineEdit* nameEdit;
 
-			/*! To enter a description of the neuron group */
-			QLineEdit* descriptionEdit;
+			///*! To enter a description of the neuron group */
+			//QLineEdit* descriptionEdit;
 
-			/*! To enter x position of neuron group to be created */
-			QLineEdit* xPosEdit;
+			///*! To enter x position of neuron group to be created */
+			//QLineEdit* xPosEdit;
 
-			/*! To enter y position of neuron group to be created */
-			QLineEdit* yPosEdit;
+			///*! To enter y position of neuron group to be created */
+			//QLineEdit* yPosEdit;
 
-			/*! To enter z position of neuron group to be created */
-			QLineEdit* zPosEdit;
-
-			/*! To enter width of neuron group */
-			QLineEdit* widthEdit;
+			///*! To enter z position of neuron group to be created */
+			//QLineEdit* zPosEdit;
 
 			/*! To enter width of neuron group */
-			QLineEdit* lengthEdit;
+			QSpinBox* excWidthSpin;
 
 			/*! To enter height of neuron group */
-			QLineEdit* heightEdit;
+			QSpinBox* excHeightSpin;
 
-			/*! To enter spacing between neurons */
-			QLineEdit* spacingEdit;
+			/*! To enter width of neuron group */
+			QSpinBox* inhWidthSpin;
 
-			/*! To enter density of neuron group - the probability that a neuron is added at a particular position */
-			QLineEdit* densityEdit;
+			/*! To enter width of neuron group */
+			QSpinBox* inhHeightSpin;
+
+			///*! To enter spacing between neurons */
+			//QLineEdit* spacingEdit;
+
+			///*! To enter density of neuron group - the probability that a neuron is added at a particular position */
+			//QLineEdit* densityEdit;
 
 
 			/*! Map of line edits to set the percentage of neurons of different types
