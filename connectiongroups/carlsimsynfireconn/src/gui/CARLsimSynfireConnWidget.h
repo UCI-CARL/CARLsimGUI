@@ -45,12 +45,18 @@ namespace spikestream {
 
 			QLineEdit* prefixEdit; // corresponds to the name 
 
+			QSpinBox* segmentsSpin; // 1,4, 10
+
+			/*! Connect last segment to the first (loop). */
+			QCheckBox* loopCheck;
+
 			// Connection parameters 
 			struct ConnectionParam_t {
 				bool active;
 				QDoubleSpinBox* weightsSpin;
 				QDoubleSpinBox* weightFactorSpin; // CUBA/COBA adaption
 				QSpinBox* delaysSpin;
+				QSpinBox* synPerNeuronSpin;
 				void addGroup(QString name, QGridLayout* gridLayout, ConfigLoader* configLoader, bool inhib = false ); // Group Content
 			} exc2exc, exc2inh, inh2exc;  // fan in from pre synaptic group either exc or stim
 

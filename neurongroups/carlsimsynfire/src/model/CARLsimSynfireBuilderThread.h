@@ -40,8 +40,7 @@ namespace spikestream {
 
 			//void prepareAddNeuronGroups(const QString& name, const QString& description, QHash<QString, double>& paramMap);
 			// No reason to use a untyped param list
-			void prepareAddNeuronGroups(			
-
+			void prepareAddNeuronGroups(
 
 				const QString& prefix,
 
@@ -52,12 +51,20 @@ namespace spikestream {
 				//const int pos_y, 
 				//const int pos_z,
 
-				const int exc_columns, 
-				const int exc_rows, 
+				const int stim_columns,
+				const int stim_rows,
 
-				const int inh_columns, 
-				const int inh_rows, 
+				const int exc_columns,
+				const int exc_rows,
 
+				const int inh_columns,
+				const int inh_rows,
+
+				const bool coba,
+				const int coba_ampa,
+				const int coba_nmda,
+				const int coba_gaba_a,
+				const int coba_gaba_b,
 
 				const NeuronParam_t &exc,
 				const NeuronParam_t &inh
@@ -74,7 +81,6 @@ namespace spikestream {
 			//QString description;
 
 			QString prefix;
-
 
 			unsigned states; // 2..5, default 3			
 
@@ -156,13 +162,20 @@ namespace spikestream {
 
 			unsigned segments;
 
+			int stim_columns;
+			int stim_rows;
+
 			int exc_columns;		
 			int exc_rows;
 
 			int inh_columns;		
 			int inh_rows;
 
-
+			bool coba;
+			int coba_ampa;
+			int coba_nmda;
+			int coba_gaba_a;
+			int coba_gaba_b;
 
 			//=======================  METHODS  ==========================
 			void addNeuronGroupsToDatabase();

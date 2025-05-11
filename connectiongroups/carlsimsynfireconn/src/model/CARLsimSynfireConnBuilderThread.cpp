@@ -44,8 +44,6 @@ void CARLsimSynfireConnBuilderThread::run() {
 		if (stopThread)
 			return;
 
-		//QList<ConnectionGroup*> conGrpList;  --> moved 
-		//conGrpList.append(newConnectionGroup);  --> moved to buildConnectionGroup(s)
 		Globals::getNetwork()->addConnectionGroups(conGrpList);
 
 		//Wait for network to finish adding connection groups
@@ -85,6 +83,7 @@ void CARLsimSynfireConnBuilderThread::buildConnectionGroup(){
 	QHash<QString, double> defaultParameterMaps = threadNetworkDao->getDefaultSynapseParameters(synapseType.getID());
 	defaultParameterMaps["Learning"] = 0;
 
+
 	// TODO iterate over segements
 	// TODO special case stim
 
@@ -95,11 +94,8 @@ void CARLsimSynfireConnBuilderThread::buildConnectionGroup(){
 	//auto n = 100; 
 
 
-
-
-
 	//for (int i_segment = 0; i_segment < segments; i_segment++) {
-	for (int i_segment = 0; i_segment < segments + 1; i_segment++) {  // TODO param round robin
+	for (int i_segment = 0; i_segment < segments + (loop ? 1 : 0); i_segment++) {  
 
 		// Connect exc[i-1] -> exc[i]
 		{
@@ -119,7 +115,7 @@ void CARLsimSynfireConnBuilderThread::buildConnectionGroup(){
 			QVector<unsigned int>& postIds = excNeuronIds[i_segment < segments ? i_segment : 0];
 			for (int i = 0; i < post->size(); i++) {
 				unsigned int post_id = postIds[i]; 
-				for (int j = 0; j < exc2exc_syn_per_neuron; j++) {
+				for (int j = 0; j < exc2exc.syn_per_neuron; j++) {
 					auto k = Util::getRandomUInt(0, preIds.size()-1);
 					unsigned int pre_id = preIds[k];
 					newConnectionGroup->addConnection(pre_id, post_id, exc2exc.delays, exc2exc.weights);
@@ -148,7 +144,7 @@ void CARLsimSynfireConnBuilderThread::buildConnectionGroup(){
 			QVector<unsigned int>& postIds =inhNeuronIds[i_segment < segments ? i_segment : 0];
 			for (int i = 0; i < post->size(); i++) {
 				unsigned int post_id = postIds[i];
-				for (int j = 0; j < exc2inh_syn_per_neuron; j++) {
+				for (int j = 0; j < exc2inh.syn_per_neuron; j++) {
 					auto k = Util::getRandomUInt(0, preIds.size() - 1);
 					unsigned int pre_id = preIds[k];
 					newConnectionGroup->addConnection(pre_id, post_id, exc2inh.delays, exc2inh.weights);
@@ -176,7 +172,7 @@ void CARLsimSynfireConnBuilderThread::buildConnectionGroup(){
 			QVector<unsigned int>& postIds = excNeuronIds[i_segment < segments ? i_segment : 0];
 			for (int i = 0; i < post->size(); i++) {
 				unsigned int post_id = postIds[i];
-				for (int j = 0; j < inh2exc_syn_per_neuron; j++) {
+				for (int j = 0; j < inh2exc.syn_per_neuron; j++) {
 					auto k = Util::getRandomUInt(0, preIds.size() - 1);
 					unsigned int pre_id = preIds[k];
 					newConnectionGroup->addConnection(pre_id, post_id, inh2exc.delays, inh2exc.weights);
@@ -191,8 +187,6 @@ void CARLsimSynfireConnBuilderThread::buildConnectionGroup(){
 }
 
 
-
-
 /*----------------------------------------------------------*/
 /*-----                 PRIVATE METHODS                -----*/
 /*----------------------------------------------------------*/
@@ -203,11 +197,6 @@ void CARLsimSynfireConnBuilderThread::checkParameters() {
 
 	// references to neuron groups
 	QHash<QString, NeuronGroup*>& groupsMap = Globals::getNetwork()->getNeuronGroupsMap(); // build only once
-
-
-	// set over constructor
-	//auto prefix = "G"; // TODO from param file
-	//auto segments = 10; // TODO from param file
 
 	{
 		QString name = QString("%1%2").arg(prefix).arg("stim");
@@ -247,7 +236,5 @@ void CARLsimSynfireConnBuilderThread::checkParameters() {
 		}
 		inhNeuronIds.append(ids);
 	}
-
-	
 
 }

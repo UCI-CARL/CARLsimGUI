@@ -89,6 +89,13 @@ namespace spikestream {
 			///*! To enter z position of neuron group to be created */
 			//QLineEdit* zPosEdit;
 
+						/*! To enter width of neuron group */
+			QSpinBox* stimWidthSpin;
+
+			/*! To enter height of neuron group */
+			QSpinBox* stimHeightSpin;
+
+
 			/*! To enter width of neuron group */
 			QSpinBox* excWidthSpin;
 
@@ -106,6 +113,13 @@ namespace spikestream {
 
 			///*! To enter density of neuron group - the probability that a neuron is added at a particular position */
 			//QLineEdit* densityEdit;
+
+			QCheckBox* cobaCheck;
+			
+			QSpinBox* cobaAmpaSpin;
+			QSpinBox* cobaNmdaSpin;
+			QSpinBox* cobaGabaASpin;
+			QSpinBox* cobaGabaBSpin;
 
 
 			/*! Map of line edits to set the percentage of neurons of different types

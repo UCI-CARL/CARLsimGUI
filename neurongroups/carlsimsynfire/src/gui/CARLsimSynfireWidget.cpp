@@ -111,41 +111,59 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	templateCombo->setMinimumSize(50, 20);
 	mainVBox->addWidget(templateCombo);
 
+	{
+		QHBoxLayout* abcdLayout = new QHBoxLayout();
+		abcdLayout->addSpacing(10);
 
-	prefixEdit = new QLineEdit("syn");   // Gexe  Ginh   Group Prefix   syn is the project 
-	QHBoxLayout* prefixLayout = new QHBoxLayout();
-	prefixLayout->addWidget(new QLabel("Prefix:"));
-	prefixLayout->addWidget(prefixEdit);
-	prefixLayout->addStretch(1);
-	mainVBox->addLayout(prefixLayout);
-	mainVBox->addSpacing(10);
+		prefixEdit = new QLineEdit("syn");   // Gexe  Ginh   Group Prefix   syn is the project 
+		abcdLayout->addWidget(new QLabel("Prefix:"));
+		abcdLayout->addWidget(prefixEdit);
+
+		abcdLayout->addSpacing(10);
+
+		segmentsSpin = new QSpinBox();
+		segmentsSpin->setMinimum(1);
+		segmentsSpin->setMaximum(10);
+		segmentsSpin->setValue(4);
+		abcdLayout->addWidget(new QLabel("Segments:"));
+		abcdLayout->addWidget(segmentsSpin);
+
+		abcdLayout->addStretch(1);
+
+		mainVBox->addLayout(abcdLayout);
+		mainVBox->addSpacing(5);
+	}
 
 
-	// Neuron Parameter Groups		
-	auto groupBox = new QGroupBox("Neuron parameter", parent);
-	QGridLayout* gridLayout = new QGridLayout();
-	gridLayout->setMargin(10);
-	exc.addGroup("Excitatory Groups (RS)", gridLayout, configLoader);
-	inh.addGroup("Inhibitory Groups (FS)", gridLayout, configLoader);
-	groupBox->setLayout(gridLayout);
-	mainVBox->addWidget(groupBox);
-
-
-	segmentsSpin = new QSpinBox();
-	segmentsSpin->setMinimum(1);
-	segmentsSpin->setMaximum(10);
-	segmentsSpin->setValue(4); 
-	QHBoxLayout* segmentsLayout = new QHBoxLayout();
-	segmentsLayout->addWidget(new QLabel("Segments"));
-	segmentsLayout->addWidget(segmentsSpin);
-	segmentsLayout->addStretch(1);
-	mainVBox->addLayout(segmentsLayout);
-	mainVBox->addSpacing(5);
-	
 	{
 		auto groupBox = new QGroupBox("Segment groups layout", parent);
 		QGridLayout* gridLayout = new QGridLayout();
 		gridLayout->setMargin(10);
+
+		{
+			int row = gridLayout->rowCount();
+			gridLayout->addWidget(new QLabel("Stimulus"), row, 0);
+			QHBoxLayout* abcdLayout = new QHBoxLayout();
+			abcdLayout->addSpacing(10);
+
+			stimWidthSpin = new QSpinBox();
+			stimWidthSpin->setMinimum(1);
+			stimWidthSpin->setMaximum(1000);
+			stimWidthSpin->setValue(50);
+			abcdLayout->addWidget(new QLabel("width:"));
+			abcdLayout->addWidget(stimWidthSpin);
+
+			stimHeightSpin = new QSpinBox();
+			stimHeightSpin->setMinimum(1);
+			stimHeightSpin->setMaximum(1000);
+			stimHeightSpin->setValue(50);
+			abcdLayout->addWidget(new QLabel("height:"));
+			abcdLayout->addWidget(stimHeightSpin);
+			abcdLayout->addStretch(1);
+
+			gridLayout->addLayout(abcdLayout, row, 1);
+		}
+
 
 		{
 			int row = gridLayout->rowCount();
@@ -157,14 +175,14 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 			excWidthSpin->setMinimum(1);
 			excWidthSpin->setMaximum(1000);
 			excWidthSpin->setValue(50);
-			abcdLayout->addWidget(new QLabel("Width:"));
+			abcdLayout->addWidget(new QLabel("width:"));
 			abcdLayout->addWidget(excWidthSpin);
 
 			excHeightSpin = new QSpinBox();
 			excHeightSpin->setMinimum(1);
 			excHeightSpin->setMaximum(1000);
 			excHeightSpin->setValue(50);
-			abcdLayout->addWidget(new QLabel("Height:"));
+			abcdLayout->addWidget(new QLabel("height:"));
 			abcdLayout->addWidget(excHeightSpin);
 			abcdLayout->addStretch(1);
 
@@ -181,14 +199,14 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 			inhWidthSpin->setMinimum(1);
 			inhWidthSpin->setMaximum(1000);
 			inhWidthSpin->setValue(50);
-			abcdLayout->addWidget(new QLabel("Width"));
+			abcdLayout->addWidget(new QLabel("width"));
 			abcdLayout->addWidget(inhWidthSpin);
 
 			inhHeightSpin = new QSpinBox();
 			inhHeightSpin->setMinimum(1);
 			inhHeightSpin->setMaximum(1000);
 			inhHeightSpin->setValue(50);
-			abcdLayout->addWidget(new QLabel("Height:"));
+			abcdLayout->addWidget(new QLabel("height:"));
 			abcdLayout->addWidget(inhHeightSpin);
 			abcdLayout->addStretch(1);
 
@@ -199,43 +217,74 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 		}
 	}
 
+	// Neuron Parameter Groups		
+	auto groupBox = new QGroupBox("Neuron parameter", parent);
+	QGridLayout* gridLayout = new QGridLayout();
+	gridLayout->setMargin(10);
+	exc.addGroup("Excitatory Groups (RS)", gridLayout, configLoader);
+	inh.addGroup("Inhibitory Groups (FS)", gridLayout, configLoader);
+	groupBox->setLayout(gridLayout);
+	mainVBox->addWidget(groupBox);
 
 
-	//statesSpin = new QSpinBox();
-	//statesSpin->setMinimum(2);  // Idle, Filled
-	//statesSpin->setMaximum(5);  // Experimental
-	//statesSpin->setValue(3);	// Idle, Filled, Resting
-	//QHBoxLayout* indicatorsLayout = new QHBoxLayout();
-	//indicatorsLayout->addWidget(new QLabel("States:"));
-	//indicatorsLayout->addWidget(statesSpin);
-	//indicatorsLayout->addWidget(new QLabel("(internal state neurons)"));
-	//indicatorsLayout->addStretch(1);
-	//mainVBox->addLayout(indicatorsLayout);
-	//mainVBox->addSpacing(10);
+	{
+		auto groupBox = new QGroupBox("Synapses", parent);
+		QGridLayout* gridLayout = new QGridLayout();
+		gridLayout->setMargin(10);
+
+		{
+			int row = gridLayout->rowCount();
+
+			QHBoxLayout* abcdLayout = new QHBoxLayout();
+
+			cobaCheck = new QCheckBox();
+			cobaCheck->setChecked(false);
+			abcdLayout->addWidget(new QLabel("COBA:"));
+			abcdLayout->addWidget(cobaCheck);
+
+			abcdLayout->addSpacing(10);
+
+			cobaAmpaSpin = new QSpinBox();
+			cobaAmpaSpin->setMinimum(1);
+			cobaAmpaSpin->setMaximum(10);
+			segmentsSpin->setValue(4);
+			abcdLayout->addWidget(new QLabel("AMPA:"));
+			abcdLayout->addWidget(cobaAmpaSpin);
+
+			cobaNmdaSpin = new QSpinBox();
+			cobaNmdaSpin->setMinimum(1);
+			cobaNmdaSpin->setMaximum(10);
+			segmentsSpin->setValue(4);
+			abcdLayout->addWidget(new QLabel("NMDA:"));
+			abcdLayout->addWidget(cobaNmdaSpin);
+
+			cobaGabaASpin = new QSpinBox();
+			cobaGabaASpin->setMinimum(1);
+			cobaGabaASpin->setMaximum(10);
+			segmentsSpin->setValue(4);
+			abcdLayout->addWidget(new QLabel("GABAa:"));
+			abcdLayout->addWidget(cobaGabaASpin);
+
+			cobaGabaBSpin = new QSpinBox();
+			cobaGabaBSpin->setMinimum(1);
+			cobaGabaBSpin->setMaximum(10);
+			segmentsSpin->setValue(4);
+			abcdLayout->addWidget(new QLabel("GABAb:"));
+			abcdLayout->addWidget(cobaGabaBSpin);
+
+			abcdLayout->addStretch(1);
+
+			gridLayout->addLayout(abcdLayout, row, 1);
+
+		}
+		groupBox->setLayout(gridLayout);
+		mainVBox->addWidget(groupBox);
+	}
 
 
 
 
-	//policyCombo = new QComboBox();
-	//policyCombo->addItem("Standard"); // Rows 
-	//QHBoxLayout* policyLayout = new QHBoxLayout();
-	//policyLayout->addWidget(new QLabel("Layout Policy"));
-	//policyLayout->addWidget(policyCombo);
-	//policyLayout->addStretch(1);
-	//mainVBox->addLayout(policyLayout);
-	//mainVBox->addSpacing(10);
 
-	//spaceSpin = new QSpinBox();
-	//spaceSpin->setMinimum(0);
-	//spaceSpin->setMaximum(10);
-	//spaceSpin->setValue(1);
-	//QHBoxLayout* spaceLayout = new QHBoxLayout();
-	//spaceLayout->addWidget(new QLabel("Space between Channels:"));
-	//spaceLayout->addWidget(spaceSpin);
-	//spaceLayout->addWidget(new QLabel("grid points"));
-	//spaceLayout->addStretch(1);
-	//mainVBox->addLayout(spaceLayout);
-	//mainVBox->addSpacing(10);
 
 
 	//Validators for double and integer parameters
@@ -243,59 +292,6 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	QDoubleValidator* percentValidator = new QDoubleValidator(0.0, 100.0, 2, this);
 	QIntValidator* posValidator = new QIntValidator(-1000000, 1000000, this);
 	QIntValidator* positiveIntValidator = new QIntValidator(0, 1000000, this);
-
-	////Add name and description widgets
-	//nameEdit = new QLineEdit("Unnamed");
-	//descriptionEdit = new QLineEdit("Undescribed");
-	//QHBoxLayout* nameDescLayout = new QHBoxLayout();
-	//nameDescLayout->addWidget(new QLabel("Name: "));
-	//nameDescLayout->addWidget(nameEdit);
-	//nameDescLayout->addWidget(new QLabel("Description: "));
-	//nameDescLayout->addWidget(descriptionEdit);
-	//mainVBox->addLayout(nameDescLayout);
-	//mainVBox->addSpacing(10);
-
-	////Add position input widgets
-	//xPosEdit = new QLineEdit("1");
-	//xPosEdit->setMaximumSize(100 , 30);
-	//xPosEdit->setValidator(posValidator);
-	//yPosEdit = new QLineEdit("1");
-	//yPosEdit->setMaximumSize(100 , 30);
-	//yPosEdit->setValidator(posValidator);
-	//zPosEdit = new QLineEdit("2");
-	//zPosEdit->setMaximumSize(100 , 30);
-	//zPosEdit->setValidator(posValidator);
-	//QHBoxLayout* positionLayout = new QHBoxLayout();
-	//positionLayout->addWidget(new QLabel("Position. x: "));
-	//positionLayout->addWidget(xPosEdit);
-	//positionLayout->addWidget(new QLabel(" y: "));
-	//positionLayout->addWidget(yPosEdit);
-	//positionLayout->addWidget(new QLabel(" z: "));
-	//positionLayout->addWidget(zPosEdit);
-	//positionLayout->addStretch(5);
-	//mainVBox->addLayout(positionLayout);
-	//mainVBox->addSpacing(10);
-
-	////Add width, length and height
-	//widthEdit = new QLineEdit("10");
-	//widthEdit->setMaximumSize(100, 30);
-	//widthEdit->setValidator(positiveIntValidator);
-	//lengthEdit = new QLineEdit("10");
-	//lengthEdit->setMaximumSize(100, 30);
-	//lengthEdit->setValidator(positiveIntValidator);
-	//heightEdit = new QLineEdit("10");
-	//heightEdit->setMaximumSize(100, 30);
-	//heightEdit->setValidator(positiveIntValidator);
-	//QHBoxLayout* sizeLayout = new QHBoxLayout();
-	//sizeLayout->addWidget(new QLabel("Width (X axis): "));
-	//sizeLayout->addWidget(widthEdit);
-	//sizeLayout->addWidget(new QLabel(" Length (Y axis): "));
-	//sizeLayout->addWidget(lengthEdit);
-	//sizeLayout->addWidget(new QLabel(" Height (Z axis): "));
-	//sizeLayout->addWidget(heightEdit);
-	//sizeLayout->addStretch(5);
-	//mainVBox->addLayout(sizeLayout);
-	//mainVBox->addSpacing(10);
 
 
 	//Add button
@@ -311,7 +307,6 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 
 	this->setMinimumSize(547, 339);
 
-
 	//Create builder thread class
 	builderThread = new CARLsimSynfireBuilderThread();
 	connect (builderThread, SIGNAL(finished()), this, SLOT(builderThreadFinished()));
@@ -323,6 +318,9 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	defaults["prefix"] = "C";     // Gexc  Ginh, Gstim  -> G  depends on paper and .. 
 
 	defaults["segments"] = "4";
+
+	defaults["stim_columns"] = "10";
+	defaults["stim_rows"] = "20";
 
 	defaults["exc_columns"] = "10";
 	defaults["exc_rows"] = "20";
@@ -346,6 +344,12 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	defaults["inh_c"] = "-65.0";
 	defaults["inh_d"] = "2.0";
 
+	// coba
+	defaults["coba"] = "true";
+	defaults["ampa"] = "1";
+	defaults["nmda"] = "2";
+	defaults["gaba_a"] = "10";
+	defaults["gaba_b"] = "10";
 
 	updateTemplate(0);
 
@@ -404,10 +408,17 @@ void CARLsimSynfireWidget::addButtonClicked(){
 		builderThread->prepareAddNeuronGroups(	
 			prefixEdit->text(),
 			segmentsSpin->value(),
+			stimWidthSpin->value(),
+			stimHeightSpin->value(),
 			excWidthSpin->value(),
 			excHeightSpin->value(),
 			inhWidthSpin->value(),
 			inhHeightSpin->value(),
+			cobaCheck->isChecked(),
+			cobaAmpaSpin->value(),
+			cobaNmdaSpin->value(),
+			cobaGabaASpin->value(),
+			cobaGabaBSpin->value(),
 			CARLsimSynfireBuilderThread::NeuronParam_t( 
 				exc.aSpin->value(), exc.bSpin->value(), exc.cSpin->value(), exc.dSpin->value()),
 			CARLsimSynfireBuilderThread::NeuronParam_t(
@@ -476,6 +487,9 @@ void CARLsimSynfireWidget::updateTemplate(int i) {
 
 	segmentsSpin->setValue(Util::getInt(configLoader->getParameter("segments", defaults["segments"])));
 
+	stimWidthSpin->setValue(Util::getInt(configLoader->getParameter("stim_columns", defaults["stim_columns"])));
+	stimHeightSpin->setValue(Util::getInt(configLoader->getParameter("stim_rows", defaults["stim_rows"])));
+
 	excWidthSpin->setValue(Util::getInt(configLoader->getParameter("exc_columns", defaults["exc_columns"])));
 	excHeightSpin->setValue(Util::getInt(configLoader->getParameter("exc_rows", defaults["exc_rows"])));
 
@@ -491,6 +505,14 @@ void CARLsimSynfireWidget::updateTemplate(int i) {
 	inh.bSpin->setValue(Util::getFloat(configLoader->getParameter("inh_b", defaults["inh_b"])));
 	inh.cSpin->setValue(Util::getFloat(configLoader->getParameter("inh_c", defaults["inh_c"])));
 	inh.dSpin->setValue(Util::getFloat(configLoader->getParameter("inh_d", defaults["inh_d"])));
+
+	cobaCheck->setChecked(Util::getBool(configLoader->getParameter("coba", defaults["coba"])));
+	cobaAmpaSpin->setValue(Util::getInt(configLoader->getParameter("ampa", defaults["ampa"])));
+	cobaNmdaSpin->setValue(Util::getInt(configLoader->getParameter("nmda", defaults["nmda"])));
+	cobaGabaASpin->setValue(Util::getInt(configLoader->getParameter("gaba_a", defaults["gaba_a"])));
+	cobaGabaBSpin->setValue(Util::getInt(configLoader->getParameter("gaba_b", defaults["gaba_b"])));
+
+
 
 };
 

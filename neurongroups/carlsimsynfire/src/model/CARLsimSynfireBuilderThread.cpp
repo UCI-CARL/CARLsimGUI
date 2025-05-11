@@ -37,11 +37,20 @@ void CARLsimSynfireBuilderThread::prepareAddNeuronGroups(
 
 				const unsigned segments,
 
+				const int stim_columns,
+				const int stim_rows,
+
 				const int exc_columns,
 				const int exc_rows,
 
 				const int inh_columns,
 				const int inh_rows,
+
+				const bool coba,
+				const int coba_ampa,
+				const int coba_nmba,
+				const int coba_gaba_a,
+				const int coba_gaba_b,
 
 				const NeuronParam_t &exc,
 				const NeuronParam_t &inh
@@ -53,27 +62,36 @@ void CARLsimSynfireBuilderThread::prepareAddNeuronGroups(
 	if(Globals::getNetwork()->hasArchives())
 		throw SpikeStreamException("Cannot add neuron group to a locked network.\nDelete archives linked with this network and try again");
 
+	//Name and description generated
 	//this->name = name;
 	//this->description = description;
 
 	this->prefix = prefix;
 
 	this->segments = segments;
-	//this->states = states;
+
+	//this->loop = loop;
+
+	this->stim_columns = stim_columns;
+	this->stim_rows = stim_rows;
+
 	this->exc_columns = exc_columns;
 	this->exc_rows = exc_rows;
 
 	this->inh_columns = inh_columns;
 	this->inh_rows = inh_rows;
 
+	this->coba = coba;
+	this->coba_ampa = coba_ampa;
+	this->coba_nmda = coba_nmba;
+	this->coba_gaba_a = coba_gaba_a;
+	this->coba_gaba_b = coba_gaba_b;
+
 	// defauls from gui ?
-
 	this->space = 1;
-
 	this->xStart = 1;
 	this->yStart = 1;
 	this->zStart = 2;
-
 	this->spacing = 1;
 	this->density = 1;
 
@@ -256,9 +274,9 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 		// align to the back
 		auto x = xStart + inh_rows + 1;  // shift right    
 		auto z = zStart;
-		for (int row = 1; row <= exc_rows; row++) {
+		for (int row = 1; row <= stim_rows; row++) {
 			auto y = yStart;
-			for (int col = 1; col <= exc_columns; col++) {
+			for (int col = 1; col <= stim_columns; col++) {
 				group->addNeuron(x, y, z);
 				totalNumberOfNeurons++;
 				y++; // back
@@ -282,22 +300,21 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 		auto _zStart = zStart; // save
 		zStart += zSpace_exc_inh;
 		{
-			// TODO 
 			QString name = QString("%1%2%3").arg(prefix).arg("exc").arg(i_segment); // i_segment
 			QString description = QString("%1 %2 (%3)").arg("Synfire").arg("Exc").arg(i_segment);  
 			paramMap.clear();
-			paramMap["Conductances"] = 0.; // TODO 
 
-			//// TODO  provide param for ... nS  see papaer
-			//paramMap["Conductances"] = 1.; // 
-			// [USER ERROR setConductances(1,1,0,0,0,0)] tdAMPA must be positive.
-			//auto conductances = (bool)parameterMap["Conductances"];
-			//if (conductances) {
-			//	auto tdAMPA = (int)parameterMap["Conductances.tdAMPA"];
-			//	auto tdNMDA = (int)parameterMap["Conductances.tdNMDA"];
-			//	auto tdGABAa = (int)parameterMap["Conductances.tdGABAa"];
-			//	auto tdGABAb = (int)parameterMap["Conductances.tdGABAb"];
-				
+	
+
+			// https://uci-carl.github.io/CARLsim6/ch3_neurons_synapses_groups.html#ch3s2_synapses
+
+			// CarlsimLoader::addExcitatoryNeuronGroup
+			paramMap["Conductances"] = this->coba ? 1. : 0.;
+			paramMap["Conductances.tdAMPA"] = this->coba_ampa; 
+			paramMap["Conductances.tdNMDA"] = this->coba_nmda;
+			paramMap["Conductances.tdGABAa"] = this->coba_gaba_a;
+			paramMap["Conductances.tdGABAb"] = this->coba_gaba_b;
+			
 
 			NeuronGroup* group = new NeuronGroup(NeuronGroupInfo(0, name, description, paramMap, excitatoryNeuron));
 
@@ -315,9 +332,9 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 			// Keep on the ground due Paper 
 			// align to the back
 			auto x = xStart + inh_rows + 1;  // shift right
-			auto z = zStart;
+			auto z = zStart + std::abs(stim_rows - exc_rows) / 2.0; ;;
 			for (int row = 1; row <= exc_rows; row++) {
-				auto y = yStart;
+				auto y = yStart + std::abs(stim_columns - exc_columns) / 2.0;
 				for (int col = 1; col <= exc_columns; col++) {
 					group->addNeuron(x, y, z);
 					totalNumberOfNeurons++;
@@ -336,8 +353,14 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 			QString name = QString("%1%2%3").arg(prefix).arg("inh").arg(i_segment); // i_segment
 			QString description = QString("%1 %2 (%3)").arg("Synfire").arg("Inh").arg(i_segment);   // i_segment
 			paramMap.clear();
-			paramMap["Conductances"] = 0.; // see above 
-		
+			
+			// CarlsimLoader::addExcitatoryNeuronGroup
+			paramMap["Conductances"] = this->coba ? 1. : 0.; 
+			paramMap["Conductances.tdAMPA"] = this->coba_ampa;
+			paramMap["Conductances.tdNMDA"] = this->coba_nmda;
+			paramMap["Conductances.tdGABAa"] = this->coba_gaba_a;
+			paramMap["Conductances.tdGABAb"] = this->coba_gaba_b;
+
 			NeuronGroup* group = new NeuronGroup(NeuronGroupInfo(0, name, description, paramMap, inhibitoryNeuron));   // izhi excit -> param bistable
 
 			// set neuron param for the group itself
@@ -354,7 +377,7 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 			auto x = xStart;
 			auto z = zStart;
 			for (int row = 1; row <= inh_rows; row++) {
-				auto y = yStart + (exc_columns - inh_columns) / 2.0; 
+				auto y = yStart + std::abs(exc_columns - inh_columns) / 2.0; 
 				for (int col = 1; col <= inh_columns; col++) {
 					group->addNeuron(x, y, z);
 					totalNumberOfNeurons++;

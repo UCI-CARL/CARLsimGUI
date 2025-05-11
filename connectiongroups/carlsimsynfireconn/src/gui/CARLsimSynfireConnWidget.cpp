@@ -55,26 +55,32 @@ CARLsimSynfireConnWidget::CARLsimSynfireConnWidget(QWidget* parent) : AbstractCo
 
 	//Set Defaults for Config File applying the same names	
 
-	defaults["prefix"] = "syn";  // Webots
+	defaults["prefix"] = "C";     // Gexc  Ginh, Gstim  -> G  depends on paper and .. 
+
+	defaults["segments"] = "4";
+
+	defaults["loop"] = "true";
 
 	// decouple, state requires phasic bursting to be activated reliable
 	defaults["exc2exc_weights"] = "0.01";
 	defaults["exc2exc_w_factor"] = "100.0";
 	defaults["exc2exc_delays"] = "10";
+	defaults["exc2exc_syn_per_neuron"] = "60";  // Höppner2022
 
 	// decouple, state requires phasic bursting to be activated reliable
 	defaults["exc2inh_weights"] = "0.035";  // effective inhibition, ineffective with 0.01
 	defaults["exc2inh_w_factor"] = "100.0";
 	defaults["exc2inh_delays"] = "10";
+	defaults["exc2inh_syn_per_neuron"] = "60";  // Höppner2022
 
 	// decouple, state requires phasic bursting to be activated reliable
 	defaults["inh2exc_weights"] = "-0.02";
 	defaults["inh2exc_w_factor"] = "100.0";
 	//defaults["inh2exc_delays"] = "2";  // + 1ms of the FS = 10ms
 	defaults["inh2exc_delays"] = "8";  // Höppner2022
+	defaults["inh2exc_syn_per_neuron"] = "25";  // Höppner2022
 
 	updateTemplate(0);
-
 }
 
 
@@ -119,24 +125,24 @@ bool CARLsimSynfireConnWidget::checkInputs(){
 	builder->exc2exc.weights = exc2exc.weightsSpin->value();
 	builder->exc2exc.w_factor = exc2exc.weightFactorSpin->value();
 	builder->exc2exc.delays = exc2exc.delaysSpin->value();
+	builder->exc2exc.syn_per_neuron = exc2exc.synPerNeuronSpin->value();
 
 	builder->exc2inh.weights = exc2inh.weightsSpin->value();
 	builder->exc2inh.w_factor = exc2inh.weightFactorSpin->value();
 	builder->exc2inh.delays = exc2inh.delaysSpin->value();
+	builder->exc2inh.syn_per_neuron = exc2inh.synPerNeuronSpin->value();
 
 	builder->inh2exc.weights = inh2exc.weightsSpin->value();
 	builder->inh2exc.w_factor = inh2exc.weightFactorSpin->value();
 	builder->inh2exc.delays = inh2exc.delaysSpin->value();
+	builder->inh2exc.syn_per_neuron = inh2exc.synPerNeuronSpin->value();
 
 	// Höppner2022
-	builder->prefix = "C"; // TODO from param file
-	builder->segments = 4; // TODO from param file
-	builder->exc2exc_syn_per_neuron = 60;  // Höppner2022
-  	builder->exc2inh_syn_per_neuron = 60;  // Höppner2022 
-	builder->inh2exc_syn_per_neuron = 25;  // Höppner2022
+	builder->prefix = prefixEdit->text();
+	builder->segments = segmentsSpin->value();
+	builder->loop = loopCheck->isChecked();
 
-	builder->n = 200;
-
+	//builder->n = 200;  // TODO get nbetter name 
 
 	//Inputs are ok
 	return true;
@@ -198,23 +204,50 @@ void CARLsimSynfireConnWidget::buildGUI(QVBoxLayout* mainVBox){
 	templateCombo->setMinimumSize(50, 20);
 	mainVBox->addWidget(templateCombo);
 
+	{
+		QHBoxLayout* abcdLayout = new QHBoxLayout();
+		abcdLayout->addSpacing(10);
 
-	// Neuron Parameter Groups		
-	auto groupBox2 = new QGroupBox("Connection parameter", this);
-	QGridLayout* gridLayout2 = new QGridLayout();
-	gridLayout2->setMargin(10);
-	auto column = 1;
-	
-	exc2exc.addGroup("Exc[i-1] -> Exc[i]", gridLayout2, configLoader);
+		prefixEdit = new QLineEdit("syn");   // Gexe  Ginh   Group Prefix   syn is the project 
+		abcdLayout->addWidget(new QLabel("Prefix:"));
+		abcdLayout->addWidget(prefixEdit);
 
-	exc2inh.addGroup("Exc[i-1] -> Inh[i]", gridLayout2, configLoader);
+		segmentsSpin = new QSpinBox();
+		segmentsSpin->setMinimum(1);
+		segmentsSpin->setMaximum(10);
+		segmentsSpin->setValue(4);
+		abcdLayout->addWidget(new QLabel("Segments:"));
+		abcdLayout->addWidget(segmentsSpin);
 
-	inh2exc.addGroup("Inh[i] -> Exc[i]", gridLayout2, configLoader, true);  
+		loopCheck = new QCheckBox();
+		loopCheck->setChecked(false);
+		abcdLayout->addWidget(new QLabel("Loop:"));
+		abcdLayout->addWidget(loopCheck);
+		abcdLayout->addStretch(1);
+
+		mainVBox->addLayout(abcdLayout);
+		mainVBox->addSpacing(5);
+	}
 
 
-	groupBox2->setLayout(gridLayout2);
-	mainVBox->addWidget(groupBox2);
+	{
 
+		// Neuron Parameter Groups		
+		auto groupBox2 = new QGroupBox("Connection parameter", this);
+		QGridLayout* gridLayout2 = new QGridLayout();
+		gridLayout2->setMargin(10);
+		auto column = 1;
+
+		exc2exc.addGroup("Exc[i-1] -> Exc[i]", gridLayout2, configLoader);
+
+		exc2inh.addGroup("Exc[i-1] -> Inh[i]", gridLayout2, configLoader);
+
+		inh2exc.addGroup("Inh[i] -> Exc[i]", gridLayout2, configLoader, true);
+
+
+		groupBox2->setLayout(gridLayout2);
+		mainVBox->addWidget(groupBox2);
+	}
 
 	//Validators for double and integer parameters
 	QDoubleValidator* doubleValidator = new QDoubleValidator(-1.0, 1000000.0, 5, this);
@@ -336,17 +369,26 @@ void CARLsimSynfireConnWidget::updateTemplate(int i) {
 
 	configLoader = configLoaders[i];
 
+	prefixEdit->setText(configLoader->getParameter("prefix", defaults["prefix"]));
+
+	segmentsSpin->setValue(Util::getInt(configLoader->getParameter("segments", defaults["segments"])));
+
+	loopCheck->setChecked(Util::getBool(configLoader->getParameter("loop", defaults["loop"])));
+
 	exc2exc.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("exc2exc_weights", defaults["exc2exc_weights"])));
 	exc2exc.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("exc2exc_w_factor", defaults["exc2exc_w_factor"])));
 	exc2exc.delaysSpin->setValue(Util::getInt(configLoader->getParameter("exc2exc_delays", defaults["exc2exc_delays"])));
+	exc2exc.synPerNeuronSpin->setValue(Util::getInt(configLoader->getParameter("exc2exc_syn_per_neuron", defaults["exc2exc_syn_per_neuron"])));
 
 	exc2inh.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("exc2inh_weights", defaults["exc2inh_weights"])));
 	exc2inh.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("exc2inh_w_factor", defaults["exc2inh_w_factor"])));
 	exc2inh.delaysSpin->setValue(Util::getInt(configLoader->getParameter("exc2inh_delays", defaults["exc2inh_delays"])));
+	exc2inh.synPerNeuronSpin->setValue(Util::getInt(configLoader->getParameter("exc2inh_syn_per_neuron", defaults["exc2inh_syn_per_neuron"])));
 
 	inh2exc.weightsSpin->setValue(Util::getFloat(configLoader->getParameter("inh2exc_weights", defaults["inh2exc_weights"])));
 	inh2exc.weightFactorSpin->setValue(Util::getFloat(configLoader->getParameter("inh2exc_w_factor", defaults["inh2exc_w_factor"])));
 	inh2exc.delaysSpin->setValue(Util::getInt(configLoader->getParameter("inh2exc_delays", defaults["inh2exc_delays"])));
+	inh2exc.synPerNeuronSpin->setValue(Util::getInt(configLoader->getParameter("inh2exc_syn_per_neuron", defaults["inh2exc_syn_per_neuron"])));
 };
 
 //Define the principal cells of CA1
@@ -398,6 +440,14 @@ void CARLsimSynfireConnWidget::ConnectionParam_t::addGroup(QString name, QGridLa
 	delaysSpin->setSingleStep(1);
 	weightsLayout->addWidget(delaysSpin);
 	weightsLayout->addWidget(new QLabel("(ms)"));
+
+	weightsLayout->addWidget(new QLabel("synapses:"));
+	synPerNeuronSpin = new QSpinBox();
+	delaysSpin->setMinimum(0);
+	delaysSpin->setMaximum(1000);
+	delaysSpin->setSingleStep(1);
+	weightsLayout->addWidget(synPerNeuronSpin);
+	weightsLayout->addWidget(new QLabel("(per neuron)"));
 
 	weightsLayout->addStretch(1);
 	gridLayout->addLayout(weightsLayout, row, 1);

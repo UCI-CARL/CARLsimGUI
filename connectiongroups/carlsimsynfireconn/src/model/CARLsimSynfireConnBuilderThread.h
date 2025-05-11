@@ -26,18 +26,16 @@ namespace spikestream {
 				float weights;
 				float w_factor;
 				unsigned delays;
-				//ConnectionParam_t(float weights, float w_factor, float delays) :
-				//	weights(weights), w_factor(w_factor), delays(delays) {};
+				int syn_per_neuron;
 				ConnectionParam_t() : active(false), weights(.0f), w_factor(.0f), delays(.0f) {};
 			} exc2exc, exc2inh, inh2exc;  // exc can be a stim for the first group 
 
 			// from param
 			QString prefix;
 			int segments;
-			int exc2exc_syn_per_neuron;
-			int exc2inh_syn_per_neuron;
-			int inh2exc_syn_per_neuron;
-			int n;
+			bool loop;
+	
+			//int n;
 
 		protected:
 			void buildConnectionGroup();
@@ -59,7 +57,6 @@ namespace spikestream {
 			QVector<QVector<unsigned int>> excNeuronIds; // per group 
 
 			QVector<QVector<unsigned int>> inhNeuronIds; // per group 
-
 
 			/*! Connection groups to be added, stored as a list */
 			QList<ConnectionGroup*> conGrpList;
