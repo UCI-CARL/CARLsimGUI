@@ -25,6 +25,7 @@ namespace carlsim {
 class SpikeMonitor; 
 class ConnectionMonitor;
 class NeuronMonitor;
+class CobaMonitor;
 class SpikeGenerator;
 class NormalSpikeGenerator;
 class GroupMonitor;
@@ -78,6 +79,7 @@ namespace spikestream {
 			SpikeMonitor* setSpikeMonitor(int grpId, const std::string& fileName);
 			NeuronMonitor* setNeuronMonitor(int grpId, const std::string& fileName);
 			GroupMonitor* setGroupMonitor(int grpId, const std::string& fileName);
+			CobaMonitor* setCobaMonitor(int grpId, const std::string& fileName);
 
 			void saveSimulation(const std::string& fileName, bool saveSynapseInfo = true);
 			void setDefaultSaveOptions(std::string fileName, bool saveSynapseInfo);
@@ -100,6 +102,11 @@ namespace spikestream {
 			//void SpikeMonitor_print(SpikeMonitor* monitor, bool printSpikeTimes);
 			
 			void getFiring(std::vector<bool>& firing, int netId = -1);
+
+			std::vector<float> getConductanceAMPA(int grpId);
+			std::vector<float> getConductanceNMDA(int grpId);
+			std::vector<float> getConductanceGABAa(int grpId);
+			std::vector<float> getConductanceGABAb(int grpId);
 
 #ifdef CARLSIM_AXONPLAST
 			uint8_t* getDelays(int gIDpre, int gIDpost, int& Npre, int& Npost);

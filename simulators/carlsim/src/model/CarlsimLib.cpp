@@ -147,6 +147,11 @@ NeuronMonitor* spikestream::CarlsimLib::setNeuronMonitor(int grpId, const std::s
 	return ((CARLsim*)carlsim)->setNeuronMonitor(grpId, fileName);
 }
 
+CobaMonitor* spikestream::CarlsimLib::setCobaMonitor(int grpId, const std::string& fileName) {
+	return ((CARLsim*)carlsim)->setCobaMonitor(grpId, fileName);
+}
+
+
 GroupMonitor* spikestream::CarlsimLib::setGroupMonitor(int grpId, const std::string& fileName) {
 	return ((CARLsim*)carlsim)->setGroupMonitor(grpId, fileName);
 }
@@ -203,6 +208,24 @@ SpikeMonitor* spikestream::CarlsimLib::getSpikeMonitor(int grpId) {
 void spikestream::CarlsimLib::getFiring(std::vector<bool>& firing, int netId) {
 	((CARLsim*)carlsim)->getFiring(firing, netId);
 }
+
+// experimental workaournd for Neuron Monitor extension
+std::vector<float> spikestream::CarlsimLib::getConductanceAMPA(int gGrpId) {
+	return ((CARLsim*)carlsim)->getConductanceAMPA(gGrpId);
+}
+
+std::vector<float> spikestream::CarlsimLib::getConductanceNMDA(int gGrpId) {
+	return ((CARLsim*)carlsim)->getConductanceNMDA(gGrpId);
+}
+
+std::vector<float> spikestream::CarlsimLib::getConductanceGABAa(int gGrpId) {
+	return ((CARLsim*)carlsim)->getConductanceGABAa(gGrpId);
+}
+
+std::vector<float> spikestream::CarlsimLib::getConductanceGABAb(int gGrpId) {
+	return ((CARLsim*)carlsim)->getConductanceGABAb(gGrpId);
+}
+
 
 
 //void spikestream::CarlsimLib::SpikeMonitor_print(SpikeMonitor* monitor, bool printSpikeTimes) {

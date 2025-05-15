@@ -1424,6 +1424,22 @@ void CarlsimWrapper::stepCarlsim(){
 	}
 #endif
 
+//#define EXPERIMENTAL_COBA_MON
+//#ifdef EXPERIMENTAL_COBA_MON
+//	{
+//		auto gGrpId = 1;
+//		std::vector<float> ampa = carlsim->getConductanceAMPA(gGrpId);
+//		std::vector<float> nmda = carlsim->getConductanceNMDA(gGrpId);
+//		std::vector<float> gaba_a = carlsim->getConductanceGABAa(gGrpId);
+//		std::vector<float> gaba_b = carlsim->getConductanceGABAb(gGrpId);
+//		auto f = fopen("conductances.csv", "a");
+//		if (f) {
+//			fprintf(f, "%d;%.3f;%.3f;%.3f;%.3f\n", (int)timeStepCounter, ampa[0], nmda[0], gaba_a[0], gaba_b[0]);
+//			fclose(f);
+//		}
+//	}
+//#endif
+
 		if (firing.empty()) {  
 			auto numNeurons = carlsim->getNumNeurons();
 			firing.resize(numNeurons);

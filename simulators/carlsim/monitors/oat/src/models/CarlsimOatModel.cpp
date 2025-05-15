@@ -5,6 +5,7 @@
 #include "CarlsimOatGroupMonitor.h"
 #include "CarlsimOatConnectionMonitor.h"
 #include "CarlsimOatNeuronMonitor.h"
+#include "CarlsimOatCobaMonitor.h"
 #include "SpikeStreamException.h"
 #include "CarlsimWrapper.h"
 #include "Util.h"
@@ -184,6 +185,20 @@ void CarlsimOatModel::appendNeuronMonitor(NeuronGroup* group, int start, int end
 	auto object = group->getInfo().getName() + " (Neuron-Group #" + QString::number(group->getID()) + ")";
 	auto monitor = new OatNeuronMonitor(active, object, path, start, end, period, persistent);
 	monitor->group = group; 
+	monitor->setMonitor(wrapper);
+	monitorList.append(monitor);
+	rows++;
+	emit endResetModel();
+
+}
+
+
+void CarlsimOatModel::appendCobaMonitor(NeuronGroup* group, int start, int end, int period,
+	bool active, bool persistent, QString path) {
+	// alternative: prop list
+	auto object = group->getInfo().getName() + " (Neuron-Group #" + QString::number(group->getID()) + ")";
+	auto monitor = new OatCobaMonitor(active, object, path, start, end, period, persistent);
+	monitor->group = group;
 	monitor->setMonitor(wrapper);
 	monitorList.append(monitor);
 	rows++;

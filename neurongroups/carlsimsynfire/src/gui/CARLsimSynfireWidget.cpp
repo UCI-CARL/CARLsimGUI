@@ -345,7 +345,7 @@ CARLsimSynfireWidget::CARLsimSynfireWidget(QWidget* parent) : QWidget(parent) {
 	defaults["inh_d"] = "2.0";
 
 	// coba
-	defaults["coba"] = "true";
+	defaults["coba"] = "false";
 	defaults["ampa"] = "1";
 	defaults["nmda"] = "2";
 	defaults["gaba_a"] = "10";
