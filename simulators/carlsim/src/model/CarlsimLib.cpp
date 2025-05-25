@@ -36,12 +36,10 @@ CARLsimState spikestream::CarlsimLib::getCARLsimState() {
 
 
 int spikestream::CarlsimLib::cudaDeviceCount() {
-	//return ((CARLsim*)carlsim)->cudaDeviceCount();
 	return CARLsim::cudaDeviceCount();
 }
 
 void spikestream::CarlsimLib::cudaDeviceDescription(unsigned ithGPU, const char **desc) {
-	//((CARLsim*)carlsim)->cudaDeviceDescription(ithGPU, desc);
 	CARLsim::cudaDeviceDescription(ithGPU, desc);
 }
 
