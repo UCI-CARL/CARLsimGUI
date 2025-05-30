@@ -179,8 +179,17 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	QString grpName = grpInfo.getName();
 
 	int n = neuronGroup->size();
-	
-	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, EXCITATORY_NEURON); 
+
+	//Get Parameter of the Group 
+	auto& parameterMap = grpInfo.getParameterMap();
+
+	ComputingBackend preferredBackend = CPU_CORES; // Lookup Parameter
+	int preferredPartition = -1;
+	if (parameterMap.contains("Partition")) {
+		preferredPartition = (int)parameterMap["Partition"];
+	}
+
+	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, EXCITATORY_NEURON, preferredPartition, preferredBackend); 
 
 	//Extract parameters
 	float a = neuronGroup->getParameter("a");
@@ -197,7 +206,6 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->carlsim->setNeuronParameters(grpId, a, b, v, d_1);    
 	
 	//Set Conductances at Group Level if defined
-	auto& parameterMap = grpInfo.getParameterMap();
 	if (parameterMap.contains("Conductances")) {
 		auto conductances = (bool)parameterMap["Conductances"];
 		if (conductances) {
@@ -232,7 +240,16 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 
 	int n = neuronGroup->size();
 
-	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, INHIBITORY_NEURON);
+	//Get Parameter of the Group 
+	auto& parameterMap = grpInfo.getParameterMap();
+
+	ComputingBackend preferredBackend = CPU_CORES; // Lookup Parameter
+	int preferredPartition = -1;
+	if (parameterMap.contains("Partition")) {
+		preferredPartition = (int)parameterMap["Partition"];
+	}
+
+	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, INHIBITORY_NEURON, preferredPartition, preferredBackend);
 
 	//Extract parameters
 	float a_1 = neuronGroup->getParameter("a_1");
@@ -245,7 +262,7 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->carlsim->setNeuronParameters(grpId, a_1, b_1, v, d);
 
 	// Set Conductances at Group Level if defined
-	auto & parameterMap = grpInfo.getParameterMap();
+
 	if (parameterMap.contains("Conductances")) {
 		auto conductances = (bool)parameterMap["Conductances"];
 		if (conductances) {

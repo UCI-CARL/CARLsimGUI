@@ -315,6 +315,7 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 			paramMap["Conductances.tdGABAa"] = this->coba_gaba_a;
 			paramMap["Conductances.tdGABAb"] = this->coba_gaba_b;
 			
+			paramMap["Partition"] = i_segment;
 
 			NeuronGroup* group = new NeuronGroup(NeuronGroupInfo(0, name, description, paramMap, excitatoryNeuron));
 
@@ -360,6 +361,8 @@ void CARLsimSynfireBuilderThread::createNeuronGroups() {
 			paramMap["Conductances.tdNMDA"] = this->coba_nmda;
 			paramMap["Conductances.tdGABAa"] = this->coba_gaba_a;
 			paramMap["Conductances.tdGABAb"] = this->coba_gaba_b;
+
+			paramMap["Partition"] = i_segment;
 
 			NeuronGroup* group = new NeuronGroup(NeuronGroupInfo(0, name, description, paramMap, inhibitoryNeuron));   // izhi excit -> param bistable
 
