@@ -26,6 +26,7 @@ class SpikeMonitor;
 class ConnectionMonitor;
 class NeuronMonitor;
 class CobaMonitor;
+class PerformanceMonitor;
 class SpikeGenerator;
 class NormalSpikeGenerator;
 class GroupMonitor;
@@ -80,6 +81,7 @@ namespace spikestream {
 			NeuronMonitor* setNeuronMonitor(int grpId, const std::string& fileName);
 			GroupMonitor* setGroupMonitor(int grpId, const std::string& fileName);
 			CobaMonitor* setCobaMonitor(int grpId, const std::string& fileName);
+			PerformanceMonitor* setPerformanceMonitor(const std::string& fileName);
 
 			void saveSimulation(const std::string& fileName, bool saveSynapseInfo = true);
 			void setDefaultSaveOptions(std::string fileName, bool saveSynapseInfo);

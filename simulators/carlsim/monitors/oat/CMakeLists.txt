@@ -20,6 +20,7 @@ set(HDRS
          src/gui/CarlsimOatGroupReportDialog.h
          src/gui/CarlsimOatNeuronReportDialog.h
          src/gui/CarlsimOatCobaReportDialog.h
+         src/gui/CarlsimOatPerformanceReportDialog.h
          src/gui/CarlsimOatReportDialog.h
          src/gui/CarlsimOatSpikeReportDialog.h
          src/gui/CarlsimOatTableView.h
@@ -31,6 +32,7 @@ set(HDRS
          src/models/CarlsimOatMonitor.h
          src/models/CarlsimOatNeuronMonitor.h
          src/models/CarlsimOatCobaMonitor.h
+         src/models/CarlsimOatPerformanceMonitor.h
          src/models/CarlsimOatSpikeMonitor.h
          src/models/CarlsimOatXmlLoader.h
 )
@@ -41,6 +43,7 @@ set(SRCS
          src/gui/CarlsimOatGroupReportDialog.cpp
          src/gui/CarlsimOatNeuronReportDialog.cpp
          src/gui/CarlsimOatCobaReportDialog.cpp
+         src/gui/CarlsimOatPerformanceReportDialog.cpp
          src/gui/CarlsimOatReportDialog.cpp
          src/gui/CarlsimOatSpikeReportDialog.cpp
          src/gui/CarlsimOatTableView.cpp
@@ -52,6 +55,7 @@ set(SRCS
          src/models/CarlsimOatMonitor.cpp
          src/models/CarlsimOatNeuronMonitor.cpp
          src/models/CarlsimOatCobaMonitor.cpp
+         src/models/CarlsimOatPerformanceMonitor.cpp
          src/models/CarlsimOatSpikeMonitor.cpp
          src/models/CarlsimOatXmlLoader.cpp
 )

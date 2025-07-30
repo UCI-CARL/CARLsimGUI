@@ -18,6 +18,7 @@ class SpikeMonitor;
 class ConnectionMonitor;
 class NeuronMonitor;
 class CobaMonitor;
+class PerformanceMonitor;
 class GroupMonitor;
 
 namespace spikestream {

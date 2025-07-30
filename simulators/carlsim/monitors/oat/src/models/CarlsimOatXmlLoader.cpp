@@ -94,6 +94,9 @@ bool CarlsimOatXmlLoader::endElement( const QString&, const QString&, const QStr
 			case COBA:
 				model->appendCobaMonitor(neuronGroup, start, end, period, active, persistent, path);
 				break;
+			case PERFORMANCE:
+				model->appendPerformanceMonitor(start, end, period, active, persistent, path);
+				break;
 			default:
 				throw SpikeStreamXMLException(QString("Undefined Element"));
 		}
@@ -231,6 +234,9 @@ bool CarlsimOatXmlLoader::startElement(const QString&, const QString&, const QSt
 		else
 		if (type == "coba")
 			this->type = COBA;
+		else
+		if (type == "performance")
+			this->type = PERFORMANCE;
 		else
 			this->type = UNDEF;
 	} else

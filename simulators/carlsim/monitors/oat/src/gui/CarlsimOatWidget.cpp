@@ -11,6 +11,7 @@
 #include "CarlsimOatConnectionReportDialog.h"
 #include "CarlsimOatNeuronReportDialog.h"
 #include "CarlsimOatCobaReportDialog.h"
+#include "CarlsimOatPerformanceReportDialog.h"
 #include "Util.h"
 
 using namespace spikestream::carlsim_monitors;
@@ -196,8 +197,11 @@ void CarlsimOatWidget::printMonitor(int index) {
 	if (QString::compare(monitorClass, "spikestream::carlsim_monitors::OatCobaMonitor") == 0)
 		dialog = new CarlsimOatCobaReportDialog(this, monitor);
 	else
-	if (QString::compare(monitorClass, "spikestream::carlsim_monitors::OatConnectionMonitor") == 0)
-		dialog = new CarlsimOatConnectionReportDialog(this, monitor);
+	if (QString::compare(monitorClass, "spikestream::carlsim_monitors::OatPerformanceMonitor") == 0)
+		dialog = new CarlsimOatPerformanceReportDialog(this, monitor);
+	else
+		if (QString::compare(monitorClass, "spikestream::carlsim_monitors::OatConnectionMonitor") == 0)
+	dialog = new CarlsimOatConnectionReportDialog(this, monitor);
 	else
 		throw SpikeStreamException("Unsupported Monitor");
 

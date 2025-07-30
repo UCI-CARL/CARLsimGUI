@@ -55,6 +55,7 @@ namespace spikestream {
 					GROUP,
 					NEURON,
 					COBA,
+					PERFORMANCE,
 					UNDEF
 				} type;
 

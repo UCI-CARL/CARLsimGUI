@@ -57,7 +57,10 @@ namespace spikestream {
 				void appendCobaMonitor(NeuronGroup* group, int start, int end, int period,
 					bool active, bool persistent, QString path);
 
-				void monitorStartRecording(unsigned step); 
+				void appendPerformanceMonitor(int start, int end, int period,
+					bool active, bool persistent, QString path);
+
+				void monitorStartRecording(unsigned step);
 				void monitorStopRecording(unsigned step);
 
 				void printMonitor(int index);

@@ -25,6 +25,7 @@ namespace spikestream {
 		class OatGroupMonitor;
 		class OatNeuronMonitor;
 		class OatCobaMonitor;
+		class OatPerformanceMonitor;
 
 
 			/*! generic behavior of report dialog, clicked on the print button
