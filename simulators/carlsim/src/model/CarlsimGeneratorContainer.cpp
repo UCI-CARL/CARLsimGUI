@@ -26,3 +26,8 @@ CarlsimGenerator* spikestream::CarlsimGeneratorContainer::getGenerator() {
 }
 
 
+void spikestream::CarlsimGeneratorContainer::writeTo(QString path, unsigned connId, unsigned gIdPre, unsigned gIdPost, bool learning) {
+	generator->writeTo(path, connId, gIdPre, gIdPost, learning);
+}
+
+

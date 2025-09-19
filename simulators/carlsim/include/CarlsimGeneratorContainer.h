@@ -22,6 +22,7 @@ namespace spikestream {
 
 		CarlsimGenerator* getGenerator();
 
+		void writeTo(QString path, unsigned connId, unsigned gIdPre, unsigned gIdPost, bool learning);
 
 	private: 
 		ConnectionGroup* group; 

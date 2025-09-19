@@ -16,6 +16,8 @@ carlsim_configuration_t carlsim41::carlsim_new_configuration() {
 	conf->loggerMode = USER;
 	conf->netName = "SpikeStream";
 	conf->randSeed = 42;
+	//conf->generator = NONE_GEN;
+	conf->generator = PROJECT_GEN;   // see carlsim_types.h
 	return conf;
 }
 

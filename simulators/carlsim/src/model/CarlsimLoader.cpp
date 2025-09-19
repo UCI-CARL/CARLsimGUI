@@ -11,6 +11,8 @@
 #include "Util.h"
 
 
+
+
 using namespace spikestream;
 
 
@@ -36,6 +38,9 @@ using namespace std;
 #define POISSON_INHIBITORY_NEURON_ID 8
 
 #include "carlsim_definitions.h"
+
+
+
 
 /*! Constructor */
 CarlsimLoader::CarlsimLoader(CarlsimWrapper* wrapper_): wrapper(wrapper_) {	
@@ -76,8 +81,32 @@ bool CarlsimLoader::buildCarlsimNetwork(Network* network, QHash<unsigned, synaps
 
 	//ensure Carlsim is in Config state 
 
+// if Generator	
+	FILE* cpp = nullptr; FILE* h1 = nullptr; FILE* h2 = nullptr;
+// new for model generation
+	if (wrapper->carlsimConfig->generator > 0) {
+		cpp = fopen("csgen\\main.cpp", "w");
+		fprintf(cpp, "\t// CONFIG STATE\n");
+		h1 = fopen("csgen\\create_generators.h", "w");
+		h2 = fopen("csgen\\delete_generators.h", "w");
+	}
+
+
 	// Patch WM dlPFC, check with AxonalPlasticity
 	wrapper->carlsim->setIntegrationMethod(RUNGE_KUTTA4, 10);
+
+// if Generator	
+	if (wrapper->carlsimConfig->generator > 0) {
+		fprintf(cpp, "\tcarlsim->setIntegrationMethod(%s, %d);\n\n", "RUNGE_KUTTA4", 10);
+	}
+
+// if Generator
+	if (wrapper->carlsimConfig->generator > 0) {
+		fclose(cpp);
+		fclose(h1);
+		fclose(h2);
+	}
+
 
 
 	//Check that list of volatie connection is empty
@@ -130,6 +159,11 @@ bool CarlsimLoader::buildCarlsimNetwork(Network* network, QHash<unsigned, synaps
 		emit progress(stepsCompleted, totalSteps);
 	}
 
+	
+
+
+
+
 	//Return the status 
 	return true;
 }
@@ -170,6 +204,29 @@ void CarlsimLoader::addConnectionGroup(ConnectionGroup* conGroup, QHash<unsigned
 
 	wrapper->manage(conGrpID, container); 
 
+	// new for model generation
+	if (wrapper->carlsimConfig->generator > 0) {
+		// thread
+		container->writeTo("csgen\\", conGrpID, gIDpre, gIDpost, learning);  // store additinal parames in the container
+
+		// CONFIG STATE
+		FILE* cpp = fopen("csgen\\main.cpp", "a");
+		// block, free fptr
+		fprintf(cpp, "\tint conn_id_%d;\n", conGrpID);
+		fprintf(cpp, "\tConnectionGeneratorFromFile* conngen_%d = nullptr;\n", conGrpID);
+		fprintf(cpp, "\t{\n"); 
+		fprintf(cpp, "\t\tconngen = new ConnectionGeneratorFromFile(\"conngrpgen_%d_%d_%d.dat\");\n", conGrpID, gIDpre, gIDpost);
+		fprintf(cpp, "\t\tauto connId = carlsim->connect(%d, %d, conngen, %s);\n", gIDpre, gIDpost, learning?"SYN_PLASTIC":"SYN_FIXED");  
+		fprintf(cpp, "\t\tassert(connId == %d);\n", conGrpID);
+		fprintf(cpp, "\t\tconn_id_%d = connId;\n", conGrpID);
+		fprintf(cpp, "\t}\n");
+		fclose(cpp);
+
+		FILE* h = fopen("csgen\\delete_generators.h", "a");
+		fprintf(cpp, "\tdelete conngen_%d;\n", conGrpID);  
+		fclose(h);
+	}
+
 }
 
 /*! Adds an excitatory neuron group to the simulation network */
@@ -206,13 +263,16 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->carlsim->setNeuronParameters(grpId, a, b, v, d_1);    
 	
 	//Set Conductances at Group Level if defined
-	if (parameterMap.contains("Conductances")) {
-		auto conductances = (bool)parameterMap["Conductances"];
+	bool parameterConductance = parameterMap.contains("Conductances"); 
+	bool conductances = false;
+	int tdAMPA = 0, tdNMDA = 0, tdGABAa = 0, tdGABAb = 0;
+	if (parameterConductance) {
+		conductances = (bool) parameterMap["Conductances"];
 		if (conductances) {
-			auto tdAMPA = (int)parameterMap["Conductances.tdAMPA"];
-			auto tdNMDA = (int)parameterMap["Conductances.tdNMDA"];
-			auto tdGABAa = (int)parameterMap["Conductances.tdGABAa"];
-			auto tdGABAb = (int)parameterMap["Conductances.tdGABAb"];
+			tdAMPA = (int) parameterMap["Conductances.tdAMPA"];
+			tdNMDA = (int) parameterMap["Conductances.tdNMDA"];
+			tdGABAa = (int) parameterMap["Conductances.tdGABAa"];
+			tdGABAb = (int) parameterMap["Conductances.tdGABAb"];
 			wrapper->carlsim->setConductances(grpId, true, tdAMPA, tdNMDA, tdGABAa, tdGABAb);
 		}
 		else {
@@ -228,6 +288,30 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 
 	// store db id for later processing in wrapper
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup;
+
+
+	// new for model generation
+	if (wrapper->carlsimConfig->generator > 0) {
+	
+		// CONFIG STATE
+		FILE* cpp = fopen("csgen\\main.cpp", "a");
+		// block, free fptr
+
+		fprintf(cpp, "\tint grpId_%d;\n", grpId);
+		fprintf(cpp, "\t{\n");
+		fprintf(cpp, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, EXCITATORY_NEURON, %d, %d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
+		fprintf(cpp, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a, b, v, d_1);
+		if(parameterConductance)
+			if (conductances) 
+				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, true, %f, %f, %f, %f)\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
+			else
+				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, false)\n");
+		fprintf(cpp, "\t\tassert(grpId == %d);\n", grpId);
+		fprintf(cpp, "\t\tgrpId_%d = grpId;\n", grpId);
+		fprintf(cpp, "\t}\n");	
+		fclose(cpp);
+	}
+
 }
 	
 
@@ -262,14 +346,17 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->carlsim->setNeuronParameters(grpId, a_1, b_1, v, d);
 
 	// Set Conductances at Group Level if defined
+	bool parameterConductance = parameterMap.contains("Conductances");
+	bool conductances = false;
+	int tdAMPA = 0, tdNMDA = 0, tdGABAa = 0, tdGABAb = 0;
 
-	if (parameterMap.contains("Conductances")) {
-		auto conductances = (bool)parameterMap["Conductances"];
+	if (parameterConductance) {
+		conductances = (bool)parameterMap["Conductances"];
 		if (conductances) {
-			auto tdAMPA = (int)parameterMap["Conductances.tdAMPA"];
-			auto tdNMDA = (int)parameterMap["Conductances.tdNMDA"];
-			auto tdGABAa = (int)parameterMap["Conductances.tdGABAa"];
-			auto tdGABAb = (int)parameterMap["Conductances.tdGABAb"];
+			tdAMPA = (int)parameterMap["Conductances.tdAMPA"];
+			tdNMDA = (int)parameterMap["Conductances.tdNMDA"];
+			tdGABAa = (int)parameterMap["Conductances.tdGABAa"];
+			tdGABAb = (int)parameterMap["Conductances.tdGABAb"];
 			wrapper->carlsim->setConductances(grpId, true, tdAMPA, tdNMDA, tdGABAa, tdGABAb);
 		}
 		else {
@@ -287,6 +374,28 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	// store db id for later processing in wrapper
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup; 
 
+
+	// new for model generation
+	if (wrapper->carlsimConfig->generator > 0) {
+
+		// CONFIG STATE
+		FILE* cpp = fopen("csgen\\main.cpp", "a");
+		// block, free fptr
+
+		fprintf(cpp, "\tint grpId_%d;\n", grpId);
+		fprintf(cpp, "\t{\n");
+		fprintf(cpp, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, INHIBITORY_NEURON, %d, %d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
+		fprintf(cpp, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a_1, b_1, v, d);
+		if (parameterConductance)
+			if (conductances)
+				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, true, %f, %f, %f, %f)\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
+			else
+				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, false)\n");
+		fprintf(cpp, "\t\tassert(grpId == %d);\n", grpId);
+		fprintf(cpp, "\t\tgrpId_%d = grpId;\n", grpId);
+		fprintf(cpp, "\t}\n");
+		fclose(cpp);
+	}
 }
 
 
@@ -324,6 +433,26 @@ void CarlsimLoader::addCustomExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, 
 
 	// store db id for later processing in wrapper
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup; 
+
+
+	// new for model generation
+	if (wrapper->carlsimConfig->generator > 0) {
+
+		// CONFIG STATE
+		FILE* cpp = fopen("csgen\\main.cpp", "a");
+		// block, free fptr
+
+		fprintf(cpp, "\tint grpId_%d;\n", grpId);
+		fprintf(cpp, "\t{\n");
+		fprintf(cpp, "\t\tauto grpId = carlsim->createSpikeGeneratorGroup(\"%s\", %d, EXCITATORY_NEURON);\n", grpName.toStdString().c_str(), n);  // define constants
+		fprintf(cpp, "\t\tcarlsim->setSpikeGenerator(grpId, spike_gen_%d);\n", grpId);
+		fprintf(cpp, "\t\tassert(grpId == %d);\n", grpId);
+		fprintf(cpp, "\t\tgrpId_%d = grpId;\n", grpId);
+		fprintf(cpp, "\t}\n");
+		fclose(cpp);
+	}
+
+
 }
 
 /*! featInputNeurons  */

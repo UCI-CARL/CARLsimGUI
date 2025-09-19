@@ -61,6 +61,17 @@ static const char* simMode_string[] = {
 };
 
 
+enum ModelGenerator {
+	NONE_GEN,     
+	PROJECT_GEN, 
+	UNITTEST_GEN,     
+	BENCHMARK_GEN	
+};
+static const char* modelGenerator_string[] = {
+	"none", "project", "unittest", "benchmark"
+};
+
+
 struct carlsim_configuration {
 	SimMode preferredSimMode; // for Consturctor 
 	ComputingBackend backend;  
@@ -69,7 +80,8 @@ struct carlsim_configuration {
 	int randSeed;
 	LoggerMode loggerMode;
 	std::string netName;
-
+	//int generate; // > 0 generate CARLsim model. Type: unittest, standalone project, benchmark
+	ModelGenerator generator;
 } ; 
 
 typedef carlsim_configuration* carlsim_configuration_t; 

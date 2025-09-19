@@ -37,6 +37,8 @@ public:
 
 	bool isConnected(unsigned pre, unsigned post);
 
+	// serialize the content of synapses to file, with a header describing the payload
+	void writeTo(QString path, unsigned connId, unsigned gIdPre, unsigned gIdPost, bool learning);
 
 
 private: 
