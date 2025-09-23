@@ -68,10 +68,10 @@ NoiseInjectorWidget::NoiseInjectorWidget(QWidget* parent) : AbstractInjectorWidg
 	injectNoiseBox->addWidget(injectNoisePercentCombo);
 
 	injectNoiseCurrentCombo = new QComboBox();
-	injectNoiseCurrentCombo->addItem("1 mA");
-	injectNoiseCurrentCombo->addItem("5 mA");
+	injectNoiseCurrentCombo->addItem("1 pA");
+	injectNoiseCurrentCombo->addItem("5 pA");
 	for(int i=10; i<=100; i += 10)
-		injectNoiseCurrentCombo->addItem(QString::number(i)+" mA");
+		injectNoiseCurrentCombo->addItem(QString::number(i)+" pA");
 	injectNoiseCurrentCombo->setMinimumSize(50, 20);
 	injectNoiseBox->addWidget(injectNoiseCurrentCombo);
 
@@ -180,7 +180,7 @@ void NoiseInjectorWidget::updateInjection(int i) {
 
 	//auto percent = QString::vasprintf("%f %%", m->percentageList[i]); 
 	auto percent = QString::number(m->percentageList[i]) + " %"; 
-	auto current = QString::number(m->currentList[i]) + " mA"; 
+	auto current = QString::number(m->currentList[i]) + " pA"; 
 
 	injectNoisePercentCombo->setEditText(percent); 
 	injectNoiseCurrentCombo->setEditText(m->typeList[i]==NoiseInjectorModel::CURRENT?current:""); 

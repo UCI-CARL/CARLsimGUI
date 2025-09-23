@@ -32,6 +32,7 @@ namespace spikestream {
 			void printPerformance(QTextDocument *report, QTextTableFormat tableFormat);
 
 			PerformanceMonitor* monitor;
+			CarlsimWrapper* wrapper;
 		};
 
 	}

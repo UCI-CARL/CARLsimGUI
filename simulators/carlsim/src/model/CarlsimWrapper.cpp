@@ -8,6 +8,7 @@
 #include "CarlsimLoader.h"
 #include <CarlsimWrapper.h>
 #include "CarlsimSpikeGeneratorContainer.h"
+#include "CarlsimSourceWriter.h"
 #include "PerformanceTimer.h"
 #include "SpikeStreamException.h"
 #include "SpikeStreamSimulationException.h"
@@ -203,10 +204,59 @@ qDebug() << "carlsim_add_plugin_path skipped" << __FUNCTION__ << __LINE__;
 	Network* currentNetwork = Globals::getNetwork();
 	carlsimConfig->netName = currentNetwork->getName().toStdString();  
 
+	// initialize the loader 
+	// -> refact as writer class filename, path, directory sep, open/close files, trans vars when scope left
+	CarlsimSourceWriter::SetWrapper(this);
+
+	if(CarlsimSourceWriter::Generate)
+		CarlsimSourceWriter::TouchFiles();
+
+	/*
+		if (carlsimConfig->generator > 0) {
+			auto cpp = fopen("csgen\\main.cpp", "w");
+			auto grp_h = fopen("csgen\\groups.h", "w");
+			auto conn_h = fopen("csgen\\connections.h", "w");
+			auto gen_h = fopen("csgen\\generators.h", "w");
+			auto del_h = fopen("csgen\\delete.h", "w");
+			fclose(cpp);
+			fclose(grp_h);
+			fclose(conn_h);
+			fclose(gen_h);
+			fclose(del_h);
+		}
+	*/
+
 	// instanciate CARLsim 
 	carlsim = new CarlsimLib(carlsimConfig->netName, 
 		(SimMode) carlsimConfig->preferredSimMode, (LoggerMode) carlsimConfig->loggerMode, 
 		carlsimConfig->ithGPUs, carlsimConfig->randSeed);
+	//if (carlsimConfig->generator > 0) {
+	//	auto cpp = fopen("csgen\\main.cpp", "a");
+	//	// includes
+	//	fprintf(cpp, "\t// Instanciate the CARLsim simulation object\n");
+	//	fprintf(cpp, "\tCARLsim* carlsim = new CARLsim(\"%s\", (SimMode)%d, (LoggerMode)%d, %d, %d);\n\n",
+	//		carlsimConfig->netName.c_str(), carlsimConfig->preferredSimMode, carlsimConfig->loggerMode,
+	//		carlsimConfig->ithGPUs, carlsimConfig->randSeed);
+	//	fclose(cpp); 
+	//}
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Main);
+		fprintf(w.file, "\t// Instanciate the CARLsim simulation object\n");
+		fprintf(w.file, "\tCARLsim* carlsim = new CARLsim(\"%s\", (SimMode)%d, (LoggerMode)%d, %d, %d);\n\n",
+			carlsimConfig->netName.c_str(), carlsimConfig->preferredSimMode, carlsimConfig->loggerMode,
+			carlsimConfig->ithGPUs, carlsimConfig->randSeed);
+	}
+
+	//	auto cpp = fopen("csgen\\main.cpp", "a");
+	//	// includes
+	//	fprintf(cpp, "\t// Instanciate the CARLsim simulation object\n");
+	//	fprintf(cpp, "\tCARLsim* carlsim = new CARLsim(\"%s\", (SimMode)%d, (LoggerMode)%d, %d, %d);\n\n",
+	//		carlsimConfig->netName.c_str(), carlsimConfig->preferredSimMode, carlsimConfig->loggerMode,
+	//		carlsimConfig->ithGPUs, carlsimConfig->randSeed);
+	//	fclose(cpp); 
+	//}
+
+
 	emit carlsimConfigState();
 
 	//Set up the archive info
@@ -226,6 +276,18 @@ qDebug() << "carlsim_add_plugin_path skipped" << __FUNCTION__ << __LINE__;
 
 	// After all config is done, load the simulation, meaning setupNetwork for CARLsim
 	carlsim->setupNetwork();
+
+	//if (carlsimConfig->generator > 0) {
+	//	auto cpp = fopen("csgen\\main.cpp", "a");
+	//	fprintf(cpp, "\tcarlsim->setupNetwork();\n\n");
+	//	fclose(cpp);
+	//}
+
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Main);
+		fprintf(w.file, "\tcarlsim->setupNetwork();\n\n");
+	}
+
 	CARLsimState state = carlsim->getCARLsimState();
 	if(state!=::SETUP_STATE)
 		throw SpikeStreamException("CARLsim could not setup the network.");; 
@@ -1412,7 +1474,9 @@ void CarlsimWrapper::stepCarlsim(){
 	} 
 	emit carlsimRunState(); // notify
 
+#ifndef DEBUG_PERFORMANCE4
 	emit monitorStopRecording(getSnnTimeMs());
+#endif
 
 #ifdef DEBUG_FIRING_WITH_SPIKE_MONITORS
 	if(isRecording) {  // recording needs to be stoped even if monitor has beed switched off meanwhile 

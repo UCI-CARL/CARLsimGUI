@@ -47,7 +47,7 @@ void NoiseInjectorTableView::resizeHeaders(){
 	hHeader->resizeSection(hHeader->logicalIndex(NoiseInjectorModel::NAME_COL), 150);//Name
 	hHeader->resizeSection(hHeader->logicalIndex(NoiseInjectorModel::TYPE_COL), 70 );//Percentage
 	hHeader->resizeSection(hHeader->logicalIndex(NoiseInjectorModel::PERCENT_COL), 100);//Percentage SD ms
-	hHeader->resizeSection(hHeader->logicalIndex(NoiseInjectorModel::CURRENT_COL), 100);//Current mA or Spikes
+	hHeader->resizeSection(hHeader->logicalIndex(NoiseInjectorModel::CURRENT_COL), 100);//Current mA --> pA or Spikes
 	hHeader->resizeSection(hHeader->logicalIndex(NoiseInjectorModel::MEAN_COL), 100); // Mean ms
 	hHeader->resizeSection(hHeader->logicalIndex(NoiseInjectorModel::DELETE_COL), 20); //Deletion
 	hHeader->setDefaultAlignment(Qt::AlignLeft);

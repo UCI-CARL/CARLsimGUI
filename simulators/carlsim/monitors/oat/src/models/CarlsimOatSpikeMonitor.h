@@ -38,6 +38,7 @@ namespace spikestream {
 			SpikeMonMode mode;  // SpikeMonMode 
 			NeuronGroup* group;  // must be set explictly 
 			SpikeMonitor* monitor;
+			CarlsimWrapper* wrapper;
 		};
 
 	}

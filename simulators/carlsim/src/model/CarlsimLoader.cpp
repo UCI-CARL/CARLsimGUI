@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "CarlsimLoader.h"
 #include "CarlsimWrapper.h"
+#include "CarlsimSourceWriter.h"
 #include "CarlsimGeneratorContainer.h"
 #include "CarlsimSpikeGeneratorContainer.h"
 
@@ -81,32 +82,28 @@ bool CarlsimLoader::buildCarlsimNetwork(Network* network, QHash<unsigned, synaps
 
 	//ensure Carlsim is in Config state 
 
-// if Generator	
-	FILE* cpp = nullptr; FILE* h1 = nullptr; FILE* h2 = nullptr;
-// new for model generation
-	if (wrapper->carlsimConfig->generator > 0) {
-		cpp = fopen("csgen\\main.cpp", "w");
-		fprintf(cpp, "\t// CONFIG STATE\n");
-		h1 = fopen("csgen\\create_generators.h", "w");
-		h2 = fopen("csgen\\delete_generators.h", "w");
-	}
+//// if Generator	
+//	if (wrapper->carlsimConfig->generator > 0) {
+//		auto cpp = fopen("csgen\\main.cpp", "a");
+//		fprintf(cpp, "\t// CONFIG STATE\n");
+//		fclose(cpp);
+//	}
 
-
+	
 	// Patch WM dlPFC, check with AxonalPlasticity
 	wrapper->carlsim->setIntegrationMethod(RUNGE_KUTTA4, 10);
 
-// if Generator	
-	if (wrapper->carlsimConfig->generator > 0) {
-		fprintf(cpp, "\tcarlsim->setIntegrationMethod(%s, %d);\n\n", "RUNGE_KUTTA4", 10);
+//// if Generator	
+//	if (wrapper->carlsimConfig->generator > 0) {
+//		auto cpp = fopen("csgen\\main.cpp", "a");
+//		fprintf(cpp, "\tcarlsim->setIntegrationMethod(%s, %d);\n\n", "RUNGE_KUTTA4", 10);
+//		fclose(cpp);
+//	}
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Main);
+		fprintf(w.file, "\t// CONFIG STATE\n");
+		fprintf(w.file, "\tcarlsim->setIntegrationMethod(%s, %d);\n\n", "RUNGE_KUTTA4", 10);
 	}
-
-// if Generator
-	if (wrapper->carlsimConfig->generator > 0) {
-		fclose(cpp);
-		fclose(h1);
-		fclose(h2);
-	}
-
 
 
 	//Check that list of volatie connection is empty
@@ -204,28 +201,26 @@ void CarlsimLoader::addConnectionGroup(ConnectionGroup* conGroup, QHash<unsigned
 
 	wrapper->manage(conGrpID, container); 
 
-	// new for model generation
-	if (wrapper->carlsimConfig->generator > 0) {
-		// thread
-		container->writeTo("csgen\\", conGrpID, gIDpre, gIDpost, learning);  // store additinal parames in the container
-
-		// CONFIG STATE
-		FILE* cpp = fopen("csgen\\main.cpp", "a");
-		// block, free fptr
-		fprintf(cpp, "\tint conn_id_%d;\n", conGrpID);
-		fprintf(cpp, "\tConnectionGeneratorFromFile* conngen_%d = nullptr;\n", conGrpID);
-		fprintf(cpp, "\t{\n"); 
-		fprintf(cpp, "\t\tconngen = new ConnectionGeneratorFromFile(\"conngrpgen_%d_%d_%d.dat\");\n", conGrpID, gIDpre, gIDpost);
-		fprintf(cpp, "\t\tauto connId = carlsim->connect(%d, %d, conngen, %s);\n", gIDpre, gIDpost, learning?"SYN_PLASTIC":"SYN_FIXED");  
-		fprintf(cpp, "\t\tassert(connId == %d);\n", conGrpID);
-		fprintf(cpp, "\t\tconn_id_%d = connId;\n", conGrpID);
-		fprintf(cpp, "\t}\n");
-		fclose(cpp);
-
-		FILE* h = fopen("csgen\\delete_generators.h", "a");
-		fprintf(cpp, "\tdelete conngen_%d;\n", conGrpID);  
-		fclose(h);
+	if (CarlsimSourceWriter::Generate) {
+		container->writeTo(CarlsimSourceWriter::ContainerPath(), conGrpID, gIDpre, gIDpost, learning);  // store additinal parames in the container
+		{
+			CarlsimSourceWriter w(CarlsimSourceWriter::Connections);
+			fprintf(w.file, "\tint conn_id_%d;\n", conGrpID);
+			fprintf(w.file, "\tConnectionGeneratorFromFile* conngen_%d = nullptr;\n", conGrpID);
+			fprintf(w.file, "\t{\n");
+			fprintf(w.file, "\t\tconngen_%d = new ConnectionGeneratorFromFile(\"%s/conngrpgen_%d_%d_%d.dat\");\n", 
+				conGrpID, CarlsimSourceWriter::NamePath().toStdString().c_str(), conGrpID, gIDpre, gIDpost);
+			fprintf(w.file, "\t\tauto connId = carlsim->connect(%d, %d, conngen_%d, %s);\n", gIDpre, gIDpost, conGrpID, learning ? "SYN_PLASTIC" : "SYN_FIXED");
+			fprintf(w.file, "\t\tassert(connId == %d);\n", conGrpID);
+			fprintf(w.file, "\t\tconn_id_%d = connId;\n", conGrpID);
+			fprintf(w.file, "\t}\n\n");
+		}
+		{
+			CarlsimSourceWriter w(CarlsimSourceWriter::Deletes);
+			fprintf(w.file, "\tdelete conngen_%d;\n\n", conGrpID);
+		}
 	}
+
 
 }
 
@@ -246,7 +241,7 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 		preferredPartition = (int)parameterMap["Partition"];
 	}
 
-	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, EXCITATORY_NEURON, preferredPartition, preferredBackend); 
+	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, EXCITATORY_NEURON, preferredPartition, (ComputingBackend) preferredBackend);
 
 	//Extract parameters
 	float a = neuronGroup->getParameter("a");
@@ -290,26 +285,42 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup;
 
 
-	// new for model generation
-	if (wrapper->carlsimConfig->generator > 0) {
-	
-		// CONFIG STATE
-		FILE* cpp = fopen("csgen\\main.cpp", "a");
-		// block, free fptr
+	//// new for model generation
+	//if (wrapper->carlsimConfig->generator > 0) {
+	//
+	//	// CONFIG STATE
+	//	FILE* grp_h = fopen("csgen\\groups.h", "a");
+	//	// block, free fptr
 
-		fprintf(cpp, "\tint grpId_%d;\n", grpId);
-		fprintf(cpp, "\t{\n");
-		fprintf(cpp, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, EXCITATORY_NEURON, %d, %d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
-		fprintf(cpp, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a, b, v, d_1);
-		if(parameterConductance)
-			if (conductances) 
-				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, true, %f, %f, %f, %f)\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
+	//	fprintf(grp_h, "\tint grpId_%d;\n", grpId);
+	//	fprintf(grp_h, "\t{\n");
+	//	fprintf(grp_h, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, EXCITATORY_NEURON, %d, (ComputingBackend)%d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
+	//	fprintf(grp_h, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a, b, v, d_1);
+	//	if(parameterConductance)
+	//		if (conductances) 
+	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, true, %d, %d, %d, %d);\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
+	//		else
+	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, false);\n");
+	//	fprintf(grp_h, "\t\tassert(grpId == %d);\n", grpId);
+	//	fprintf(grp_h, "\t\tgrpId_%d = grpId;\n", grpId);
+	//	fprintf(grp_h, "\t}\n\n");
+	//	fclose(grp_h);
+	//}
+
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Groups);
+		fprintf(w.file, "\tint grpId_%d;\n", grpId);
+		fprintf(w.file, "\t{\n");
+		fprintf(w.file, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, EXCITATORY_NEURON, %d, (ComputingBackend)%d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
+		fprintf(w.file, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a, b, v, d_1);
+		if (parameterConductance)
+			if (conductances)
+				fprintf(w.file, "\t\tcarlsim->setConductances(grpId, true, %d, %d, %d, %d);\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
 			else
-				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, false)\n");
-		fprintf(cpp, "\t\tassert(grpId == %d);\n", grpId);
-		fprintf(cpp, "\t\tgrpId_%d = grpId;\n", grpId);
-		fprintf(cpp, "\t}\n");	
-		fclose(cpp);
+				fprintf(w.file, "\t\tcarlsim->setConductances(grpId, false);\n");
+		fprintf(w.file, "\t\tassert(grpId == %d);\n", grpId);
+		fprintf(w.file, "\t\tgrpId_%d = grpId;\n", grpId);
+		fprintf(w.file, "\t}\n\n");
 	}
 
 }
@@ -333,7 +344,7 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 		preferredPartition = (int)parameterMap["Partition"];
 	}
 
-	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, INHIBITORY_NEURON, preferredPartition, preferredBackend);
+	auto grpId = wrapper->carlsim->createGroup(grpName.toStdString(), n, INHIBITORY_NEURON, preferredPartition, (ComputingBackend) preferredBackend);
 
 	//Extract parameters
 	float a_1 = neuronGroup->getParameter("a_1");
@@ -375,27 +386,45 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup; 
 
 
-	// new for model generation
-	if (wrapper->carlsimConfig->generator > 0) {
+	//// new for model generation
+	//if (wrapper->carlsimConfig->generator > 0) {
 
-		// CONFIG STATE
-		FILE* cpp = fopen("csgen\\main.cpp", "a");
-		// block, free fptr
+	//	// CONFIG STATE
+	//	FILE* grp_h = fopen("csgen\\groups.h", "a");
+	//	// block, free fptr
 
-		fprintf(cpp, "\tint grpId_%d;\n", grpId);
-		fprintf(cpp, "\t{\n");
-		fprintf(cpp, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, INHIBITORY_NEURON, %d, %d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
-		fprintf(cpp, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a_1, b_1, v, d);
+	//	fprintf(grp_h, "\tint grpId_%d;\n", grpId);
+	//	fprintf(grp_h, "\t{\n");
+	//	fprintf(grp_h, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, INHIBITORY_NEURON, %d, (ComputingBackend)%d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
+	//	fprintf(grp_h, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a_1, b_1, v, d);
+	//	if (parameterConductance)
+	//		if (conductances)
+	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, true, %d, %d, %d, %d);\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
+	//		else
+	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, false);\n");
+	//	fprintf(grp_h, "\t\tassert(grpId == %d);\n", grpId);
+	//	fprintf(grp_h, "\t\tgrpId_%d = grpId;\n", grpId);
+	//	fprintf(grp_h, "\t}\n\n");
+	//	fclose(grp_h);
+	//}
+
+
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Groups);
+		fprintf(w.file, "\tint grpId_%d;\n", grpId);
+		fprintf(w.file, "\t{\n");
+		fprintf(w.file, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, INHIBITORY_NEURON, %d, (ComputingBackend)%d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
+		fprintf(w.file, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a_1, b_1, v, d);
 		if (parameterConductance)
 			if (conductances)
-				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, true, %f, %f, %f, %f)\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
+				fprintf(w.file, "\t\tcarlsim->setConductances(grpId, true, %d, %d, %d, %d);\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
 			else
-				fprintf(cpp, "\t\tcarlsim->setConductances(grpId, false)\n");
-		fprintf(cpp, "\t\tassert(grpId == %d);\n", grpId);
-		fprintf(cpp, "\t\tgrpId_%d = grpId;\n", grpId);
-		fprintf(cpp, "\t}\n");
-		fclose(cpp);
+				fprintf(w.file, "\t\tcarlsim->setConductances(grpId, false);\n");
+		fprintf(w.file, "\t\tassert(grpId == %d);\n", grpId);
+		fprintf(w.file, "\t\tgrpId_%d = grpId;\n", grpId);
+		fprintf(w.file, "\t}\n\n");
 	}
+
 }
 
 
@@ -435,23 +464,33 @@ void CarlsimLoader::addCustomExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, 
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup; 
 
 
-	// new for model generation
-	if (wrapper->carlsimConfig->generator > 0) {
+	//// new for model generation
+	//if (wrapper->carlsimConfig->generator > 0) {
 
-		// CONFIG STATE
-		FILE* cpp = fopen("csgen\\main.cpp", "a");
-		// block, free fptr
+	//	// CONFIG STATE
+	//	FILE* grp_h = fopen("csgen\\groups.h", "a");
+	//	// block, free fptr
 
-		fprintf(cpp, "\tint grpId_%d;\n", grpId);
-		fprintf(cpp, "\t{\n");
-		fprintf(cpp, "\t\tauto grpId = carlsim->createSpikeGeneratorGroup(\"%s\", %d, EXCITATORY_NEURON);\n", grpName.toStdString().c_str(), n);  // define constants
-		fprintf(cpp, "\t\tcarlsim->setSpikeGenerator(grpId, spike_gen_%d);\n", grpId);
-		fprintf(cpp, "\t\tassert(grpId == %d);\n", grpId);
-		fprintf(cpp, "\t\tgrpId_%d = grpId;\n", grpId);
-		fprintf(cpp, "\t}\n");
-		fclose(cpp);
+	//	fprintf(grp_h, "\tint grpId_%d;\n", grpId);
+	//	fprintf(grp_h, "\t{\n");
+	//	fprintf(grp_h, "\t\tauto grpId = carlsim->createSpikeGeneratorGroup(\"%s\", %d, EXCITATORY_NEURON);\n", grpName.toStdString().c_str(), n);  // define constants
+	//	fprintf(grp_h, "\t\tcarlsim->setSpikeGenerator(grpId, spike_gen_%d);\n", grpId);
+	//	fprintf(grp_h, "\t\tassert(grpId == %d);\n", grpId);
+	//	fprintf(grp_h, "\t\tgrpId_%d = grpId;\n", grpId);
+	//	fprintf(grp_h, "\t}\n\n");
+	//	fclose(grp_h);
+	//}
+
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Groups);
+		fprintf(w.file, "\tint grpId_%d;\n", grpId);
+		fprintf(w.file, "\t{\n");
+		fprintf(w.file, "\t\tauto grpId = carlsim->createSpikeGeneratorGroup(\"%s\", %d, EXCITATORY_NEURON);\n", grpName.toStdString().c_str(), n);  // define constants
+		fprintf(w.file, "\t\tcarlsim->setSpikeGenerator(grpId, spikegen_%d);\n", grpId);
+		fprintf(w.file, "\t\tassert(grpId == %d);\n", grpId);
+		fprintf(w.file, "\t\tgrpId_%d = grpId;\n", grpId);
+		fprintf(w.file, "\t}\n\n");
 	}
-
 
 }
 

@@ -105,7 +105,7 @@ void CarlsimGenerator::writeTo(QString path, unsigned connId, unsigned gIdPre, u
 
 
 	char filename[256];
-	sprintf(filename, "%sconngrpgen_%d_%d_%d.dat", path.toStdString().c_str(), connId, gIdPre, gIdPost);     // connection group generator
+	sprintf(filename, "%s/conngrpgen_%d_%d_%d.dat", path.toStdString().c_str(), connId, gIdPre, gIdPost);     // connection group generator
 	FILE* file = fopen(filename, "wb"); // binary write
 
 	// header -> struct  -> sizeof

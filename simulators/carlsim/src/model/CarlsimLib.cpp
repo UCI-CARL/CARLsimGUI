@@ -149,9 +149,15 @@ CobaMonitor* spikestream::CarlsimLib::setCobaMonitor(int grpId, const std::strin
 	return ((CARLsim*)carlsim)->setCobaMonitor(grpId, fileName);
 }
 
+
 PerformanceMonitor* spikestream::CarlsimLib::setPerformanceMonitor(const std::string& fileName) {
 	return ((CARLsim*)carlsim)->setPerformanceMonitor(fileName);
 }
+
+// consilidate feat/helm first
+//PerformanceMonitor* spikestream::CarlsimLib::setPerformanceMonitor(PerformanceMonitorBackend backend, const std::string& fileName) {
+//	return ((CARLsim*)carlsim)->setPerformanceMonitor(backend);
+//}
 
 GroupMonitor* spikestream::CarlsimLib::setGroupMonitor(int grpId, const std::string& fileName) {
 	return ((CARLsim*)carlsim)->setGroupMonitor(grpId, fileName);

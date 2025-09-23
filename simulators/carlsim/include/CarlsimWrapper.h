@@ -302,7 +302,7 @@ public:
 			/*! Pointer to the SNN simulation that has been constructed. */
 			CarlsimLib* carlsim;	// in CARLsim the configuration is represented by a state 
 			friend class CarlsimLoader;
-
+			friend class CarlsimSourceWriter;
 private: 
 		
 			/*! Interval between each time step in milliseconds. */

@@ -3,6 +3,7 @@
 #include "CarlsimOatPerformanceMonitor.h"
 #include "SpikeStreamException.h"
 #include "CarlsimWrapper.h"
+#include "CarlsimSourceWriter.h"
 #include "Util.h"
 
 #include "connection_monitor.h"
@@ -23,14 +24,23 @@ using namespace spikestream::carlsim_monitors;
 OatPerformanceMonitor::OatPerformanceMonitor(bool active, QString object, QString path, int start, int end, int period, bool persistent) :
 		OatMonitor(active, object, path, start, end, period, persistent) {
 	monitor = NULL;
+	wrapper = NULL;
 	//group = NULL;  // TODO need to set which counter  -> ENUM,   MS_PDH_UTIL, INTEL_PDC_UTIL     -> alwas for one core / gpu,  .. .core = cpu ???
 	// first step only one counter --
 	
 }
 
-void OatPerformanceMonitor::setMonitor(CarlsimWrapper *wrapper) {
+void OatPerformanceMonitor::setMonitor(CarlsimWrapper *wrapper_) {
+	wrapper = wrapper_;
 	monitor = wrapper->carlsim->setPerformanceMonitor(path.toStdString());
 	monitor->setPersistentData(persistent);
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Monitors);
+		fprintf(w.file, "\tauto perfmon = carlsim->setPerformanceMonitor(PMB_MS, \"%s\"); \n", path.toStdString().c_str());
+		fprintf(w.file, "\tperfmon->setPersistentData(%s);\n", (persistent ? "true" : "false"));
+		const int sample_rate = 100;
+		fprintf(w.file, "\tperfmon->setSampleRate(%d);\n\n", sample_rate);
+	}
 	if (monitor->isRecording())
 		monitor->stopRecording();
 }
@@ -41,12 +51,23 @@ bool OatPerformanceMonitor::isRecording() {
 
 void OatPerformanceMonitor::startRecording() {
 	monitor->startRecording();
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Events);
+		fprintf(w.file, "\t// %llu ms (user event)\n", wrapper->getSnnTimeMs());
+		fprintf(w.file, "\tperfmon->startRecording();\n\n");
+	}
 	OatMonitor::startRecording();
 }
 
 void OatPerformanceMonitor::stopRecording() {
-	if (monitor->isRecording())
+	if (monitor->isRecording()) {
 		monitor->stopRecording();
+		if (CarlsimSourceWriter::Generate) {
+			CarlsimSourceWriter w(CarlsimSourceWriter::Events);
+			fprintf(w.file, "\t// %llu ms (user event)\n", wrapper->getSnnTimeMs());
+			fprintf(w.file, "\tperfmon->stopRecording();\n\n");
+		}
+	}
 	OatMonitor::stopRecording();
 }
 
@@ -57,17 +78,35 @@ void OatPerformanceMonitor::startRecording(unsigned snnTime) {
 		if (period > 0 && snnTime % period == 0) {
 			monitor->stopRecording();
 			monitor->startRecording();
+			if (CarlsimSourceWriter::Generate) {
+				CarlsimSourceWriter w(CarlsimSourceWriter::Events);
+				fprintf(w.file, "\t// %d ms\n", snnTime);
+				fprintf(w.file, "\tperfmon->stopRecording();\n\n");
+				fprintf(w.file, "\tperfmon->startRecording();\n\n");
+			}
 		}
 	}
 	else
-		if ((start > -1 && int(snnTime) >= start) && (end == -1 || int(snnTime) < end))  
+		if ((start > -1 && int(snnTime) >= start) && (end == -1 || int(snnTime) < end)) {
 			monitor->startRecording();
+			if (CarlsimSourceWriter::Generate) {
+				CarlsimSourceWriter w(CarlsimSourceWriter::Events);
+				fprintf(w.file, "\t// %d ms\n", snnTime);
+				fprintf(w.file, "\tperfmon->startRecording();\n\n");
+			}
+		}
 }
 
 void OatPerformanceMonitor::stopRecording(unsigned snnTime) {
 	if (monitor && active && monitor->isRecording()
-		&& (snnTime >= end - 1 || (period > 0 && snnTime % period == 0)))
+		&& (snnTime >= end - 1 || (period > 0 && snnTime % period == 0))) {
 		monitor->stopRecording();
+		if (CarlsimSourceWriter::Generate) {
+			CarlsimSourceWriter w(CarlsimSourceWriter::Events);
+			fprintf(w.file, "\t// %d ms\n", snnTime);
+			fprintf(w.file, "\tperfmon->stopRecording();\n\n");
+		}
+	}
 }
 
 void OatPerformanceMonitor::print() {

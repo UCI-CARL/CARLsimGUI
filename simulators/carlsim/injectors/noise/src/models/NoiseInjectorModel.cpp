@@ -4,6 +4,7 @@
 #include "CarlsimSpikeGeneratorContainer.h"
 #include "SpikeStreamException.h"
 #include "CarlsimWrapper.h"
+#include "CarlsimSourceWriter.h"
 #include "Util.h"
 
 using namespace spikestream::carlsim_injectors;
@@ -73,7 +74,7 @@ QVariant NoiseInjectorModel::data(const QModelIndex & index, int role) const{
 			QString cell;
 			auto current = currentList[index.row()]; 
 			if(current>0.f) {
-				cell = QString::number(current) + (type == CURRENT ? " mA" : " Spikes");	// NORMAL: spikes
+				cell = QString::number(current) + (type == CURRENT ? " pA" : " Spikes");	// NORMAL: spikes
 			}
 			return cell;		
 		} else
@@ -241,6 +242,28 @@ void NoiseInjectorModel::injectFor(CarlsimWrapper* carlsimWrapper) {
 				carlsimWrapper->carlsim->setExternalCurrent( // delegate to CARLsim
 					neurGrpList[i]->getVID(),				 // CARLsim's ID is stored in the group 
 					currentVectorList[i].toStdVector());	 // convert to std vector
+				if (CarlsimSourceWriter::Generate) {
+					CarlsimSourceWriter w(CarlsimSourceWriter::Events);
+					fprintf(w.file, "\t// %llu ms\n", carlsimWrapper->getSnnTimeMs());
+					fprintf(w.file, "\t{\n");
+					// sparse
+					auto& vect = currentVectorList[i].toStdVector();
+					auto n = vect.size();
+					fprintf(w.file, "\t\tstd::vector<float> vect(%d, .0f);\n", n);
+					fprintf(w.file, "\t\tstd::vector<std::pair<int,float>> aer = {", n);
+					bool first = true; 
+					for (int i = 0; i < n; i++) {
+						if (vect[i] > .0f) {
+							fprintf(w.file, "%s{%d,%f}", (first ? "" : ", "), i, vect[i]);
+							first = false;
+						}
+					}
+					fprintf(w.file, "};\n");
+					if(!first)
+						fprintf(w.file, "\t\tfor(auto iter=aer.begin(); iter!=aer.end(); iter++) {vect[iter->first] = iter->second;};\n");
+					fprintf(w.file, "\t\tcarlsim->setExternalCurrent(%d, vect);\n", neurGrpList[i]->getVID());
+					fprintf(w.file, "\t}\n\n");
+				}
 			} else
 			if(typeList[i]==FIRE) {
 				updateSpikeVector(i, carlsimWrapper);

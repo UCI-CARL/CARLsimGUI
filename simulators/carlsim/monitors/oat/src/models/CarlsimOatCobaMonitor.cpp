@@ -3,6 +3,7 @@
 #include "CarlsimOatCobaMonitor.h"
 #include "SpikeStreamException.h"
 #include "CarlsimWrapper.h"
+#include "CarlsimSourceWriter.h"
 #include "Util.h"
 
 #include "connection_monitor.h"
@@ -31,6 +32,11 @@ void OatCobaMonitor::setMonitor(CarlsimWrapper *wrapper) {
 	monitor->setPersistentData(persistent);
 	if (monitor->isRecording())
 		monitor->stopRecording();
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Monitors);
+		fprintf(w.file, "\tauto cobamon_%d = carlsim->setCobaMonitor(%d, \"%s\");\n", group->getVID(), group->getVID(), path.toStdString().c_str());
+		fprintf(w.file, "\tcobamon_%d->setPersistentData(%s);\n\n", group->getVID(), (persistent ? "true" : "false"));
+	}
 }
 
 bool OatCobaMonitor::isRecording() {

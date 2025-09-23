@@ -3,6 +3,7 @@
 #include "CarlsimOatNeuronMonitor.h"
 #include "SpikeStreamException.h"
 #include "CarlsimWrapper.h"
+#include "CarlsimSourceWriter.h"
 #include "Util.h"
 
 #include "connection_monitor.h"
@@ -31,6 +32,11 @@ void OatNeuronMonitor::setMonitor(CarlsimWrapper *wrapper) {
 	monitor->setPersistentData(persistent);
 	if (monitor->isRecording())
 		monitor->stopRecording();
+	if (CarlsimSourceWriter::Generate) {
+		CarlsimSourceWriter w(CarlsimSourceWriter::Monitors);
+		fprintf(w.file, "\tauto neuronmon_%d = carlsim->setNeuronMonitor(%d, \"%s\");\n", group->getVID(), group->getVID(), path.toStdString().c_str());
+		fprintf(w.file, "\tneuronmon_%d->setPersistentData(%s);\n\n", group->getVID(), (persistent ? "true" : "false"));
+	}
 }
 
 bool OatNeuronMonitor::isRecording() {

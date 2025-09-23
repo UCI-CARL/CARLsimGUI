@@ -26,6 +26,7 @@ set(HDRS
       include/CarlsimLib.h
       include/CarlsimLoader.h
       include/CarlsimParametersDialog.h
+	  include/CarlsimSourceWriter.h
       include/CarlsimSpikeGenerator.h
       include/CarlsimAerSpikeGenerator.h
       include/CarlsimSpikeGeneratorContainer.h
@@ -72,6 +73,7 @@ set(SRCS
     src/model/CarlsimGeneratorContainer.cpp        
     src/model/CarlsimLib.cpp                       
     src/model/CarlsimLoader.cpp                    
+    src/model/CarlsimSourceWriter.cpp            
     src/model/CarlsimSpikeGenerator.cpp            
     src/model/CarlsimAerSpikeGenerator.cpp 
     src/model/CarlsimSpikeGeneratorContainer.cpp   
