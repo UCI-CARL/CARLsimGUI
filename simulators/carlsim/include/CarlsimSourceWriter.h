@@ -30,6 +30,8 @@ namespace spikestream {
 
 		// read only
 		static bool Generate;  // cached flag, if to generate (and write) source
+		static int Generator; // cached enum value
+
 		FILE* file;
 
 	private: 

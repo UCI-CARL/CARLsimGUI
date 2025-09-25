@@ -138,6 +138,15 @@ CarlsimWrapper::CarlsimWrapper(ConfigLoader* configLoader) : AbstractSimulation(
 	modelTime0.addMSecs( - modelLagMs); 
 #endif
 
+	param = configLoader->getParameter("carlsim_source_generator", "none");
+	carlsimConfig->generator = carlsim41::NONE_GEN;
+	if (param != "none") {
+		for (carlsim41::ModelGenerator gen = carlsim41::NONE_GEN; gen <= carlsim41::BENCHMARK_GEN; gen = (carlsim41::ModelGenerator)((int) gen + 1) ){
+			if (param == carlsim41::modelGenerator_string[(int)gen])
+				carlsimConfig->generator = gen;
+		}
+	}
+
 }
 
 /*! Destructor */
@@ -211,34 +220,12 @@ qDebug() << "carlsim_add_plugin_path skipped" << __FUNCTION__ << __LINE__;
 	if(CarlsimSourceWriter::Generate)
 		CarlsimSourceWriter::TouchFiles();
 
-	/*
-		if (carlsimConfig->generator > 0) {
-			auto cpp = fopen("csgen\\main.cpp", "w");
-			auto grp_h = fopen("csgen\\groups.h", "w");
-			auto conn_h = fopen("csgen\\connections.h", "w");
-			auto gen_h = fopen("csgen\\generators.h", "w");
-			auto del_h = fopen("csgen\\delete.h", "w");
-			fclose(cpp);
-			fclose(grp_h);
-			fclose(conn_h);
-			fclose(gen_h);
-			fclose(del_h);
-		}
-	*/
 
 	// instanciate CARLsim 
 	carlsim = new CarlsimLib(carlsimConfig->netName, 
 		(SimMode) carlsimConfig->preferredSimMode, (LoggerMode) carlsimConfig->loggerMode, 
 		carlsimConfig->ithGPUs, carlsimConfig->randSeed);
-	//if (carlsimConfig->generator > 0) {
-	//	auto cpp = fopen("csgen\\main.cpp", "a");
-	//	// includes
-	//	fprintf(cpp, "\t// Instanciate the CARLsim simulation object\n");
-	//	fprintf(cpp, "\tCARLsim* carlsim = new CARLsim(\"%s\", (SimMode)%d, (LoggerMode)%d, %d, %d);\n\n",
-	//		carlsimConfig->netName.c_str(), carlsimConfig->preferredSimMode, carlsimConfig->loggerMode,
-	//		carlsimConfig->ithGPUs, carlsimConfig->randSeed);
-	//	fclose(cpp); 
-	//}
+
 	if (CarlsimSourceWriter::Generate) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Main);
 		fprintf(w.file, "\t// Instanciate the CARLsim simulation object\n");
@@ -247,14 +234,6 @@ qDebug() << "carlsim_add_plugin_path skipped" << __FUNCTION__ << __LINE__;
 			carlsimConfig->ithGPUs, carlsimConfig->randSeed);
 	}
 
-	//	auto cpp = fopen("csgen\\main.cpp", "a");
-	//	// includes
-	//	fprintf(cpp, "\t// Instanciate the CARLsim simulation object\n");
-	//	fprintf(cpp, "\tCARLsim* carlsim = new CARLsim(\"%s\", (SimMode)%d, (LoggerMode)%d, %d, %d);\n\n",
-	//		carlsimConfig->netName.c_str(), carlsimConfig->preferredSimMode, carlsimConfig->loggerMode,
-	//		carlsimConfig->ithGPUs, carlsimConfig->randSeed);
-	//	fclose(cpp); 
-	//}
 
 
 	emit carlsimConfigState();
@@ -277,11 +256,6 @@ qDebug() << "carlsim_add_plugin_path skipped" << __FUNCTION__ << __LINE__;
 	// After all config is done, load the simulation, meaning setupNetwork for CARLsim
 	carlsim->setupNetwork();
 
-	//if (carlsimConfig->generator > 0) {
-	//	auto cpp = fopen("csgen\\main.cpp", "a");
-	//	fprintf(cpp, "\tcarlsim->setupNetwork();\n\n");
-	//	fclose(cpp);
-	//}
 
 	if (CarlsimSourceWriter::Generate) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Main);

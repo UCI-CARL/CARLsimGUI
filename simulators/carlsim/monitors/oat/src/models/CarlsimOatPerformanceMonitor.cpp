@@ -20,6 +20,8 @@ using namespace spikestream::carlsim_monitors;
 #include <QTextTable>
 
 
+#include "carlsim_types.h"
+
 
 OatPerformanceMonitor::OatPerformanceMonitor(bool active, QString object, QString path, int start, int end, int period, bool persistent) :
 		OatMonitor(active, object, path, start, end, period, persistent) {
@@ -51,7 +53,7 @@ bool OatPerformanceMonitor::isRecording() {
 
 void OatPerformanceMonitor::startRecording() {
 	monitor->startRecording();
-	if (CarlsimSourceWriter::Generate) {
+	if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 		fprintf(w.file, "\t// %llu ms (user event)\n", wrapper->getSnnTimeMs());
 		fprintf(w.file, "\tperfmon->startRecording();\n\n");
@@ -62,7 +64,7 @@ void OatPerformanceMonitor::startRecording() {
 void OatPerformanceMonitor::stopRecording() {
 	if (monitor->isRecording()) {
 		monitor->stopRecording();
-		if (CarlsimSourceWriter::Generate) {
+		if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 			CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 			fprintf(w.file, "\t// %llu ms (user event)\n", wrapper->getSnnTimeMs());
 			fprintf(w.file, "\tperfmon->stopRecording();\n\n");
@@ -71,6 +73,10 @@ void OatPerformanceMonitor::stopRecording() {
 	OatMonitor::stopRecording();
 }
 
+
+
+
+
 void OatPerformanceMonitor::startRecording(unsigned snnTime) {
 	if (!monitor  || !active)
 		return;
@@ -78,7 +84,7 @@ void OatPerformanceMonitor::startRecording(unsigned snnTime) {
 		if (period > 0 && snnTime % period == 0) {
 			monitor->stopRecording();
 			monitor->startRecording();
-			if (CarlsimSourceWriter::Generate) {
+			if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 				CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 				fprintf(w.file, "\t// %d ms\n", snnTime);
 				fprintf(w.file, "\tperfmon->stopRecording();\n\n");
@@ -101,7 +107,7 @@ void OatPerformanceMonitor::stopRecording(unsigned snnTime) {
 	if (monitor && active && monitor->isRecording()
 		&& (snnTime >= end - 1 || (period > 0 && snnTime % period == 0))) {
 		monitor->stopRecording();
-		if (CarlsimSourceWriter::Generate) {
+		if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 			CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 			fprintf(w.file, "\t// %d ms\n", snnTime);
 			fprintf(w.file, "\tperfmon->stopRecording();\n\n");

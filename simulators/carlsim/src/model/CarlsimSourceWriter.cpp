@@ -22,20 +22,6 @@ CarlsimSourceWriter::~CarlsimSourceWriter() {
 		fclose(file);
 }
 
-/*
-if (carlsimConfig->generator > 0) {
-	auto cpp = fopen("csgen\\main.cpp", "w");
-	auto grp_h = fopen("csgen\\groups.h", "w");
-	auto conn_h = fopen("csgen\\connections.h", "w");
-	auto gen_h = fopen("csgen\\generators.h", "w");
-	auto del_h = fopen("csgen\\delete.h", "w");
-	fclose(cpp);
-	fclose(grp_h);
-	fclose(conn_h);
-	fclose(gen_h);
-	fclose(del_h);
-}
-*/
 
 const QString CarlsimSourceWriter::ContainerPath() {
 	QDir dir(Dir + "/" + Name);
@@ -53,7 +39,7 @@ void CarlsimSourceWriter::TouchFiles() {
 	if(!dir.exists())
 		return;
 
-	// Ok, iterate over enum with a fore
+	// Ok, iterate over enum with a for
 	CarlsimSourceWriter(Main, false);
 	CarlsimSourceWriter(Groups, false);
 	CarlsimSourceWriter(Connections, false);
@@ -63,30 +49,12 @@ void CarlsimSourceWriter::TouchFiles() {
 	CarlsimSourceWriter(Events, false);
 
 
-	//const char* p = dir.absoluteFilePath("main.cpp").toStdString().c_str(); 
-
- //   // Concatenate strings using std::string and operator+
- //   std::string filePath = Dir + "/" + Name + "/" + "main.cpp";
- //   const char* x = filePath.c_str();
-
-/*
-	auto cpp = fopen(dir.absoluteFilePath("main.cpp").toStdString().c_str(), "w");
-	auto grp_h = fopen(dir.absoluteFilePath("groups.h").toStdString().c_str(), "w");
-	auto conn_h = fopen(dir.absoluteFilePath("connections.h").toStdString().c_str(), "w");
-	auto gen_h = fopen(dir.absoluteFilePath("generators.h").toStdString().c_str(), "w");
-	auto del_h = fopen(dir.absoluteFilePath("delete.h").toStdString().c_str(), "w");
-	fclose(cpp);
-	fclose(grp_h);
-	fclose(conn_h);
-	fclose(gen_h);
-	fclose(del_h);
-*/
-
 }
 
 void CarlsimSourceWriter::SetWrapper(spikestream::CarlsimWrapper* w) {
 	Wrapper = w; 
 	Generate = Wrapper->carlsimConfig->generator > 0; 
+	Generator = Wrapper->carlsimConfig->generator;
 	Dir = "generated";  // "csgen"
 	Name = Wrapper->carlsimConfig->netName.c_str();
 };
@@ -94,6 +62,8 @@ void CarlsimSourceWriter::SetWrapper(spikestream::CarlsimWrapper* w) {
 spikestream::CarlsimWrapper* CarlsimSourceWriter::Wrapper = nullptr;
 
 bool CarlsimSourceWriter::Generate = false; 
+
+int CarlsimSourceWriter::Generator = 0; // NONE_GEN;
 
 QString CarlsimSourceWriter::Dir = "";
 

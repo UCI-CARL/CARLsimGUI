@@ -23,22 +23,6 @@ CarlsimNormalSpikeGenerator::CarlsimNormalSpikeGenerator(spikestream::carlsim_in
 	//auto param = model->at(index);
 
 
-	////if (wrapper->carlsimConfig->generator > 0) {
-	//{
-	//	NeuronGroup* group = model->neurGrpList[index];
-	//	int vid = group->getVID();
-
-	//	FILE* h = nullptr;
-
-	//	h= fopen("csgen\\generators.h", "a");
-	//	fprintf(h, "\tNormalSpikeGenerator* spike_gen_%d = new NormalSpikeGenerator(%f, %f, %d, %d);\n", vid, mean, sd, events, period);
-	//	fclose(h);
-
-	//	h = fopen("csgen\\delete.h", "a");
-	//	fprintf(h, "\tdelete spike_gen_%d;\n\n", vid);
-	//	fclose(h);
-	//}
-
 	if (CarlsimSourceWriter::Generate) {
 		NeuronGroup* group = model->neurGrpList[index];
 		int vid = group->getVID();

@@ -58,7 +58,7 @@ void OatSpikeMonitor::startRecording(unsigned snnTime) {
 	{
 		monitor->startRecording();
 
-		if (CarlsimSourceWriter::Generate) {
+		if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 			CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 			fprintf(w.file, "\t// %d ms\n", snnTime);
 			fprintf(w.file, "\tspikemon_%d->startRecording();\n\n", group->getVID());
@@ -74,7 +74,7 @@ void OatSpikeMonitor::stopRecording(unsigned snnTime) {
 	{
 		monitor->stopRecording();
 
-		if (CarlsimSourceWriter::Generate) {
+		if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 			CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 			fprintf(w.file, "\t// %d ms\n", snnTime);
 			fprintf(w.file, "\tspikemon_%d->stopRecording();\n\n", group->getVID());
@@ -88,7 +88,7 @@ bool OatSpikeMonitor::isRecording() {
 
 void OatSpikeMonitor::startRecording() {
 	monitor->startRecording();
-	if (CarlsimSourceWriter::Generate) {
+	if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 		fprintf(w.file, "\t// %llu ms (user event)\n", wrapper->getSnnTimeMs());
 		fprintf(w.file, "\tspikemon_%d->startRecording();\n\n", group->getVID());
@@ -99,7 +99,7 @@ void OatSpikeMonitor::startRecording() {
 void OatSpikeMonitor::stopRecording() {
 	if (monitor->isRecording()) {
 		monitor->stopRecording();
-		if (CarlsimSourceWriter::Generate) {
+		if (CarlsimSourceWriter::Generate && CarlsimSourceWriter::Generator == carlsim41::UNITTEST_GEN) {
 			CarlsimSourceWriter w(CarlsimSourceWriter::Events);
 			fprintf(w.file, "\t// %llu ms (user event)\n", wrapper->getSnnTimeMs() );
 			fprintf(w.file, "\tspikemon_%d->stopRecording();\n\n", group->getVID());

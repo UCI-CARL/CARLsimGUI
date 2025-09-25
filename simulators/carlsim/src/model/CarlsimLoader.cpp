@@ -82,23 +82,10 @@ bool CarlsimLoader::buildCarlsimNetwork(Network* network, QHash<unsigned, synaps
 
 	//ensure Carlsim is in Config state 
 
-//// if Generator	
-//	if (wrapper->carlsimConfig->generator > 0) {
-//		auto cpp = fopen("csgen\\main.cpp", "a");
-//		fprintf(cpp, "\t// CONFIG STATE\n");
-//		fclose(cpp);
-//	}
-
 	
 	// Patch WM dlPFC, check with AxonalPlasticity
 	wrapper->carlsim->setIntegrationMethod(RUNGE_KUTTA4, 10);
 
-//// if Generator	
-//	if (wrapper->carlsimConfig->generator > 0) {
-//		auto cpp = fopen("csgen\\main.cpp", "a");
-//		fprintf(cpp, "\tcarlsim->setIntegrationMethod(%s, %d);\n\n", "RUNGE_KUTTA4", 10);
-//		fclose(cpp);
-//	}
 	if (CarlsimSourceWriter::Generate) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Main);
 		fprintf(w.file, "\t// CONFIG STATE\n");
@@ -285,28 +272,6 @@ void CarlsimLoader::addExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup;
 
 
-	//// new for model generation
-	//if (wrapper->carlsimConfig->generator > 0) {
-	//
-	//	// CONFIG STATE
-	//	FILE* grp_h = fopen("csgen\\groups.h", "a");
-	//	// block, free fptr
-
-	//	fprintf(grp_h, "\tint grpId_%d;\n", grpId);
-	//	fprintf(grp_h, "\t{\n");
-	//	fprintf(grp_h, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, EXCITATORY_NEURON, %d, (ComputingBackend)%d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
-	//	fprintf(grp_h, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a, b, v, d_1);
-	//	if(parameterConductance)
-	//		if (conductances) 
-	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, true, %d, %d, %d, %d);\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
-	//		else
-	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, false);\n");
-	//	fprintf(grp_h, "\t\tassert(grpId == %d);\n", grpId);
-	//	fprintf(grp_h, "\t\tgrpId_%d = grpId;\n", grpId);
-	//	fprintf(grp_h, "\t}\n\n");
-	//	fclose(grp_h);
-	//}
-
 	if (CarlsimSourceWriter::Generate) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Groups);
 		fprintf(w.file, "\tint grpId_%d;\n", grpId);
@@ -385,30 +350,6 @@ void CarlsimLoader::addInhibitoryNeuronGroup(NeuronGroup* neuronGroup /*, urng_t
 	// store db id for later processing in wrapper
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup; 
 
-
-	//// new for model generation
-	//if (wrapper->carlsimConfig->generator > 0) {
-
-	//	// CONFIG STATE
-	//	FILE* grp_h = fopen("csgen\\groups.h", "a");
-	//	// block, free fptr
-
-	//	fprintf(grp_h, "\tint grpId_%d;\n", grpId);
-	//	fprintf(grp_h, "\t{\n");
-	//	fprintf(grp_h, "\t\tauto grpId = carlsim->createGroup(\"%s\", %d, INHIBITORY_NEURON, %d, (ComputingBackend)%d);\n", grpName.toStdString().c_str(), n, preferredPartition, preferredBackend);  // define constants
-	//	fprintf(grp_h, "\t\tcarlsim->setNeuronParameters(grpId, %f, %f, %f, %f);\n", a_1, b_1, v, d);
-	//	if (parameterConductance)
-	//		if (conductances)
-	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, true, %d, %d, %d, %d);\n", tdAMPA, tdNMDA, tdGABAa, tdGABAb);
-	//		else
-	//			fprintf(grp_h, "\t\tcarlsim->setConductances(grpId, false);\n");
-	//	fprintf(grp_h, "\t\tassert(grpId == %d);\n", grpId);
-	//	fprintf(grp_h, "\t\tgrpId_%d = grpId;\n", grpId);
-	//	fprintf(grp_h, "\t}\n\n");
-	//	fclose(grp_h);
-	//}
-
-
 	if (CarlsimSourceWriter::Generate) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Groups);
 		fprintf(w.file, "\tint grpId_%d;\n", grpId);
@@ -463,24 +404,7 @@ void CarlsimLoader::addCustomExcitatoryNeuronGroup(NeuronGroup* neuronGroup /*, 
 	// store db id for later processing in wrapper
 	wrapper->persistentNeurGrpMap[neuronGroup->getID()] = neuronGroup; 
 
-
-	//// new for model generation
-	//if (wrapper->carlsimConfig->generator > 0) {
-
-	//	// CONFIG STATE
-	//	FILE* grp_h = fopen("csgen\\groups.h", "a");
-	//	// block, free fptr
-
-	//	fprintf(grp_h, "\tint grpId_%d;\n", grpId);
-	//	fprintf(grp_h, "\t{\n");
-	//	fprintf(grp_h, "\t\tauto grpId = carlsim->createSpikeGeneratorGroup(\"%s\", %d, EXCITATORY_NEURON);\n", grpName.toStdString().c_str(), n);  // define constants
-	//	fprintf(grp_h, "\t\tcarlsim->setSpikeGenerator(grpId, spike_gen_%d);\n", grpId);
-	//	fprintf(grp_h, "\t\tassert(grpId == %d);\n", grpId);
-	//	fprintf(grp_h, "\t\tgrpId_%d = grpId;\n", grpId);
-	//	fprintf(grp_h, "\t}\n\n");
-	//	fclose(grp_h);
-	//}
-
+	// new for model generation
 	if (CarlsimSourceWriter::Generate) {
 		CarlsimSourceWriter w(CarlsimSourceWriter::Groups);
 		fprintf(w.file, "\tint grpId_%d;\n", grpId);
